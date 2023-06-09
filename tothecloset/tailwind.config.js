@@ -10,6 +10,14 @@ module.exports = {
         fontFamily: {
           lato: ['Lato', 'sans-serif']
         },
+        
+        colors: {
+          white: "#fff",
+          black: "#000",
+          dimgray: "#696767",
+          gainsboro: "#d9d9d9",
+          gray: "#1c1b1b",
+        },
     },
   },
   plugins: [],
