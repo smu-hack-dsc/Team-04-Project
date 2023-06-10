@@ -17,6 +17,7 @@ module.exports = {
           dimgray: "#696767",
           gainsboro: "#d9d9d9",
           gray: "#1c1b1b",
+          grey: "#B1B1B1",
         },
     },
   },
