@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Card from "../_components/card";
 
+
 const WishlistLoggedIn: NextPage = () => {
   const wishlistItems = [
     // List of items in your wishlist

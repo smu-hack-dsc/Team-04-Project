@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
-import Heart from "../_images/heart.svg";
+// import Heart from "../_images/heart.svg";
+import { Heart } from 'react-bootstrap-icons';
 
 type CardProps = {
   name: string;
