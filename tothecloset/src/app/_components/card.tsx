@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
-// import Heart from "../_images/heart.svg";
-import { Heart } from 'react-bootstrap-icons';
+import product1 from "../_images/product1.jpg";
+import { HeartFill } from 'react-bootstrap-icons';
 
 type CardProps = {
   name: string;
@@ -8,34 +8,12 @@ type CardProps = {
   price: string;
 };
 
-// const Card: NextPage<CardProps> = ({ name, brand, price }) => {
-//   return (
-//     <div className="w-[200px] h-[400px] text-left text-xs text-dimgray font-lato mb-4">
-//       <div className="top-[50px] my-3 bg-gainsboro w-[180px] h-[270px]"></div>
-//       <b className="leading-[20px] flex text-black items-center">
-//         {brand}
-//       </b>
-//       <div className="leading-[20px] flex items-center">
-//         {name}
-//       </div>
-//       <div className="leading-[20px] flex items-center">
-//         {price}
-//       </div>
-    //   <div className="box-border w-[121px] h-[33px] flex flex-row py-2.5 px-5 items-start justify-start text-center text-2xs text-black border-[1px] border-solid border-black">
-    //       <div className="bg-white w-[83px] h-[13px] z-[0]" ></div>
-    //       <div className="uppercase flex items-center justify-center w-[83px] h-[13px] shrink-0 z-[1]">
-    //         Add to cart
-    //       </div>
-    //     </div>
-    // </div>
-//   );
-// };
+const imageUrl = product1.src;
 const Card: NextPage<CardProps> = ({ name, brand, price }) => {
   return (
   
-      <div className="w-[250px] h-[400px] mb-20">
-        <div className="bg-gainsboro h-[100%] w-100">
-        </div>
+      <div className="w-[300px] h-[450px] mb-40">
+        <img src={imageUrl}></img>
         <div className="my-2 font-semibold font-lato">
           {brand}
         </div>
@@ -51,7 +29,7 @@ const Card: NextPage<CardProps> = ({ name, brand, price }) => {
               Add to cart
             </div>
           </div>
-          <img className="fill-black" src={Heart} alt="heart"></img>
+          <HeartFill  size={24} />
         </div>
 
 

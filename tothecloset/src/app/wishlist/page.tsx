@@ -61,18 +61,23 @@ const WishlistLoggedIn: NextPage = () => {
   //     </div>
   //     </div>
   //   </div>
-  <div className="bg-white w-full font-lato">
-  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-    <div className="col-span-full text-[32px] tracking-[2.4px] uppercase text-gray py-8">
-      Wish List
-    </div>
-    {wishlistItems.map((item) => (
-      <div className="flex justify-center" key={item.id}>
-        <Card name={item.name} brand={item.brand} price={item.price} />
+  <div className="container mx-auto">
+    <div className="my-20">
+      <div className="flex flex-row justify-center sm:justify-start my-5">
+        <h2 className="text-3xl uppercase tracking-[2.4px]">Wish List</h2>
       </div>
-    ))}
+      <div className="grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+        {wishlistItems.map((item) => (
+          <div className="flex flex-row justify-center items-start my-3" key={item.id}>
+            <Card name={item.name} brand={item.brand} price={item.price} />
+          </div>
+          ))}
+      </div>
+
+
+    </div>
   </div>
-</div>
+  
   );
 };
 
