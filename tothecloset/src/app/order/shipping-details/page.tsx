@@ -1,4 +1,3 @@
-import React from 'react';
 import FirstComponent from '../images/Group 4.png';
 import SecondComponent from '../images/Group 5.png';
 
