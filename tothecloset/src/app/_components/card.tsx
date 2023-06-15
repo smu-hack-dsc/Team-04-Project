@@ -12,9 +12,9 @@ const imageUrl = product1.src;
 const Card: NextPage<CardProps> = ({ name, brand, price }) => {
   return (
   
-      <div className="w-[300px] h-[450px] mb-40">
+      <div className="mx-auto w-[250px] h-[350px] mb-40">
         <img src={imageUrl}></img>
-        <div className="my-2 font-semibold font-lato">
+        <div className="my-2 font-semibold uppercase font-lato">
           {brand}
         </div>
         <div className="text-slate-500 font-lato">
@@ -24,11 +24,11 @@ const Card: NextPage<CardProps> = ({ name, brand, price }) => {
           {price}
         </div>
         <div className="flex items-center justify-between">
-          <div className="my-2 box-border py-3 px-6 border-[1px] w-150px] tracking-[1.5px] flex border-solid border-black">
+          <button className="my-2 box-border py-3 px-6 border-[1px] w-150px] tracking-[1.5px] flex border-solid border-black">
             <div className="uppercase flex items-center justify-center">
               Add to cart
             </div>
-          </div>
+          </button>
           <HeartFill  size={24} />
         </div>
 

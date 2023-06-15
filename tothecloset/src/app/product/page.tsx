@@ -1,14 +1,15 @@
 import ProductCard from "../_components/productCard";
 
-const ProductPage = () => {
+const ProductPage: React.FC = () => {
   const products = [
     {
       id: 1,
       name: "Item 1",
       brand: "Brand 1",
       price: "69.90 SGD",
-      colour: ["Black", "Red", "Blue"],
+      colour: ["Black", "Gray", "Brown"],
       size: ["S", "M", "L"],
+      rentalperiod: ["4 Days", "8 Days", "12 Days", "16 Days"],
     },
     {
       id: 2,
@@ -17,6 +18,7 @@ const ProductPage = () => {
       price: "79.90 SGD",
       colour: ["Black", "Red", "Blue"],
       size: ["S", "M", "L"],
+      rentalperiod: ["4 Days", "8 Days", "12 Days", "16 Days"],
     },
     {
       id: 3,
@@ -25,6 +27,7 @@ const ProductPage = () => {
       price: "89.90 SGD",
       colour: ["Black", "Red", "Blue"],
       size: ["S", "M", "L"],
+      rentalperiod: ["4 Days", "8 Days", "12 Days", "16 Days"],
     },
     {
       id: 4,
@@ -33,6 +36,7 @@ const ProductPage = () => {
       price: "99.90 SGD",
       colour: ["Black", "Red", "Blue"],
       size: ["S", "M", "L"],
+      rentalperiod: ["4 Days", "8 Days", "12 Days", "16 Days"],
     },
     {
       id: 5,
@@ -41,6 +45,7 @@ const ProductPage = () => {
       price: "99.90 SGD",
       colour: ["Black", "Red", "Blue"],
       size: ["S", "M", "L"],
+      rentalperiod: ["4 Days", "8 Days", "12 Days", "16 Days"],
     },
     // Add more attributes as needed
   ];
@@ -49,14 +54,14 @@ const ProductPage = () => {
 
   return (
     <div className="container mx-auto">
-      <div className="my-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4">
+      
         {selectedProduct && (
           <div className="">
             <ProductCard {...selectedProduct} />
           </div>
         )}
       </div>
-    </div>
+   
   );
 };
 

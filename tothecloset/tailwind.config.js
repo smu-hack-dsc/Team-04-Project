@@ -4,6 +4,7 @@ module.exports = {
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+  
   ],
   theme: {
     extend: {
@@ -19,7 +20,18 @@ module.exports = {
           gray: "#1c1b1b",
         },
 
+        spacing: {
+          'length': '40rem', // Adjust the length of HR line
+        },
+
     },
   },
-  plugins: [],
+
+  daisyui: {
+    themes: ['light'],
+ },
+
+  plugins: [
+    require("daisyui")
+  ],
 }
