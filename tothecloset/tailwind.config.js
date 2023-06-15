@@ -31,7 +31,12 @@ module.exports = {
     themes: ['light'],
  },
 
+ corePlugins: {
+  aspectRatio: false,
+},
+
   plugins: [
-    require("daisyui")
+    require("daisyui"),
+    require('@tailwindcss/aspect-ratio'),
   ],
 }

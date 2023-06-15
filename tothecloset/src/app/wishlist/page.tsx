@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import Card from "../_components/card";
+import WishlistCard from "../_components/wishlistCard";
 
 
 const WishlistLoggedIn: NextPage = () => {
@@ -15,68 +15,33 @@ const WishlistLoggedIn: NextPage = () => {
   ];
 
   return (
-  //   <div className="bg-white w-full text-left font-lato">
-  //     <div className="text-[32px] tracking-[5px] uppercase text-gray py-[50px] px-8">
-  //       Wish List
-  //     </div>
 
-  //     {/*  grid grid-cols-4 gap-4 mt-4 mx-24 */}
-  //     <div className="flex flex-col items-start">
-  //     <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-between ">
-  //       {wishlistItems.map((item) => (
-  //         <div className="flex justify-center mx-8 mb-24">
-  //         <Card
-  //           key={item.id}
-  //           name={item.name}
-  //           brand={item.brand}
-  //           price={item.price}
-  //         />
-  //         </div>
-  //       ))}
+  // <div className="container mx-auto">
+  //   <div className="my-20">
+  //     <div className="flex flex-row justify-center sm:justify-start my-5">
+  //       <h2 className="text-xl uppercase space-x-4 tracking-[2.4px]">Wish List</h2>
   //     </div>
+  //     <div className="grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+  //       {wishlistItems.map((item) => (
+  //         <div className="flex flex-row justify-center items-start my-3" key={item.id}>
+  //           <Card name={item.name} brand={item.brand} price={item.price} />
+  //         </div>
+  //         ))}
   //     </div>
   //   </div>
-  // // );
-  // <div className="bg-white w-full font-lato">
-    
-
-  //     {/*  grid grid-cols-4 gap-4 mt-4 mx-24 */}
-  //     <div className="flex flex-col items-start">
-  //     <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 justify-between ">
-  //       <div className="mx-8 mb-12 flex justify-center text-[32px] tracking-[2.4px] uppercase py-[50px]">Wish List</div>
-  //       <div className="col-span-1"></div> {/* Empty column */}
-  //       <div className="col-span-1"></div> {/* Empty column */}
-  //       <div className="col-span-1"></div> {/* Empty column */}
-  //       {wishlistItems.map((item) => (
-  //         <div className="flex justify-center mx-8 mb-24">
-    
-  //         <Card
-  //           key={item.id}
-  //           name={item.name}
-  //           brand={item.brand}
-  //           price={item.price}
-  //         />
-  //         </div>
-  //       ))}
-  //     </div>
-  //     </div>
-  //   </div>
-  <div className="container mx-auto">
-    <div className="my-20">
-      <div className="flex flex-row justify-center sm:justify-start my-5">
-        <h2 className="text-xl uppercase space-x-4 tracking-[2.4px]">Wish List</h2>
-      </div>
-      <div className="grid grid-flow-row grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {wishlistItems.map((item) => (
-          <div className="flex flex-row justify-center items-start my-3" key={item.id}>
-            <Card name={item.name} brand={item.brand} price={item.price} />
-          </div>
+  // </div>
+  <div className="bg-white">
+      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+        <h2 className="text-xl font-semibold uppercase tracking-[2.4px]">Wish List</h2>
+        <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+          {wishlistItems.map((item) => (
+            <div key={item.id} className="group relative">
+            <WishlistCard name={item.name} brand={item.brand} price={item.price} />
+            </div>
           ))}
+        </div>
+        </div>
       </div>
-
-
-    </div>
-  </div>
   
   );
 };
