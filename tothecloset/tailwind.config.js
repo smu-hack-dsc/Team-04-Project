@@ -4,6 +4,7 @@ module.exports = {
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+  
   ],
   theme: {
     extend: {
@@ -20,7 +21,24 @@ module.exports = {
           grey: "#B1B1B1",
           darkgrey: "#787575"
         },
+
+        spacing: {
+          'length': '40rem', // Adjust the length of HR line
+        },
+
     },
   },
-  plugins: [],
+
+  daisyui: {
+    themes: ['light'],
+ },
+
+ corePlugins: {
+  aspectRatio: false,
+},
+
+  plugins: [
+    require("daisyui"),
+    require('@tailwindcss/aspect-ratio'),
+  ],
 }
