@@ -11,6 +11,7 @@ import { X } from "react-bootstrap-icons"
 import { Plus } from "react-bootstrap-icons"
 import { Dash } from "react-bootstrap-icons"
 import { Upload } from "react-bootstrap-icons"
+import { Camera} from "react-bootstrap-icons"
 import { twMerge } from "tailwind-merge"
 
 const playfair = Playfair_Display({ subsets: ['latin'], weight :'400'})
@@ -102,6 +103,15 @@ const Navbar = () => {
                     </div>
                     <div className="flex-col">
                         <ul>
+                            <li className="flex justify-between outline outline-1 rounded-lg py-1 px-2 mb-4 mt-6 w-full">
+                                <Search size={14} className="ml-2 mr-3 self-center"/>
+                                <input type="text" name="search" placeholder="Search ..." className="text-xs focus:outline-none w-[70px]"/>
+                                <label>
+                                    <Upload size={15} className="mx-2 hidden sm:inline"/>
+                                    <Camera size={16} className="mx-2 inline sm:hidden"/>
+                                    <input type="file" accept="image/*" name="search" className="hidden"/>
+                                </label>
+                            </li>
                             <a href="">
                                 <li onClick={() => setMenuOpen(false)}
                                     className="py-2 cursor-pointer">
@@ -384,7 +394,7 @@ const Navbar = () => {
             </div>
             <div onMouseLeave={() => setRentDropdownOpen(false)} className={
                 rentDropdownOpen
-                ? "fixed grid grid-cols-5 w-full right-0 left-0 top-19 h-25 lg-hidden border-t border-b border-grey bg-[#ffffff] px-10 py-4 ease-in duration-500"
+                ? "fixed grid grid-cols-5 w-full right-0 left-0 top-19 h-25 lg-hidden border-t border-b border-grey bg-[#ffffff] px-10 py-7 ease-in duration-500"
                 : "hidden"
             }>
                 <div>
