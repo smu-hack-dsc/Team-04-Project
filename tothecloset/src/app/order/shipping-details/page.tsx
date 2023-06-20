@@ -1,4 +1,3 @@
-import React from 'react';
 import FirstComponent from '../images/Group 4.png';
 import SecondComponent from '../images/Group 5.png';
 import Icon1 from '../images/1-circle.svg';
@@ -22,7 +21,7 @@ const Page = () => {
               </div>
               <div className="h-full w-1 bg-gray-300 opacity-30"></div>
             </div>
-            <p className="text-center text-2xl text-gray-500 opacity-50 mt-1">Delivery</p>
+            <p className="text-center text-2xl text-gray-500 opacity-50 mt-1">Review</p>
           </div>
 
           <div className="flex items-center ml-4">
