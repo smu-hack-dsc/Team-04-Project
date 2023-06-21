@@ -18,7 +18,8 @@ module.exports = {
           gainsboro: "#d9d9d9",
           gray: "#1c1b1b",
           grey: "#B1B1B1",
-          darkgrey: "#787575"
+          darkgrey: "#787575",
+          midgrey: "#9B9B9B"
         },
     },
   },
