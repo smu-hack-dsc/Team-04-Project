@@ -51,7 +51,7 @@ const PersonalParticularsPage = () => {
       </div>
 
       <div className='flex justify-center'>
-        <div className='text-sm mx-6 w-full max-w-lg'>
+        <div className='text-sm mx-10 w-full max-w-lg'>
           <div className='grid grid-cols-1 md:grid-cols-2 w-full'>
             <div className='p-2'>
               <p>First Name</p>
@@ -92,8 +92,8 @@ const PersonalParticularsPage = () => {
         </div>
       </div>
 
-      <Link href="/signup/address" className='flex justify-center m-6'>
-        <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black  hover:bg-black hover:text-white">
+      <Link href="/signup/address" className='flex justify-center m-4 text-base'>
+        <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
           <div className="uppercase flex items-center justify-center">
             Continue
           </div>
