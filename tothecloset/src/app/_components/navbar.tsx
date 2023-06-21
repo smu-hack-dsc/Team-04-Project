@@ -1,6 +1,7 @@
 "use client"
 import { deleteAppClientCache } from "next/dist/server/lib/render-server";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import {Playfair_Display} from 'next/font/google'
 import { Heart } from 'react-bootstrap-icons';
 import { Person } from "react-bootstrap-icons"
@@ -112,24 +113,24 @@ const Navbar = () => {
                                     <input type="file" accept="image/*" name="search" className="hidden"/>
                                 </label>
                             </li>
-                            <a href="">
+                            <Link href="/">
                                 <li onClick={() => setMenuOpen(false)}
                                     className="py-2 cursor-pointer">
                                         Home
                                 </li>
-                            </a>
-                            <a href="">
+                            </Link>
+                            <Link href="">
                                 <li onClick={() => setMenuOpen(false)}
                                     className="py-2 cursor-pointer">
                                         About
                                 </li>
-                            </a>
+                            </Link>
                             <div className="flex justify-between">
-                                <a href="">
+                                <Link href="/rent">
                                     <li className="py-2">
                                         <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Rent Apparel</span>
                                     </li>
-                                </a>
+                                </Link>
                                 <div className="flex items-center">
                                     <Plus size={17} onClick={handleRentOption} className={
                                             rentOptionOpen
@@ -151,11 +152,11 @@ const Navbar = () => {
                                             : "hidden"
                                         }>
                                             <div className="flex justify-between">
-                                                <a href="">
+                                                <Link href="">
                                                     <li className="py-2">
                                                         <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Men</span>
                                                     </li>
-                                                </a>
+                                                </Link>
                                                 <div className="flex items-center">
                                                     <Plus size={16} onClick={handleMenOption} className={
                                                         menOptionOpen
@@ -175,21 +176,21 @@ const Navbar = () => {
                                             : "hidden"
                                             }>
                                                 {menOptionsArr.map((item, index) => (
-                                                    <a href="" key={index}>
+                                                    <Link href="" key={index}>
                                                         <li onClick={() => setMenuOpen(false)}
                                                             className="py-2 cursor-pointer">
                                                                 {item}
                                                         </li>
-                                                    </a>
+                                                    </Link>
                                                 ))}
                                                 
                                             </ul>
                                             <div className="flex justify-between">
-                                                <a href="">
+                                                <Link href="">
                                                     <li className="py-2">
                                                         <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Women</span>
                                                     </li>
-                                                </a>
+                                                </Link>
                                                 <div className="flex items-center">
                                                 <Plus size={16} onClick={handleWomenOption} className={
                                                         womenOptionOpen
@@ -209,21 +210,21 @@ const Navbar = () => {
                                             : "hidden"
                                             }>
                                                 {womenOptionsArr.map((item, index) => (
-                                                    <a href="" key={index}>
+                                                    <Link href="" key={index}>
                                                         <li onClick={() => setMenuOpen(false)}
                                                             className="py-2 cursor-pointer">
                                                                 {item}
                                                         </li>
-                                                    </a>
+                                                    </Link>
                                                 ))}
                                                 
                                             </ul>
                                             <div className="flex justify-between">
-                                                <a href="">
+                                                <Link href="">
                                                     <li className="py-2">
                                                         <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Occasions</span>
                                                     </li>
-                                                </a>
+                                                </Link>
                                                 <div className="flex items-center">
                                                 <Plus size={16} onClick={handleOccasionsOption} className={
                                                         occasionsOptionOpen
@@ -243,21 +244,21 @@ const Navbar = () => {
                                             : "hidden"
                                             }>
                                                 {occasionsOptionsArr.map((item, index) => (
-                                                    <a href="" key={index}>
+                                                    <Link href="" key={index}>
                                                         <li onClick={() => setMenuOpen(false)}
                                                             className="py-2 cursor-pointer">
                                                                 {item}
                                                         </li>
-                                                    </a>
+                                                    </Link>
                                                 ))}
                                                 
                                             </ul>
                                             <div className="flex justify-between">
-                                                <a href="">
+                                                <Link href="">
                                                     <li className="py-2">
                                                         <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Collections</span>
                                                     </li>
-                                                </a>
+                                                </Link>
                                                 <div className="flex items-center">
                                                 <Plus size={16} onClick={handleCollectionsOption} className={
                                                         collectionsOptionOpen
@@ -277,35 +278,35 @@ const Navbar = () => {
                                             : "hidden"
                                             }>
                                                 {collectionsOptionsArr.map((item, index) => (
-                                                    <a href="" key={index}>
+                                                    <Link href="" key={index}>
                                                         <li onClick={() => setMenuOpen(false)}
                                                             className="py-2 cursor-pointer">
                                                                 {item}
                                                         </li>
-                                                    </a>
+                                                    </Link>
                                                 ))}
                                                 
                                             </ul>
                                         </ul>
-                            <a href="">
+                            <Link href="/wishlist">
                                 <li onClick={() => setMenuOpen(false)}
                                     className="py-2 cursor-pointer">
                                         Wishlist
                                 </li>
-                            </a>
-                            <a href="">
+                            </Link>
+                            <Link href="/cart">
                                 <li onClick={() => setMenuOpen(false)}
                                     className="py-2 cursor-pointer">
                                         Cart
                                 </li>
-                            </a>
+                            </Link>
                             <div className="flex justify-between">
-                                <a href="">
+                                <Link href="">
                                     <li onClick={() => setMenuOpen(false)}
                                         className="py-2 cursor-pointer">
                                             Account
                                     </li>
-                                </a>
+                                </Link>
                                 <div className="flex items-center">
                                     <Plus size={16} onClick={handleAccDetails} className={
                                         accDetailsOpen
@@ -325,39 +326,39 @@ const Navbar = () => {
                                 : "hidden"
                                 }>
                                     {accDetailsOptionsArr.map((item, index) => (
-                                        <a href="" key={index}>
+                                        <Link href="" key={index}>
                                             <li onClick={() => setMenuOpen(false)}
                                                 className="py-2 cursor-pointer">
                                                     {item}
                                             </li>
-                                        </a>
+                                        </Link>
                                     ))}
                             </ul>
-                            <a href="">
+                            <Link href="">
                                 <li onClick={() => setMenuOpen(false)}
                                     className="py-2 cursor-pointer">
                                         Help
                                 </li>
-                            </a>
+                            </Link>
                         </ul>
                     </div>
                 </div>
                 <div className="lg:w-1/3">
                     <ul className="hidden lg:flex">
-                        <a href="">
+                        <Link href="">
                             <li className="mr-10 uppercase hover:border-b-2 text-sm">About</li>
-                        </a>
-                        <a href="" >
+                        </Link>
+                        <Link href="/rent" >
                             <li className="mr-10 uppercase hover:border-b-2 text-sm" onMouseOver={() => setRentDropdownOpen(true)}>Rent</li>
-                        </a>
-                        <a href="">
+                        </Link>
+                        <Link href="">
                             <li className="uppercase hover:border-b-2 text-sm">Help</li>
-                        </a>
+                        </Link>
                     </ul>
                 </div>
-                <a href='../page.tsx' className="lg:w-1/3 absolute left-1/2 transform -translate-x-1/2">
+                <Link href='/' className="lg:w-1/3 absolute left-1/2 transform -translate-x-1/2">
                     <h2 className="playfair.className text-center">TO THE CLOSET</h2>
-                </a>
+                </Link>
                 <div className="lg:w-1/3">
                     <ul className="hidden lg:flex justify-end items-center">
                         <Search 
@@ -380,15 +381,15 @@ const Navbar = () => {
                                 <input type="file" name="search" className="hidden"/>
                             </label>
                         </div>
-                        <a href="">
+                        <Link href="/wishlist">
                             <Heart className="ml-7" size={15}/>
-                        </a>
-                        <a href="">
+                        </Link>
+                        <Link href="/cart">
                             <Bag className="ml-7" size={15}/>
-                        </a>
-                        <a href="">
+                        </Link>
+                        <Link href="">
                             <Person className="ml-7" size={17} onMouseOver={() => setAccOpen(true)}/>
-                        </a>
+                        </Link>
                     </ul>
                 </div>
             </div>
@@ -400,41 +401,41 @@ const Navbar = () => {
                 <div>
                     <p className="text-darkgrey py-2">MEN</p>
                     {menOptionsArr.map((item, index) => (
-                        <a href="">
+                        <Link href="">
                             <p key={index} className="py-1">{item}</p>
-                        </a>
+                        </Link>
                     ))}
                 </div>
                 <div>
                     <p className="text-darkgrey py-2">WOMEN</p>
                     {womenFirstCol.map((item, index) => (
-                        <a href="">
+                        <Link href="">
                             <p key={index} className="py-1">{item}</p>
-                        </a>
+                        </Link>
                     ))}
                 </div>
                 <div>
                     <p className="text-white py-2">WHITE TEXT</p>
                     {womenSecCol.map((item, index) => (
-                        <a href="">
+                        <Link href="">
                             <p key={index} className="py-1">{item}</p>
-                        </a>
+                        </Link>
                     ))}
                 </div>
                 <div>
                     <p className="text-darkgrey py-2">OCCASIONS</p>
                     {occasionsOptionsArr.map((item, index) => (
-                        <a href="">
+                        <Link href="">
                             <p key={index} className="py-1">{item}</p>
-                        </a>
+                        </Link>
                     ))}
                 </div>
                 <div>
                     <p className="text-darkgrey py-2">COLLECTIONS</p>
                     {collectionsOptionsArr.map((item, index) => (
-                        <a href="">
+                        <Link href="">
                             <p key={index} className="py-1">{item}</p>
-                        </a>
+                        </Link>
                     ))}
                 </div>
             </div>
@@ -444,9 +445,9 @@ const Navbar = () => {
                 : "hidden"
             }>
                 {accDetailsOptionsArr.map((item, index) => (
-                        <a href="">
+                        <Link href="">
                             <p key={index} className="py-1">{item}</p>
-                        </a>
+                        </Link>
                     ))}
             </div>
         </nav>
