@@ -2,10 +2,17 @@
 import Black from '../images/black.png';
 import Icon4 from '../images/4-circle.svg';
 import { useState } from 'react';
+import Mastercard from '../images/mc_symbol.svg';
+import Visa from '../images/Visa_Inc._logo.svg.png';
+import Paypal from '../images/paypal.svg';
+import Apple from '../images/apple-pay-logo-svgrepo-com.svg';
+import Stripe from '../images/1024px-Stripe_Logo,_revised_2016.svg.png';
+import Amex from '../images/American_Express-Logo.wine.svg';
 
 const Page = () => {
   const [discountCode, setDiscountCode] = useState('');
   const [isInvalidCode, setIsInvalidCode] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('');
 
   const handleDiscountCodeChange = (e) => {
     setDiscountCode(e.target.value);
@@ -19,6 +26,10 @@ const Page = () => {
       // Apply the discount code logic here
       console.log('Discount code applied:', discountCode);
     }
+  };
+
+  const handlePaymentMethodChange = (e) => {
+    setPaymentMethod(e.target.value);
   };
 
   return (
@@ -55,7 +66,7 @@ const Page = () => {
         </div>
       </div>
 
-      <section className="mx-40 mt-8 flex">
+      <section className="mx-40 mt- flex">
 
         {/* Delivery & Return */}
         <div className="w-1/2 pr-2 pt-4">
@@ -63,37 +74,150 @@ const Page = () => {
             <img src={Icon4.src} alt="Icon 1" className="h-6 w-6 mr-2" />
             <p className="text-2xl">PAYMENT METHOD</p>
           </div>
-          {/* Radio Button */}
-          <div className="flex items-center mt-4 ml-8">
-            <input type="radio" id="creditCard" name="paymentMethod" className="mr-2" />
-            <label htmlFor="creditCard">Credit Card</label>
+          
+          <div className="flex gap-4">
+
+            {/* Mastercard Payment */}
+            <label htmlFor="payment1" className="relative w-full cursor-pointer">
+              <input className="peer hidden" type="radio" id="payment1" name="payment" />
+              <div className="payment-content flex items-center sm:justify-center p-5 pr-16 sm:p-8 gap-5 h-24 sm:h-40 w-64 bg-white border-2 border-gray-200 rounded-md transition peer-checked:border-blue-500 peer-checked:shadow-lg peer-checked:-translate-y-1 mt-8">
+                <img
+                  className="payment-image"
+                  src={Mastercard.src}
+                  alt="mastercard"
+                />
+                <p className="payment-text static sm:absolute
+                    top-full sm:mt-1
+                    text-center text-lg sm:text-xl
+                    w-auto sm:w-full
+                    opacity-70 font-small">Pay with Mastercard
+                </p>
+              </div>
+            </label>
+          
+            {/* Visa Payment */}
+            <label htmlFor="payment2" className="relative w-full cursor-pointer">
+              <input className="peer hidden" type="radio" id="payment2" name="payment" />
+              <div className="payment-content flex items-center sm:justify-center p-5 pr-16 sm:p-8 gap-5 h-24 sm:h-40 w-64 bg-white border-2 border-gray-200 rounded-md transition peer-checked:border-blue-500 peer-checked:shadow-lg peer-checked:-translate-y-1 mt-8">
+                <img
+                  className="payment-image w-20 h-16 sm:w-64 sm:h-full object-center"
+                  src={Visa.src}
+                  alt="visa"
+                />
+                <p className="payment-text static sm:absolute
+                    top-full sm:mt-1
+                    text-center text-lg sm:text-xl
+                    w-auto sm:w-full
+                    opacity-70 font-medium">Pay with Visa
+                </p>
+              </div>
+            </label>
           </div>
 
-          <div className="flex items-center mt-4 ml-8">
-            <input type="radio" id="creditCard" name="paymentMethod" className="mr-2" />
-            <label htmlFor="creditCard">PayPal</label>
+
+          <div className="flex gap-4">
+
+            {/* Amex Payment */}
+            <label htmlFor="payment3" className="relative w-full cursor-pointer">
+              <input className="peer hidden" type="radio" id="payment3" name="payment" />
+              <div className="payment-content flex items-center sm:justify-center p-5 pr-16 sm:p-8 gap-5 h-24 sm:h-40 w-64 bg-white border-2 border-gray-200 rounded-md transition peer-checked:border-blue-500 peer-checked:shadow-lg peer-checked:-translate-y-1 mt-8">
+                <img
+                  className="payment-image w-20 h-16 sm:w-64 sm:h-full object-center"
+                  src={Amex.src}
+                  alt="amex"
+                />
+                <p className="payment-text static sm:absolute
+                    top-full sm:mt-1
+                    text-center text-lg sm:text-xl
+                    w-auto sm:w-full
+                    opacity-70 font-medium">Pay with American Express
+                </p>
+              </div>
+            </label>
+          
+            {/* Apple Pay Payment */}
+            <label htmlFor="payment4" className="relative w-full cursor-pointer">
+              <input className="peer hidden" type="radio" id="payment4" name="payment" />
+              <div className="payment-content flex items-center sm:justify-center p-5 pr-16 sm:p-8 gap-5 h-24 sm:h-40 w-64 bg-white border-2 border-gray-200 rounded-md transition peer-checked:border-blue-500 peer-checked:shadow-lg peer-checked:-translate-y-1 mt-8">
+                <img
+                  className="payment-image w-20 h-16 sm:w-64 sm:h-full object-center"
+                  src={Apple.src}
+                  alt="applepay"
+                />
+                <p className="payment-text static sm:absolute
+                    top-full sm:mt-1
+                    text-center text-lg sm:text-xl
+                    w-auto sm:w-full
+                    opacity-70 font-medium">Pay with ApplePay
+                </p>
+              </div>
+            </label>
+            
           </div>
 
-          <div className="flex items-center mt-4 ml-8">
-            <input type="radio" id="creditCard" name="paymentMethod" className="mr-2" />
-            <label htmlFor="creditCard">ApplePay</label>
-          </div>
+          <div className="flex gap-4">
 
-          <div className="flex items-center mt-4 ml-8">
-            <input type="radio" id="creditCard" name="paymentMethod" className="mr-2" />
-            <label htmlFor="creditCard">Stripe</label>
+            {/* Paypal Payment */}
+            <label htmlFor="payment5" className="relative w-full cursor-pointer">
+              <input className="peer hidden" type="radio" id="payment5" name="payment" />
+              <div className="payment-content flex items-center sm:justify-center p-5 pr-16 sm:p-8 gap-5 h-24 sm:h-40 w-64 bg-white border-2 border-gray-200 rounded-md transition peer-checked:border-blue-500 peer-checked:shadow-lg peer-checked:-translate-y-1 mt-8">
+                <img
+                  className="payment-image w-20 h-16 sm:w-64 sm:h-full object-center"
+                  src={Paypal.src}
+                  alt="paypal"
+                />
+                <p className="payment-text static sm:absolute
+                    top-full sm:mt-1
+                    text-center text-lg sm:text-xl
+                    w-auto sm:w-full
+                    opacity-70 font-medium">Pay with Paypal
+                </p>
+              </div>
+            </label>
+          
+            {/* Stripe Payment */}
+            <label htmlFor="payment6" className="relative w-full cursor-pointer">
+              <input className="peer hidden" type="radio" id="payment6" name="payment" />
+              <div className="payment-content flex items-center sm:justify-center p-5 pr-16 sm:p-8 gap-5 h-24 sm:h-40 w-64 bg-white border-2 border-gray-200 rounded-md transition peer-checked:border-blue-500 peer-checked:shadow-lg peer-checked:-translate-y-1 mt-8">
+                <img
+                  className="payment-image w-20 h-16 sm:w-64 sm:h-full object-center"
+                  src={Stripe.src}
+                  alt="stripe"
+                />
+                <p className="payment-text static sm:absolute
+                    top-full sm:mt-1
+                    text-center text-lg sm:text-xl
+                    w-auto sm:w-full
+                    opacity-70 font-medium">Pay with Stripe
+                </p>
+              </div>
+            </label>
           </div>
+          
 
-          <div className="mt-4 ml-8">
-            <input type="text" id="creditCard" name="paymentMethod" className="mr-2" />
-            <label htmlFor="creditCard">Billing Address</label>
-          </div>
+
+          {/* Card Number */}
+          {paymentMethod === "creditCard" && (
+            <div className="flex items-center mt-4 ml-12">
+              <label htmlFor="cardNumber" className="text-s">Card Number</label>
+              <input
+                type="text"
+                id="cardNumber"
+                className="w-64 py-2 px-3 border border-gray-300"
+                placeholder="Enter card number"
+              />
+            </div>
+          )}
+
+
 
         </div>
+
 
         {/* Middle Container */}
         <div className="w-1/6 pl-2 pt-4">
         </div>
+
 
         {/* Your Order */}
         <div className="flex items-center justify-center mt-0">
@@ -174,14 +298,14 @@ const Page = () => {
   
       {/* Button */}
       <div className="flex justify-center"> {/* Centering wrapper */}
-        <button className="my-2 mt-4 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black
+        <button className="my-2 mt-12 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black
           bg-white text-black hover:bg-black hover:text-white mr-12">
           <div className="uppercase flex items-center justify-center">
             Back
           </div>
         </button>
 
-        <button className="my-2 mt-4 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black
+        <button className="my-2 mt-12 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black
           bg-white text-black hover:bg-black hover:text-white">
           <div className="uppercase flex items-center justify-center">
             Continue
