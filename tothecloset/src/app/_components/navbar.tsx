@@ -87,7 +87,7 @@ const Navbar = () => {
     const womenSecCol = ["Suits", "Accessories", "Maternity"]
 
     return (
-        <nav className="fixed w-full h-16 outline-1 outline-grey outline bg-white px-3">
+        <nav className="fixed w-full h-16 outline-1 outline-grey outline bg-white px-3 z-50">
             <div className="flex flex-wrap justify-between items-center h-full w-full px-5 2xl:px-16">
                 <div onClick={handleNav} className="lg:hidden cursor-pointer">
                     <List size={20}/>
