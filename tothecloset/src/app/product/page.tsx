@@ -1,11 +1,12 @@
 'use client'
 import product1 from "../_images/product1.jpg";
 import React from 'react';
-import WishlistCard from "../_components/wishlistCard";
+import BrowsingCard from "../_components/browsingCard";
 
 const imageUrl = product1.src;
 
 const ProductPage: React.FC = () => {
+  
   const wishlistItems = [
     // List of items in your wishlist
     // Each item can have its own properties like name, brand, price, etc.
@@ -167,7 +168,7 @@ const ProductPage: React.FC = () => {
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
           {wishlistItems.map((item) => (
             <div key={item.id} className="">
-              <WishlistCard name={item.name} brand={item.brand} price={item.price} />
+              <BrowsingCard name={item.name} brand={item.brand} price={item.price} />
             </div>
           ))}
         </div>
