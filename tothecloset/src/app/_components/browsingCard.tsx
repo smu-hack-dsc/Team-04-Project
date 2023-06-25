@@ -1,16 +1,16 @@
 "use client"
 import product1 from "../_images/product1.jpg";
-import { HeartFill } from 'react-bootstrap-icons';
+
 import { Heart } from "react-bootstrap-icons";
 import { useState } from "react";
 
-type wishlistCardProps = {
+type browsingCardProps = {
     name: string;
     brand: string;
     price: string;
 };
 const imageUrl = product1.src;
-const wishlistCard: React.FC<wishlistCardProps> = ({ name, brand, price }) => {
+const browsingCard: React.FC<browsingCardProps> = ({ name, brand, price }) => {
     const [unliked, setUnlike] = useState(false)
     const handleLike = () => {
         setUnlike(!unliked)
@@ -44,7 +44,7 @@ const wishlistCard: React.FC<wishlistCardProps> = ({ name, brand, price }) => {
                     </div>
                 </button>
             </div>
-            <HeartFill size={24} onClick={handleLike} className="cursor-pointer"/>
+            <Heart size={24} onClick={handleLike} className="cursor-pointer"/>
             <Heart size={24} className={
                 unliked
                 ? ""
@@ -59,4 +59,4 @@ const wishlistCard: React.FC<wishlistCardProps> = ({ name, brand, price }) => {
 
 };
 
-export default wishlistCard;
+export default browsingCard;
