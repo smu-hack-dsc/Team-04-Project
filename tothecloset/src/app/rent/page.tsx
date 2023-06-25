@@ -90,8 +90,8 @@ const RentPage: NextPage = () => {
     xgap = 6;
     xlgap = 6;
     lgColumns = 6;
-    mdColumns = 4; // Adjusted value for 6 columns
-    smColumns = 4; // Adjusted value for 6 columns
+    mdColumns = 4; 
+    smColumns = 4; 
 }
 
 const gridClass = `grid grid-cols-${cols} gap-x-${xgap} gap-y-10 sm:grid-cols-${smColumns} md:grid-cols-${mdColumns} lg:grid-cols-${lgColumns} xl:gap-x-${xlgap}`;
@@ -284,7 +284,7 @@ const gridClass = `grid grid-cols-${cols} gap-x-${xgap} gap-y-10 sm:grid-cols-${
         <div className={gridClass}>
           {wishlistItems.map((item) => (
             <div key={item.id} className="">
-              <BrowsingCard name={item.name} brand={item.brand} price={item.price} />
+              <BrowsingCard name={item.name} brand={item.brand} price={item.price} gridColumns={gridColumns} />
             </div>
           ))}
         </div>

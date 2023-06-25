@@ -168,7 +168,7 @@ const ProductPage: React.FC = () => {
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
           {wishlistItems.map((item) => (
             <div key={item.id} className="">
-              <BrowsingCard name={item.name} brand={item.brand} price={item.price} />
+              <BrowsingCard name={item.name} brand={item.brand} price={item.price} gridColumns={1} />
             </div>
           ))}
         </div>
