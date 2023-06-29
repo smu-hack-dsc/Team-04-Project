@@ -4,10 +4,11 @@ import Link from 'next/link';
 import { BoxSeam } from 'react-bootstrap-icons'; //packing
 import { Truck } from 'react-bootstrap-icons'; //delivering
 import { Check2Circle } from 'react-bootstrap-icons'; //delivered
+import { ArrowReturnLeft } from 'react-bootstrap-icons'; //returned
 import { ChevronRight } from 'react-bootstrap-icons';
 
 interface RentalCardProps {
-    deliveryStatus: String; //packing OR delivering OR delivered
+    deliveryStatus: String; //packing OR delivering OR delivered OR returned
     deliveryDate: String;
 }
 
@@ -20,11 +21,13 @@ const RentalCard: FC<RentalCardProps> = ({ deliveryStatus, deliveryDate}) => {
                     {deliveryStatus == 'packing' && <BoxSeam size={30}/>}
                     {deliveryStatus == 'delivering' && <Truck size={30}/>}
                     {deliveryStatus == 'delivered' && <Check2Circle size={30}/>}
+                    {deliveryStatus == 'delivered' && <ArrowReturnLeft size={30}/>}
                 </div>
                 <div className='p-3'>
                     {deliveryStatus == 'packing' && <p>Packing</p>}
                     {deliveryStatus == 'delivering' && <p>On the way</p>}
                     {deliveryStatus == 'delivered' && <p>Delivered</p>}
+                    {deliveryStatus == 'returned' && <p>Returned</p>}
                     <p className='text-sm text-midgrey'>on {deliveryDate} </p>
                 </div>
                 <div className='flex justify-center p-3'>
@@ -34,6 +37,7 @@ const RentalCard: FC<RentalCardProps> = ({ deliveryStatus, deliveryDate}) => {
                                 {deliveryStatus == 'packing' && <span>Track<br/>order</span>}
                                 {deliveryStatus == 'delivering' && <span>Track<br/>order</span>}
                                 {deliveryStatus == 'delivered' && <span>Request<br/>Return</span>}
+                                {deliveryStatus == 'returned' && <span>Rent<br/>Again</span>}
                             </div>
                         </button>
                     </Link>
