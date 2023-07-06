@@ -1,7 +1,5 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
-/node_modules
+/tothecloset/node_modules
 /.pnp
 .pnp.js
 
@@ -9,11 +7,11 @@
 /coverage
 
 # next.js
-/.next/
-/out/
+tothecloset/.next/
+tothecloset/out/
 
 # production
-/build
+tothecloset/build
 
 # misc
 .DS_Store
@@ -33,3 +31,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#backend
+/backend/.env
