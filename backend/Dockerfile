@@ -13,5 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the backend files to the working directory
 COPY . .
 
+# Expose port
+EXPOSE 5000
+
 # Set the entry point command for the container
 CMD ["python", "app.py"]
