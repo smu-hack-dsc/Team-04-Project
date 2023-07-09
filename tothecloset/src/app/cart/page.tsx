@@ -13,7 +13,7 @@ export default function Page() {
   }
 
   const titleStyle = {
-    textAlign: 'left',
+    textAlign: 'left' as const,
     fontSize: '2rem',
     marginBottom: '30px',
 
@@ -27,7 +27,7 @@ export default function Page() {
     padding: '40px 40px',
   }
   const bodyStyle1 = {
-    textAlign: 'left',
+    textAlign: 'left' as const,
     fontSize: '1.5rem',
     marginBottom: '30px',
   }
@@ -37,15 +37,15 @@ export default function Page() {
   }
 
   const bodystyle3 = {
-    textAlign: 'left',
+    textAlign: 'left' as const,
     display: 'inline',
     marginLeft: '300px',
   }
 
   const bodystyle4 = {
-    textAlign: 'left',
+    textAlign: 'left' as const,
     display: 'inline',
-    marginLeft: '80px',
+    marginLeft: '90px',
   }
   const boxStyle = {
     width: '90px', 
@@ -56,33 +56,33 @@ export default function Page() {
   };
 
   const brandStyle = {
-    textAlign: 'right',
+    textAlign: 'right' as const,
     fontSize: '1rem',
     marginLeft: '100px',
     fontWeight: 'bold',
   }
   const textStyle2 = {
-    textAlign: 'right',
+    textAlign: 'right' as const,
     fontSize: '0.7rem',
     marginLeft: '100px',
     display: 'inline-block',
-    whiteSpace: 'noWrap',
+    whiteSpace: 'nowrap' as const
   }
 
   const dropdownStyle ={
     // border: '0.5px solid black',
-    marginLeft: '60px',
-    marginRight: '5px',
+    marginLeft: '55px',
+    marginRight: '20px',
     width: '40px',
   }
   const item = (<div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
     <div style={boxStyle}>
-      <p style={brandStyle}>
+      <p style = {brandStyle}>
         BRAND</p>
-      <p style={textStyle2}>
+      <p style = {textStyle2}>
         Item Name Over Here
       </p>
-      <p style={textStyle2}>
+      <p style = {textStyle2}>
         Colour: Black
       </p>
       <p style={textStyle2}>
