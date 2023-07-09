@@ -4,7 +4,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -23,6 +23,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts","./src/**/*","./declarations.d.ts",  "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/_components/carousel.jsx"],
+  "include": ["next-env.d.ts","./src/**/*","./declarations.d.ts",  "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/_components/carousel.jsx"],
   "exclude": ["node_modules"]
 }
