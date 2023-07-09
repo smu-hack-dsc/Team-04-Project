@@ -1,6 +1,7 @@
 import * as react from 'react'
 import { FaApple, FaGoogle } from "react-icons/fa";
 
+
 export default function Page() {
   const containerStyle = {
     display: 'flex',
@@ -8,7 +9,7 @@ export default function Page() {
     justifyContent: 'center',
     flexDirection: 'column',
     fontFamily: 'Lato, sans-serif',
-    marginTop: '100px',
+    paddingTop: '100px',
   }
 
   const formStyle = {
@@ -28,7 +29,7 @@ export default function Page() {
   const checkboxContainerStyle = {
     display: 'flex',
     alignItems: 'center',
-    marginLeft: '-515px'
+    marginLeft: '-495px'
   };
 
   const lineStyle = {

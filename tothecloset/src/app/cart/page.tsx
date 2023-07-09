@@ -1,5 +1,5 @@
 import * as react from 'react'
-
+import image from './cartImages/image1.png'
 
 export default function Page() {
   const containerStyle = {
@@ -50,7 +50,7 @@ export default function Page() {
   const boxStyle = {
     width: '90px', 
     height: '110px',
-    border: '1px solid black', 
+    // border: '0.5px solid black', 
     backgroundColor: 'transparent',
     marginBottom: '40px',
   };
@@ -70,7 +70,7 @@ export default function Page() {
   }
 
   const dropdownStyle ={
-    border: '0.5px solid black',
+    // border: '0.5px solid black',
     marginLeft: '60px',
     marginRight: '5px',
     width: '40px',
@@ -88,7 +88,7 @@ export default function Page() {
       <p style={textStyle2}>
         Size: L
       </p>
-      <img src="HEAP IMAGES/image1.png" style={{ width: '100%', height: 'auto' }} />
+      <img src = {image.src} style={{ width: '100%', height: '100%', marginTop: '-96px', marginLeft:'0.5px'}} />
     </div>
     <div style={{ display: 'flex', alignItems: 'center', marginBottom: '100px', marginLeft:'-5px' }}>
       <p style={bodystyle3}>0.00 SGD</p>
