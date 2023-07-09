@@ -7,7 +7,7 @@ export default function Page() {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'column',
+    flexDirection: 'column' as const,
     fontFamily: 'Lato, sans-serif',
     paddingTop: '100px',
   }

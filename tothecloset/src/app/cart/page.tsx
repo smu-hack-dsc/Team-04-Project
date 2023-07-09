@@ -4,7 +4,7 @@ import image from './cartImages/image1.png'
 export default function Page() {
   const containerStyle = {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'column' as const,
     alignItems: 'flex-start',
     marginTop: '100px',
     marginLeft: '100px',
