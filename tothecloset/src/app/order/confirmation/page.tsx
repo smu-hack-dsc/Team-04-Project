@@ -11,7 +11,7 @@ const Page = () => {
       </div>
 
       <div className="flex items-center justify-center flex-col mt-4">
-        <h1 className="text-4xl text-center">Thanks for your order!</h1>
+        <h1 className="text-2xl font-bold text-center">Thanks for your order!</h1>
         <p className="text-lg text-center text-gray-500 mt-4">Your order confirmation has been sent to email@gmail.com</p>
       </div>
 
