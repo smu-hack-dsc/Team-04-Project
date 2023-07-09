@@ -820,51 +820,72 @@ def get_product(product_id):
 
 # brands - string[]
 # colour - string []
-# price - [min(float), max(float)] both inclusive
+# min_price - float ALWAYS PASSED IN
+# max_price - float ALWAYS PASSED IN
 # size - string[]
 # type - string[]
 
-# price is always passed in, others are optional
-
 # case sensitive, look at db
 
-# @app.route('/api/product/filter', methods=['GET'])
-# def get_filtered_products():
-#     try:
+@app.route('/api/product/filter', methods=['GET'])
+def get_filtered_products():
+    try:
+        brands = request.args.getlist('brand')
+        print(brands)
+        sizes = request.args.getlist('size')
+        colours = request.args.getlist('colour')
+        types = request.args.getlist('type')
+        price_min = float(request.args.get('price_min', 0))
+        price_max = float(request.args.get('price_max', 0))
+        
+        print(price_min)
+        print(price_max)
 
-#         brand = request.args.getlist('brand')
-#         size = request.args.getlist('size')
-#         colour = request.args.getlist('colour')
-#         price = request.args.get('price')
-#         type = request.args.getlist('type')
+        sql_query = 'SELECT * FROM tothecloset."product" WHERE 1=1'
+        params = []
 
-#         query = 'SELECT * FROM tothecloset."product" WHERE 1=1'
-#         params = []
+        if brands:
+            sql_query += ' AND brand IN %s'
+            params.append(tuple(brands))
+        if sizes:
+            sql_query += ' AND size IN %s'
+            params.append(tuple(sizes))
+        if colours:
+            sql_query += ' AND colour IN %s'
+            params.append(tuple(colours))
+        if types:
+            sql_query += ' AND type IN %s'
+            params.append(tuple(types))
 
-#         with get_db_connection() as connection:
-#             with connection.cursor() as cursor:
-#                 cursor.execute(query, params)
-#                 rows = cursor.fetchall()
+        sql_query += ' AND price BETWEEN %s AND %s'
+        params.append(price_min)
+        params.append(price_max)
+        
+        print(sql_query)
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute(sql_query, params)
+                rows = cursor.fetchall()
 
-#                 if len(rows) == 0:
-#                     return jsonify({'message': 'No products found with the specified filters'}), 404
+                if len(rows) == 0:
+                    return jsonify({'message': 'No products found with the specified filters'}), 404
 
-#                 products = [{
-#                     'product_id': row[0], 
-#                     'product_name': row[1],
-#                     'brand': row[2], 
-#                     'size': row[3],
-#                     'colour': row[4],
-#                     'price': row[5],
-#                     'type': row[6],
-#                     'image_url': row[7],
-#                     'date_added': row[8]
-#                 } for row in rows]
+                products = [{
+                    'product_id': row[0], 
+                    'brand': row[1], 
+                    'size': row[2],
+                    'colour': row[3],
+                    'price': row[4],
+                    'type': row[5],
+                    'image_url': row[6],
+                    'date_added': row[7],
+                    'product_name': row[8]
+                } for row in rows]
 
-#         return jsonify({'products': products}), 200
+        return jsonify({'products': products}), 200
 
-#     except (Exception, psycopg2.Error) as error:
-#         return jsonify({'error': str(error)}), 500
+    except (Exception, psycopg2.Error) as error:
+        return jsonify({'error': str(error)}), 500
 
 
 # add one product
@@ -1060,7 +1081,7 @@ def get_rental_from_user_id(user_id):
 
 # add one rental
 @app.route('/api/rental', methods=['POST'])
-def create_address():
+def create_rental():
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
@@ -1114,7 +1135,7 @@ def get_return_from_user_id(user_id):
                 if len(rows) == 0:
                     return jsonify('No return found under user_id: ' + user_id), 404
                 
-                rentals = [{
+                returns = [{
                         'return_id': row[0], 
                         'user_id': row[1], 
                         'product_id': row[2],
@@ -1123,14 +1144,14 @@ def get_return_from_user_id(user_id):
                         'is_late': row[5]
                     } for row in rows]
                 
-        return jsonify(rentals), 200
+        return jsonify(returns), 200
 
     except (Exception, psycopg2.Error) as error:
         return jsonify({'error': str(error)}), 500
 
-# add one rental
-@app.route('/api/rental', methods=['POST'])
-def create_rental():
+# add one return
+@app.route('/api/return', methods=['POST'])
+def create_return():
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
@@ -1141,7 +1162,7 @@ def create_rental():
                 is_late = request.args.get('is_late')
 
                 cursor.execute(
-                    'INSERT INTO tothecloset."address" '
+                    'INSERT INTO tothecloset."return" '
                     '(user_id, product_id, return_date, confirmation_date, is_late) '
                     'VALUES (%s, %s, %s, %s, %s) RETURNING return_id',
                     (user_id, product_id, return_date, confirmation_date, is_late)
