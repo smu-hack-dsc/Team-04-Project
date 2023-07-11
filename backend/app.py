@@ -815,6 +815,58 @@ def delete_product(product_id):
     except (Exception, psycopg2.Error) as error:
         connection.rollback()
         return jsonify({"error": str(error)}), 500
+    
+# get products by type
+@app.route("/api/product/<type>", methods=["GET"])
+def get_product_by_type(type):
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT * FROM tothecloset."product"' "WHERE type = %s", (type))
+
+                rows = cursor.fetchall()
+
+                if len(rows) == 0:
+                    return jsonify("No prodct found under type: " + type), 404
+
+                products = [{"product_id": row[0], "product_name": row[1], "brand": row[2], "size": row[3], "colour": row[4], "price": row[5], "type": row[6], "image_url": row[7], "date_added": row[8]} for row in rows]
+
+        return jsonify(products), 200
+
+    except (Exception, psycopg2.Error) as error:
+        return jsonify({"error": str(error)}), 500
+
+# sort products by price
+@app.route("/api/product/sort", methods=["GET"])
+def sort_products_by_price():
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                sort_order = request.args.get('order', 'asc')
+
+                if sort_order == 'asc':
+                    cursor.execute('SELECT * FROM "product" ORDER BY price ASC')
+                else:
+                    cursor.execute('SELECT * FROM "product" ORDER BY price DESC')
+
+                rows = cursor.fetchall()
+
+                products = [
+                    {
+                        'product_id': row[0],
+                        'brand': row[1],
+                        'size': row[2],
+                        'colour': row[3],
+                        'price': row[4],
+                        'type': row[5]
+                    }
+                    for row in rows
+                ]
+
+        return jsonify(products), 200
+
+    except (Exception, psycopg2.Error) as error:
+        return jsonify({"error": str(error)}), 500
 
 
 ########## DB: product_availability
