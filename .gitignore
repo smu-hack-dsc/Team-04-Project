@@ -1,5 +1,5 @@
 # dependencies
-/tothecloset/node_modules
+node_modules
 /.pnp
 .pnp.js
 
@@ -7,11 +7,11 @@
 /coverage
 
 # next.js
-tothecloset/.next/
-tothecloset/out/
+.next/
+out/
 
 # production
-tothecloset/build
+build
 
 # misc
 .DS_Store
