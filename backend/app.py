@@ -272,11 +272,11 @@ def get_clothing_preference_from_user_id(user_id):
                     "user_id": row[0],
                     "height": row[1],
                     "weight": row[2],
-                    "waist": row[3],
-                    "shoulder_width": row[4],
-                    "hip": row[5],
-                    "top_fit": row[6],
-                    "bottom_fit": row[7],
+                    "top_fit": row[3],
+                    "bottom_fit": row[4],
+                    "shoulder_width": row[5],
+                    "hip": row[6],
+                    "waist": row[7],
                 }
 
         return jsonify(clothing_preference), 200
@@ -294,13 +294,13 @@ def create_clothing_preference():
                 user_id = request.args.get("user_id")
                 height = request.args.get("height")
                 weight = request.args.get("weight")
-                waist = request.args.get("waist")
-                shoulder_width = request.args.get("shoulder_width")
-                hip = request.args.get("hip")
                 top_fit = request.args.get("top_fit")
                 bottom_fit = request.args.get("bottom_fit")
+                shoulder_width = request.args.get("shoulder_width")
+                hip = request.args.get("hip")
+                waist = request.args.get("waist")
 
-                cursor.execute('INSERT INTO tothecloset."clothing_preference" ' "(user_id, height, weight, waist, shoulder_width, hip, top_fit, bottom_fit) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING user_id", (user_id, height, weight, waist, shoulder_width, hip, top_fit, bottom_fit))
+                cursor.execute('INSERT INTO tothecloset."clothing_preference" ' "(user_id, height, weight, top_fit, bottom_fit, shoulder_width, hip, waist) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING user_id", (user_id, height, weight, top_fit, bottom_fit, shoulder_width, hip, waist))
 
                 user_id = cursor.fetchone()[0]
 
@@ -323,13 +323,13 @@ def update_clothing_preference(user_id):
             with connection.cursor() as cursor:
                 height = request.args.get("height")
                 weight = request.args.get("weight")
-                waist = request.args.get("waist")
-                shoulder_width = request.args.get("shoulder_width")
-                hip = request.args.get("hip")
                 top_fit = request.args.get("top_fit")
-                bottom_fit = request.args.get("bottom_fit")
+                shoulder_width = request.args.get("bottom_fit")
+                bottom_fit = request.args.get("shoulder_width")
+                hip = request.args.get("hip")
+                waist = request.args.get("waist")
 
-                rows_affected = cursor.execute('UPDATE tothecloset."clothing_preference" SET ' "height = %s, weight = %s, " "waist = %s, shoulder_width = %s, hip = %s, " "top_fit = %s, bottom_fit = %s WHERE user_id = %s", (height, weight, waist, shoulder_width, hip, top_fit, bottom_fit, user_id))
+                rows_affected = cursor.execute('UPDATE tothecloset."clothing_preference" SET ' "height = %s, weight = %s, top_fit = %s, bottom_fit = %s, shoulder_width = %s, hip = %s, waist = %s WHERE user_id = %s", (height, weight, top_fit, bottom_fit, shoulder_width, hip, waist, user_id))
 
                 if rows_affected == 0:
                     return jsonify({"error": "Clothing preference not found for user: " + user_id}), 404
@@ -379,7 +379,7 @@ def get_deliveries():
                 if len(rows) == 0:
                     return jsonify("No deliveries found"), 404
 
-                deliveries = [{"delivery_id": row[0], "user_id": row[1], "address_id": row[2], "delivery_date": row[3], "delivery_status": row[4]} for row in rows]
+                deliveries = [{"delivery_id": row[0], "address_id": row[1], "delivery_date": row[2], "delivery_status": row[3], "user_id": row[4]} for row in rows]
 
         return jsonify(deliveries), 200
 
@@ -400,7 +400,7 @@ def get_delivery_from_user_id(user_id):
                 if len(rows) == 0:
                     return jsonify("No deliveries found under user_id: " + user_id), 404
 
-                deliveries = [{"delivery_id": row[0], "user_id": row[1], "address_id": row[2], "delivery_date": row[3], "delivery_status": row[4]} for row in rows]
+                deliveries = [{"delivery_id": row[0], "address_id": row[1], "delivery_date": row[2], "delivery_status": row[3], "user_id": row[4]}  for row in rows]
 
         return jsonify(deliveries), 200
 
@@ -414,12 +414,12 @@ def create_delivery():
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                user_id = request.args.get("user_id")
                 address_id = request.args.get("address_id")
                 delivery_date = request.args.get("delivery_date")
                 delivery_status = request.args.get("delivery_status")
+                user_id = request.args.get("user_id")
 
-                cursor.execute('INSERT INTO tothecloset."delivery" ' "(user_id, address_id, delivery_date, delivery_status) " "VALUES (%s, %s, %s, %s) RETURNING delivery_id", (user_id, address_id, delivery_date, delivery_status))
+                cursor.execute('INSERT INTO tothecloset."delivery" ' "(address_id, delivery_date, delivery_status, user_id) " "VALUES (%s, %s, %s, %s) RETURNING delivery_id", (address_id, delivery_date, delivery_status, user_id))
 
                 new_delivery_id = cursor.fetchone()[0]
 
@@ -440,12 +440,12 @@ def update_delivery(delivery_id):
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                user_id = request.args.get("user_id")
                 address_id = request.args.get("address_id")
                 delivery_date = request.args.get("delivery_date")
                 delivery_status = request.args.get("delivery_status")
+                user_id = request.args.get("user_id")
 
-                rows_affected = cursor.execute('UPDATE tothecloset."delivery" SET ' "user_id = %s, address_id = %s, " "delivery_date = %s, delivery_status = %s WHERE delivery_id = %s", (user_id, address_id, delivery_date, delivery_status, delivery_id))
+                rows_affected = cursor.execute('UPDATE tothecloset."delivery" SET ' "address_id = %s, delivery_date = %s, delivery_status = %s, user_id = %s WHERE delivery_id = %s", (address_id, delivery_date, delivery_status, user_id, delivery_id))
 
                 if rows_affected == 0:
                     return jsonify({"error": "Delivery not found"}), 404
@@ -504,6 +504,7 @@ def get_payments():
                         "cvc": row[4],
                         "expiry_year": row[5],
                         "expiry_month": row[6],
+                        "is_default": row[7]
                     }
                     for row in rows
                 ]
@@ -536,6 +537,7 @@ def get_payment_from_user_id(user_id):
                         "cvc": row[4],
                         "expiry_year": row[5],
                         "expiry_month": row[6],
+                        "is_default": row[7]
                     }
                     for row in rows
                 ]
@@ -558,8 +560,9 @@ def create_payment():
                 cvc = request.args.get("cvc")
                 expiry_year = request.args.get("expiry_year")
                 expiry_month = request.args.get("expiry_month")
+                is_default = request.args.get("is_default")
 
-                cursor.execute('INSERT INTO tothecloset."payment" ' "(user_id, cardholder_name, card_number, cvc, expiry_year, expiry_month) " "VALUES (%s, %s, %s, %s, %s, %s) RETURNING payment_id", (user_id, cardholder_name, card_number, cvc, expiry_year, expiry_month))
+                cursor.execute('INSERT INTO tothecloset."payment" ' "(user_id, cardholder_name, card_number, cvc, expiry_year, expiry_month, is_default) " "VALUES (%s, %s, %s, %s, %s, %s) RETURNING payment_id", (user_id, cardholder_name, card_number, cvc, expiry_year, expiry_month, is_default))
 
                 new_payment_id = cursor.fetchone()[0]
 
@@ -586,8 +589,9 @@ def update_payment(payment_id):
                 cvc = request.args.get("cvc")
                 expiry_year = request.args.get("expiry_year")
                 expiry_month = request.args.get("expiry_month")
+                is_default = request.args.get("is_default")
 
-                rows_affected = cursor.execute('UPDATE tothecloset."payment" SET ' "user_id = %s, cardholder_name = %s, " "card_number = %s, cvc = %s, expiry_year = %s, " "expiry_month = %s WHERE payment_id = %s", (user_id, cardholder_name, card_number, cvc, expiry_year, expiry_month, payment_id))
+                rows_affected = cursor.execute('UPDATE tothecloset."payment" SET user_id = %s, cardholder_name = %s, card_number = %s, cvc = %s, expiry_year = %s, expiry_month = %s, is_default=%s WHERE payment_id = %s', (user_id, cardholder_name, card_number, cvc, expiry_year, expiry_month, is_default, payment_id))
 
                 if rows_affected == 0:
                     return jsonify({"error": "Payment not found"}), 404
@@ -637,7 +641,7 @@ def get_products():
                 if len(rows) == 0:
                     return jsonify("No products found"), 404
 
-                products = [{"product_id": row[0], "product_name": row[1], "brand": row[2], "size": row[3], "colour": row[4], "price": row[5], "type": row[6], "image_url": row[7], "date_added": row[8]} for row in rows]
+                products = [{"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "sizing_chart": row[9], "category": row[10]} for row in rows]
 
         return jsonify(products), 200
 
@@ -658,7 +662,7 @@ def get_product(product_id):
                 if len(row) == 0:
                     return jsonify("No product found: " + product_id), 404
 
-                product = {"product_id": row[0], "product_name": row[1], "brand": row[2], "size": row[3], "colour": row[4], "price": row[5], "type": row[6], "image_url": row[7], "date_added": row[8]}
+                product = {"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "sizing_chart": row[9], "category": row[10]}
 
         return jsonify(product), 200
 
@@ -677,20 +681,15 @@ def get_product(product_id):
 
 # case sensitive, look at db
 
-
 @app.route("/api/product/filter", methods=["GET"])
 def get_filtered_products():
     try:
         brands = request.args.getlist("brand")
-        print(brands)
         sizes = request.args.getlist("size")
         colours = request.args.getlist("colour")
         types = request.args.getlist("type")
         price_min = float(request.args.get("price_min", 0))
         price_max = float(request.args.get("price_max", 0))
-
-        print(price_min)
-        print(price_max)
 
         sql_query = 'SELECT * FROM tothecloset."product" WHERE 1=1'
         params = []
@@ -721,21 +720,12 @@ def get_filtered_products():
                 if len(rows) == 0:
                     return jsonify({"message": "No products found with the specified filters"}), 404
 
-                products = [{"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8]} for row in rows]
+                products = [{"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "sizing_chart": row[9], "category": row[10]} for row in rows]
 
         return jsonify({"products": products}), 200
 
     except (Exception, psycopg2.Error) as error:
         return jsonify({"error": str(error)}), 500
-
-
-# Health check
-@app.route(
-    "/health",
-)
-def health_check():
-    return jsonify({"message": "Helth"}), 200
-
 
 # add one product
 @app.route("/api/product", methods=["POST"])
@@ -743,7 +733,7 @@ def create_product():
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                product_name = request.args.get("product_name")
+
                 brand = request.args.get("brand")
                 size = request.args.get("size")
                 colour = request.args.get("colour")
@@ -751,8 +741,11 @@ def create_product():
                 type = request.args.get("type")
                 image_url = request.args.get("image_url")
                 date_added = request.args.get("date_added")
+                product_name = request.args.get("product_name")
+                sizing_chart = request.args.get("sizing_chart")
+                category = request.args.get("category")
 
-                cursor.execute('INSERT INTO tothecloset."address" ' "(product_name, brand, size, colour, price, type, image_url, date_added) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING product_id", (product_name, brand, size, colour, price, type, image_url, date_added))
+                cursor.execute('INSERT INTO tothecloset."address" ' "(brand, size, colour, price, type, image_url, date_added, product_name, sizing_chart, category) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING product_id", (brand, size, colour, price, type, image_url, date_added, product_name, sizing_chart, category))
 
                 new_product_id = cursor.fetchone()[0]
 
@@ -773,7 +766,7 @@ def update_product(product_id):
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                product_name = request.args.get("product_name")
+                
                 brand = request.args.get("brand")
                 size = request.args.get("size")
                 colour = request.args.get("colour")
@@ -781,8 +774,11 @@ def update_product(product_id):
                 type = request.args.get("type")
                 image_url = request.args.get("image_url")
                 date_added = request.args.get("date_added")
+                product_name = request.args.get("product_name")
+                sizing_chart = request.args.get("sizing_chart")
+                category = request.args.get("category")
 
-                rows_affected = cursor.execute('UPDATE tothecloset."address" SET ' "product_name = %s, brand = %s, " "size = %s, colour = %s, price = %s, " "type = %s, image_url = %s" "date_added = %s WHERE product_id = %s", (product_name, brand, size, colour, price, type, image_url, date_added, product_id))
+                rows_affected = cursor.execute('UPDATE tothecloset."address" SET brand = %s, size = %s, colour = %s, price = %s, type = %s, image_url = %s" "date_added = %s, product_name = %s, sizing_chart = %s, category =  %s WHERE product_id = %s', (brand, size, colour, price, type, image_url, date_added, product_name, sizing_chart, category, product_id))
 
                 if rows_affected == 0:
                     return jsonify({"error": "Product not found"}), 404
@@ -829,7 +825,7 @@ def get_product_by_type(type):
                 if len(rows) == 0:
                     return jsonify("No prodct found under type: " + type), 404
 
-                products = [{"product_id": row[0], "product_name": row[1], "brand": row[2], "size": row[3], "colour": row[4], "price": row[5], "type": row[6], "image_url": row[7], "date_added": row[8]} for row in rows]
+                products = [{"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "sizing_chart": row[9], "category": row[10]} for row in rows]
 
         return jsonify(products), 200
 
@@ -853,12 +849,7 @@ def sort_products_by_price():
 
                 products = [
                     {
-                        'product_id': row[0],
-                        'brand': row[1],
-                        'size': row[2],
-                        'colour': row[3],
-                        'price': row[4],
-                        'type': row[5]
+                        "product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "sizing_chart": row[9], "category": row[10]
                     }
                     for row in rows
                 ]
@@ -986,7 +977,7 @@ def get_return_from_user_id(user_id):
                 if len(rows) == 0:
                     return jsonify("No return found under user_id: " + user_id), 404
 
-                returns = [{"return_id": row[0], "user_id": row[1], "product_id": row[2], "return_date": row[3], "confirmation_date": row[4], "is_late": row[5]} for row in rows]
+                returns = [{"return_id": row[0], "user_id": row[1], "return_date": row[2], "confirmation_date": row[3], "is_late": row[4], "product_id": row[5]} for row in rows]
 
         return jsonify(returns), 200
 
@@ -1001,12 +992,12 @@ def create_return():
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 user_id = request.args.get("user_id")
-                product_id = request.args.get("product_id")
                 return_date = request.args.get("return_date")
                 confirmation_date = request.args.get("confirmation_date")
                 is_late = request.args.get("is_late")
+                product_id = request.args.get("product_id")
 
-                cursor.execute('INSERT INTO tothecloset."return" ' "(user_id, product_id, return_date, confirmation_date, is_late) " "VALUES (%s, %s, %s, %s, %s) RETURNING return_id", (user_id, product_id, return_date, confirmation_date, is_late))
+                cursor.execute('INSERT INTO tothecloset."return" ' "(user_id, return_date, confirmation_date, is_late, product_id) " "VALUES (%s, %s, %s, %s, %s) RETURNING return_id", (user_id, return_date, confirmation_date, is_late, product_id))
 
                 new_return_id = cursor.fetchone()[0]
 
@@ -1030,13 +1021,14 @@ def create_transaction():
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                user_id = request.args.get("user_id")
+                
                 transaction_date = request.args.get("transaction_date")
-                payment_id = request.args.get("payment_id")
+                user_id = request.args.get("user_id")
                 payment_method = request.args.get("payment_method")
                 payment_amount = request.args.get("payment_amount")
+                payment_id = request.args.get("payment_id")
 
-                cursor.execute('INSERT INTO tothecloset."transaction" ' "(user_id, transaction_date, payment_id, payment_method, payment_amount) " "VALUES (%s, %s, %s, %s, %s) RETURNING transaction_id", (user_id, transaction_date, payment_id, payment_method, payment_amount))
+                cursor.execute('INSERT INTO tothecloset."transaction" ' "(transaction_date, user_id, payment_method, payment_amount, payment_id) " "VALUES (%s, %s, %s, %s, %s) RETURNING transaction_id", (user_id, transaction_date, payment_id, payment_method, payment_amount))
 
                 new_transaction_id = cursor.fetchone()[0]
 
@@ -1402,4 +1394,4 @@ def recommend(category, sizing_chart, user_detail):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=5000)
