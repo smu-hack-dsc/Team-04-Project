@@ -3,16 +3,7 @@ import { deleteAppClientCache } from "next/dist/server/lib/render-server";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {Playfair_Display} from 'next/font/google'
-import { Heart } from 'react-bootstrap-icons';
-import { Person } from "react-bootstrap-icons"
-import { Bag } from "react-bootstrap-icons"
-import { Search } from "react-bootstrap-icons"
-import { List } from "react-bootstrap-icons"
-import { X } from "react-bootstrap-icons"
-import { Plus } from "react-bootstrap-icons"
-import { Dash } from "react-bootstrap-icons"
-import { Upload } from "react-bootstrap-icons"
-import { Camera} from "react-bootstrap-icons"
+import { Heart,  Person, Bag, Search, List, X, Plus, Dash, Upload, Camera } from 'react-bootstrap-icons';
 import { twMerge } from "tailwind-merge"
 
 const playfair = Playfair_Display({ subsets: ['latin'], weight :'400'})
@@ -94,7 +85,7 @@ const Navbar = () => {
                 </div>
                 <div className={
                     menuOpen
-                    ? "fixed left-0 top-0 w-[50%] lg:hidden h-screen border-r-1 border border-grey bg-[#ffffff] p-7 ease-in duration-500 scroll-smooth overflow-y-auto z-10"
+                    ? "fixed left-0 top-0 w-[50%] lg:hidden h-screen bg-[#ffffff] p-7 ease-in duration-500 scroll-smooth overflow-y-auto z-10"
                     : "fixed left-[-100%] top-0 p-8 ease-in duration-500"
                 }>
                     <div className="flex w-full items-center justify-end">
@@ -105,9 +96,9 @@ const Navbar = () => {
                     <div className="flex-col">
                         <ul>
                             <li className="flex justify-between outline outline-1 rounded-lg py-1 px-2 mb-4 mt-6 w-full">
-                                <Search size={14} className="ml-2 mr-3 self-center"/>
+                                {/* <Search size={14} className="ml-2 mr-3 self-center"/> */}
                                 <input type="text" name="search" placeholder="Search ..." className="text-xs outline-none border-none focus:outline-none w-[70px]"/>
-                                <label>
+                                <label className="flex items-center">
                                     <Upload size={15} className="mx-2 hidden sm:inline"/>
                                     <Camera size={16} className="mx-2 inline sm:hidden"/>
                                     <input type="file" accept="image/*" name="search" className="hidden"/>
@@ -128,7 +119,7 @@ const Navbar = () => {
                             <div className="flex justify-between">
                                 <Link href="/rent">
                                     <li className="py-2">
-                                        <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Rent Apparel</span>
+                                        <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Rent</span>
                                     </li>
                                 </Link>
                                 <div className="flex items-center">
@@ -374,9 +365,9 @@ const Navbar = () => {
                             ? "flex justify-between outline outline-1 rounded-lg py-1 px-2 w-52"
                             : "hidden"
                         }>
-                            <Search size={15} className="ml-2 mr-3"/>
-                            <input type="text" name="search" placeholder="Search ..." className="text-xs focus:outline-none"/>
-                            <label>
+                            {/* <Search size={15} className="ml-2 mr-3"/> */}
+                            <input type="text" name="search" placeholder="Search ..." className="text-xs focus:outline-none border-none"/>
+                            <label className="flex items-center">
                                 <Upload size={15} className="mx-2"/>
                                 <input type="file" name="search" className="hidden"/>
                             </label>

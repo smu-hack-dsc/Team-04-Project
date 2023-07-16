@@ -45,12 +45,13 @@ const RentalCard: FC<RentalCardProps> = ({ deliveryStatus, deliveryDate}) => {
             </div>
             <div className='flex flex-cols justify-between'>
                 <div className='p-3'>
-                    <p className='h-28 w-20 bg-grey text-grey'>wjkf</p>
+                    <p className='h-30 w-20 bg-grey text-grey'>wjkf</p>
                 </div>
                 <div className='p-3 flex items-center'>
                     <div>
                         <p className='uppercase text-sm'>Brand over here</p>
                         <p className='text-xs text-midgrey mt-2'>Item name over here</p>
+                        <p className='text-xs text-midgrey mt-2'>Colour: Black</p>
                         <p className='text-xs text-midgrey mt-2'>Size: L</p>
                     </div>
                 </div>
