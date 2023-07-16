@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { FaFacebookF, FaInstagram, FaPinterest, FaYoutube, FaCopyright} from "react-icons/fa";
-export default function Page() {
+
+const Footer = () => {
     const footerStyle = {
         border: '1px solid black',
         fontFamily: 'Lato, sans-serif',
@@ -144,3 +145,5 @@ export default function Page() {
     );
 
 }
+
+export default Footer
