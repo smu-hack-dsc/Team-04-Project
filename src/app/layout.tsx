@@ -19,10 +19,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={lato.className}>
         <Navbar/>
-        <main>
+        <main className='min-h-screen'>
           {children}
         </main> 
-        {/* <Footer/>    */}
+        <Footer/> 
       </body>
     </html>
   )
