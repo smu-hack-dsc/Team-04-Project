@@ -70,7 +70,7 @@ export default function Page() {
                 <div>-0.00 SGD</div>
               </div>
               <div className="flex flex-cols justify-between mb-5 ">
-                <input type="text" name="voucher" placeholder="Enter Voucher Code" className="focus:outline-none focus:border-none text-sm w-full border-[1px] me-3"/>
+                <input type="text" name="voucher" placeholder="Enter Voucher Code" className="focus:border-grey focus:border focus:ring-0 text-sm w-full border-[1px] me-3"/>
                 <div className=''>
                   <button className="box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
                     <div className="uppercase flex items-center justify-center">

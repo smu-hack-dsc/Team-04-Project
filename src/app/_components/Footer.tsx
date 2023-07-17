@@ -1,146 +1,48 @@
-import * as React from 'react'
-import { FaFacebookF, FaInstagram, FaPinterest, FaYoutube, FaCopyright} from "react-icons/fa";
+import React from "react";
+import { Facebook, Instagram, Pinterest, Youtube } from "react-bootstrap-icons"
+import { BsCCircle } from "react-icons/bs";
 
 const Footer = () => {
-    const footerStyle = {
-        border: '1px solid black',
-        fontFamily: 'Lato, sans-serif',
-        height: 'fit-content',
-        position: 'absolute',
-        bottom: '0',
-        width: '100%',
-        padding: '30px 100px',
-        display: 'flex',
-        flexDirection: 'row',
-    }
-
-    const aboutStyle = {
-        alignItems: 'left',
-        textAlign: 'left',
-        display: 'flex',
-        flexDirection: 'column',
-    }
-
-    const buttonStyle = {
-        alignItems: 'left',
-        marginBottom: '10px',
-        width: 'fit-content',
-        textAlign: 'left',
-    }
-
-    const customerCareStyle = {
-        alignItems: 'left',
-        textAlign: 'left',
-        display: 'flex',
-        flexDirection: 'column',
-        marginLeft: '180px',
-    }
-
-    const findUsStyle = {
-        alignItems: 'left',
-        textAlign: 'left',
-        display: 'flex',
-        flexDirection: 'column',
-        marginLeft: '180px',
-    }
-
-    const iconButtonStyle = {
-        width: 'fit-content',
-        height: 'fit-content',
-        display: 'flex',
-        flexDirection: 'row',
-        marginRight: '20px',
-        color: '#5A5A5A',
-    }
-
-    const newsletterStyle = {
-        alignItems: 'left',
-        textAlign: 'left',
-        display: 'flex',
-        flexDirection: 'column',
-        marginLeft: '180px',
-    }
-
-    const formStyle = {
-        // padding: '20px',
-    };
-
-
-    const inputStyle = {
-        border: '0.5px solid black',
-        padding: '5px 10px ',
-        width: '25vh',
-        fontSize:'0.75rem'
-    }
-
-    const subscribeStyle ={
-        textAlign:'center',
-        padding:'10px 30px',
-        width:'fit-content',
-        height:'fit-content',
-        border :'1px solid #5A5A5A',
-        fontSize: '0.75rem',
-        fontWeight:'120',
-        marginTop:'15px'
-    }
-
-    const copyrightStyle={
-        position:'absolute',
-        bottom: '0',
-        alignItems:'left',
-        display:'flex',
-        flexDirection:'row',
-        fontSize:'0.75rem',
-        fontWeight:'100'
-        
-    }    
+    
     return (
-        <div style={footerStyle}>
-            <div className='about' style={aboutStyle}>
-                <p style={{ color: 'grey', marginBottom: '15px' }}>ABOUT</p>
-                <button style={buttonStyle}>About Us</button>
-                <button style={buttonStyle}>Contact Us</button>
-            </div>
-            <div className='customerCare' style={customerCareStyle}>
-                <p style={{ color: 'grey', marginBottom: '15px' }}>CUSTOMER CARE</p>
-                <button style={buttonStyle}>Terms & Conditions</button>
-                <button style={buttonStyle}>Return & Delivery Information</button>
-                <button style={buttonStyle}>Track Your Order</button>
-                <button style={buttonStyle}>Privacy Policy</button>
-            </div>
-            <div className='findUs' style={findUsStyle}>
-                <p style={{ color: 'grey', marginBottom: '15px' }}>FIND US </p>
-                <div className='icons' style={iconButtonStyle} >
-                    <button className='facebook' style={iconButtonStyle}>
-                        <FaFacebookF />
-                    </button>
-                    <button className='instagram' style={iconButtonStyle}>
-                        <FaInstagram />
-                    </button>
-                    <button className='pinterest' style={iconButtonStyle}>
-                        <FaPinterest />
-                    </button>
-                    <button className='youtube' style={iconButtonStyle}>
-                        <FaYoutube />
+        <div className="bg-white p-8 z-50 border-t border-grey border-1">
+            <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4'>
+                <div>
+                    <div className='text-darkgrey py-2 uppercase'>About</div>
+                    <div className='py-2'>About Us</div>
+                    <div className='py-2'>Contact Us</div>
+                </div>
+                <div>
+                    <div className='text-darkgrey py-2 uppercase'>Customer Care</div>
+                    <div className='py-2'>Terms & Conditions</div>
+                    <div className='py-2'>Return & Delivery Information</div>
+                    <div className='py-2'>Track your Orders</div>
+                    <div className='py-2'>Privacy Policy</div>
+                </div>
+                <div>
+                    <div className='text-darkgrey py-2 uppercase'>Find Us</div>
+                    <div className='flex py-2'>
+                        <Facebook className="me-6"/>
+                        <Instagram className="me-6"/>
+                        <Pinterest className="me-6"/>
+                        <Youtube/>
+                    </div>
+                </div>
+                <div>
+                    <div className='text-darkgrey py-2 uppercase'>Newsletter</div>
+                    <div className='py-2'>Sign up for 10% on your next order *</div>
+                    <input type="text" placeholder="Enter your email address" className="p-2 focus:border-grey focus:border focus:ring-0 my-2 text-sm w-full border-grey border"/>
+                    <button className="box-border text-sm my-2 py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
+                        <div className="uppercase flex items-center justify-center">
+                            Subscribe
+                        </div>
                     </button>
                 </div>
             </div>
-            <div className='newsletter' style={newsletterStyle}>
-                <p style={{ color: 'grey', marginBottom: '15px' }}>NEWSLETTER</p>
-                <p style={{ color: 'grey', marginBottom: '15px', fontSize: '1rem' }}>Sign up for 10% off your next order*</p>
-                <div className='emailInput'>
-                    <form className='emailInput' style={formStyle}>
-                        <input type="email" id='email' name='email' placeholder='Enter your email address' style={inputStyle} />
-                    </form>
-                </div>
-                <button className='subscribeButton' style={subscribeStyle}>
-                    SUBSCRIBE
-                </button>
+            <div className="flex mt-10">
+                <span className="flex items-center pe-3"><BsCCircle/> </span>
+                <span className="text-xs uppercase text-center"> 2023 to the closet</span>
             </div>
-        <div className='copyright' style={copyrightStyle}>
-            <FaCopyright/> 
-            <p style={{marginLeft:'10px'}}>2023 TOTHECLOSET</p>
-        </div>
         </div>
     );
 
