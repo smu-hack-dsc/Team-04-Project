@@ -7,19 +7,19 @@ const Footer = () => {
     return (
         <div className="bg-white p-8 z-50 border-t border-grey border-1">
             <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4'>
-                <div>
+                <div className="pb-5">
                     <div className='text-darkgrey py-2 uppercase'>About</div>
                     <div className='py-2'>About Us</div>
                     <div className='py-2'>Contact Us</div>
                 </div>
-                <div>
+                <div className="pb-5">
                     <div className='text-darkgrey py-2 uppercase'>Customer Care</div>
                     <div className='py-2'>Terms & Conditions</div>
                     <div className='py-2'>Return & Delivery Information</div>
                     <div className='py-2'>Track your Orders</div>
                     <div className='py-2'>Privacy Policy</div>
                 </div>
-                <div>
+                <div className="pb-5">
                     <div className='text-darkgrey py-2 uppercase'>Find Us</div>
                     <div className='flex py-2'>
                         <Facebook className="me-6"/>
@@ -28,7 +28,7 @@ const Footer = () => {
                         <Youtube/>
                     </div>
                 </div>
-                <div>
+                <div className="pb-5">
                     <div className='text-darkgrey py-2 uppercase'>Newsletter</div>
                     <div className='py-2'>Sign up for 10% on your next order *</div>
                     <input type="text" placeholder="Enter your email address" className="p-2 focus:border-grey focus:border focus:ring-0 my-2 text-sm w-full border-grey border"/>

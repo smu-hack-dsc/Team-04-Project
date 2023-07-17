@@ -6,7 +6,11 @@ import { CheckCircleFill } from "react-bootstrap-icons";
 const AddressPage = () => {
 
     return (
-    <div className='pt-16'>
+    <div className='py-16'>
+
+      <div className='flex justify-center mb-10 mt-8'>
+        <span className="text-2xl uppercase tracking-[2.4px]">Sign Up</span>
+      </div>
       <div className="flex flex-rows justify-center my-10 mx-6 text-xs sm:text-base">
 
         <div>Personal Particulars</div>
@@ -33,29 +37,29 @@ const AddressPage = () => {
 
           <div className='p-2'>
             <p>Address 1</p>
-            <input type="text" name="address2" className='outline-none border border-midgrey border-1 w-full h-7 p-2'/>
+            <input type="text" name="address2" className='outline-none border border-midgrey border-1 w-full h-7 p-2 focus:ring-0 focus:border-grey focus:border-1'/>
           </div>
 
           <div className='p-2'>
             <p>Address 2</p>
-            <input type="text" name="address2" className='outline-none border border-midgrey border-1 w-full h-7 p-2'/>
+            <input type="text" name="address2" className='outline-none border border-midgrey border-1 w-full h-7 p-2 focus:ring-0 focus:border-grey focus:border-1'/>
           </div>
 
           <div className='grid grid-cols-1 md:grid-cols-2 w-full'>
             <div className='p-2'>
               <p>City</p>
-              <input type="text" name="city" className='outline-none border border-midgrey border-1 w-full h-7 p-2'/>
+              <input type="text" name="city" className='outline-none border border-midgrey border-1 w-full h-7 p-2 focus:ring-0 focus:border-grey focus:border-1'/>
             </div>
 
             <div className='p-2'>
               <p>State</p>
-              <input type="text" name="state" className='outline-none border border-midgrey border-1 w-full h-7 p-2'/>
+              <input type="text" name="state" className='outline-none border border-midgrey border-1 w-full h-7 p-2 focus:ring-0 focus:border-grey focus:border-1'/>
             </div>
           </div>
 
           <div className='p-2'>
             <p>Postal Code</p>
-            <input type="number" name="postalCode" className='outline-none border border-midgrey border-1 w-full h-7 p-2'/>
+            <input type="number" name="postalCode" className='outline-none border border-midgrey border-1 w-full h-7 p-2 focus:ring-0 focus:border-grey focus:border-1'/>
           </div>
 
         </div>
