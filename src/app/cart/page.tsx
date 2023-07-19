@@ -5,7 +5,7 @@ import CartItemSmViewport from "../_components/CartItemSmViewport";
 
 export default function Page() {
   
-  var numOfItems = 0; // get count after axios call
+  var numOfItems = 1; // get count after axios call
 
   return (
     <div className="py-16 px-8">

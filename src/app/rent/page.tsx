@@ -1,5 +1,5 @@
 'use client';
-import BrowsingCard from "../_components/browsingCard";
+import BrowsingCard from "../_components/BrowsingCard";
 import { Fragment, useState } from 'react';
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
@@ -136,7 +136,7 @@ const gridClass = `grid grid-cols-${cols} gap-x-${xgap} gap-y-10 sm:grid-cols-${
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Items className="absolute right-0 z-10 mt-2 w-40 origin-top-right bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <div className="py-1">
                     {sortOptions.map((option) => (
                       <Menu.Item key={option.name}>
@@ -177,7 +177,7 @@ const gridClass = `grid grid-cols-${cols} gap-x-${xgap} gap-y-10 sm:grid-cols-${
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items static className="absolute right-0 z-10 mt-2 w-60 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items static className="absolute right-0 z-10 mt-2 w-60 origin-top-right bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
               {filtersOptions.map((option) => (
                 <Menu.Item key={option.id}>
@@ -237,7 +237,7 @@ const gridClass = `grid grid-cols-${cols} gap-x-${xgap} gap-y-10 sm:grid-cols-${
                                                 type="number"
                                                 id="FilterPriceFrom"
                                                 placeholder="From"
-                                                className="w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                                                className="w-full border-gray-200 shadow-sm sm:text-sm"
                                               />
                                             </label>
 
@@ -248,7 +248,7 @@ const gridClass = `grid grid-cols-${cols} gap-x-${xgap} gap-y-10 sm:grid-cols-${
                                                 type="number"
                                                 id="FilterPriceTo"
                                                 placeholder="To"
-                                                className="w-full rounded-md border-gray-200 shadow-sm sm:text-sm"
+                                                className="w-full border-gray-200 shadow-sm sm:text-sm"
                                               />
                                             </label>
                                           </div>

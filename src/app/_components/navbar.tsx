@@ -392,40 +392,40 @@ const Navbar = () => {
                 <div>
                     <p className="text-darkgrey py-2">MEN</p>
                     {menOptionsArr.map((item, index) => (
-                        <Link href="">
-                            <p key={index} className="py-1">{item}</p>
+                        <Link href="" key={index}>
+                            <p className="py-1">{item}</p>
                         </Link>
                     ))}
                 </div>
                 <div>
                     <p className="text-darkgrey py-2">WOMEN</p>
                     {womenFirstCol.map((item, index) => (
-                        <Link href="">
-                            <p key={index} className="py-1">{item}</p>
+                        <Link href="" key={index}>
+                            <p className="py-1">{item}</p>
                         </Link>
                     ))}
                 </div>
                 <div>
                     <p className="text-white py-2">WHITE TEXT</p>
                     {womenSecCol.map((item, index) => (
-                        <Link href="">
-                            <p key={index} className="py-1">{item}</p>
+                        <Link href="" key={index}>
+                            <p className="py-1">{item}</p>
                         </Link>
                     ))}
                 </div>
                 <div>
                     <p className="text-darkgrey py-2">OCCASIONS</p>
                     {occasionsOptionsArr.map((item, index) => (
-                        <Link href="">
-                            <p key={index} className="py-1">{item}</p>
+                        <Link href="" key={index}>
+                            <p className="py-1">{item}</p>
                         </Link>
                     ))}
                 </div>
                 <div>
                     <p className="text-darkgrey py-2">COLLECTIONS</p>
                     {collectionsOptionsArr.map((item, index) => (
-                        <Link href="">
-                            <p key={index} className="py-1">{item}</p>
+                        <Link href="" key={index}>
+                            <p className="py-1">{item}</p>
                         </Link>
                     ))}
                 </div>
@@ -436,8 +436,8 @@ const Navbar = () => {
                 : "hidden"
             }>
                 {accDetailsOptionsArr.map((item, index) => (
-                        <Link href="">
-                            <p key={index} className="py-1">{item}</p>
+                        <Link href="" key={index}>
+                            <p className="py-1">{item}</p>
                         </Link>
                     ))}
             </div>

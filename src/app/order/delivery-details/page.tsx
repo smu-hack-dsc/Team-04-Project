@@ -5,20 +5,19 @@ import { CheckCircleFill } from "react-bootstrap-icons";
 
 const Page = () => {
   return (
-    <section className="fontlato">
-      <div className="h-20 bg-gray-200"></div> {/* Navigation Bar Section */}
+    <div className="py-16">
 
       {/* Progress bar */}
       <div className="flex flex-rows justify-center my-10 mx-6 text-xs sm:text-base">
         <div>Shipping</div>
 
         <div className="flex items-center">
-          <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
-          <CheckCircleFill className="text-midgrey" />
-          <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
+          <hr className="w-6 inline-block align-middle text-black mx-2" />
+          <CheckCircleFill className="text-black" />
+          <hr className="w-6 inline-block align-middle text-black mx-2" />
         </div>
 
-        <div className="flex items-center text-midgrey">Review</div>
+        <div className="flex items-center text-black">Review</div>
 
         <div className="flex items-center">
           <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
@@ -29,12 +28,12 @@ const Page = () => {
         <div className="text-midgrey">Payment</div>
       </div>
 
-      <section className="mx-40 mt-8 flex">
+      <div className="mx-40 mt-8 flex">
 
         {/* Delivery & Return */}
         <div className="w-1/2 pr-2 pt-4">
         <div className="flex items-center">
-            <img src={Icon3.src} alt="Icon 3" className="h-6 w-6 mr-2" />
+            <img src="/images/3-circle.svg" alt="Icon 3" className="h-6 w-6 mr-2" />
             <p className="text">DELIVERY & RETURN</p>
           </div>
 
@@ -85,7 +84,7 @@ const Page = () => {
           </div>
         </div>
       
-      </section>
+      </div>
   
       {/* Button */}
       <div className="flex justify-center"> {/* Centering wrapper */}
@@ -97,7 +96,7 @@ const Page = () => {
         </button>
       </div>
 
-    </section>
+    </div>
   );
 };
 
