@@ -31,15 +31,15 @@ const Page = () => {
   return (
     <div className="py-16">
       <div className="flex flex-rows justify-center my-10 mx-6 text-xs sm:text-base">
-        <div>Shipping</div>
+        <div>Cart</div>
 
         <div className="flex items-center">
-          <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
-          <CheckCircleFill className="text-midgrey" />
-          <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
+          <hr className="w-6 inline-block align-middle text-black mx-2" />
+          <CheckCircleFill className="text-black" />
+          <hr className="w-6 inline-block align-middle text-black mx-2" />
         </div>
 
-        <div className="flex items-center text-midgrey">Review</div>
+        <div className="flex items-center text-black">Shipping</div>
 
         <div className="flex items-center">
           <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
@@ -173,14 +173,23 @@ const Page = () => {
         </div>
       </div>
 
-      {/* Button */}
-      <Link href="/order/delivery-details" className='flex justify-center m-4 text-base'>
-        <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
-          <div className="uppercase flex items-center justify-center">
-            Continue
-          </div>
-        </button>
-      </Link>
+      <div className='flex flex-cols justify-center'>
+        <Link href="/cart" className='m-4'>
+          <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black bg-black text-white">
+            <div className="uppercase flex items-center justify-center">
+              Back
+            </div>
+          </button>
+        </Link>
+
+        <Link href="/order/payment-details" className='m-4'>
+          <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
+            <div className="uppercase flex items-center justify-center">
+              Continue
+            </div>
+          </button>
+        </Link>
+      </div>
     </div>
   );
 };

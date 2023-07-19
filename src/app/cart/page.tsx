@@ -2,6 +2,7 @@ import React from "react";
 import CartItem from "../_components/CartItem";
 import Link from "next/link";
 import CartItemSmViewport from "../_components/CartItemSmViewport";
+import { CheckCircleFill } from "react-bootstrap-icons";
 
 export default function Page() {
   
@@ -9,7 +10,31 @@ export default function Page() {
 
   return (
     <div className="py-16 px-8">
-      <div className='text-2xl uppercase tracking-[2.4px] mb-10 mt-8'>Cart</div>
+      <div className="md:flex">
+        <div className='text-2xl uppercase tracking-[2.4px] mb-10 mt-8 hidden md:flex'>Cart</div>
+
+        {/* Progress bar */}
+        <div className="flex flex-rows justify-center my-10 mx-6 text-xs sm:text-base md:absolute md:left-1/2 md:transform md:-translate-x-1/2 pb-5">
+          <div>Cart</div>
+
+          <div className="flex items-center">
+            <hr className="w-6 inline-block align-middle text-black mx-2" />
+            <CheckCircleFill className="text-black" />
+            <hr className="w-6 inline-block align-middle text-black mx-2" />
+          </div>
+
+          <div className="flex items-center text-black">Shipping</div>
+
+          <div className="flex items-center">
+            <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
+            <CheckCircleFill className="text-midgrey" />
+            <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
+          </div>
+
+          <div className="text-midgrey">Payment</div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-9">
         <div className="col-span-2 mb-6">
 
@@ -85,6 +110,13 @@ export default function Page() {
                 <div>0.00 SGD</div>
               </div>
             </div>
+            <Link href="/order/shipping-details" className='flex justify-center mt-4 text-base'>
+              <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
+                <div className="uppercase flex items-center justify-center">
+                  Checkout
+                </div>
+              </button>
+            </Link>
           </div>
         </div>
       </div>
