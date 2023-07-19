@@ -1,7 +1,7 @@
 'use client'
 import product1 from "../_images/product1.jpg";
 import React from 'react';
-import BrowsingCard from "../_components/browsingCard";
+import BrowsingCard from "../_components/BrowsingCard";
 
 const imageUrl = product1.src;
 
