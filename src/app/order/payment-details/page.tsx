@@ -122,13 +122,23 @@ const Page = () => {
         </div>
       </div>
 
-      <Link href="" className='flex justify-center m-4 text-base'>
-        <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
-          <div className="uppercase flex items-center justify-center">
-            Pay Now
-          </div>
-        </button>
-      </Link>
+      <div className='flex flex-cols justify-center'>
+        <Link href="/cart" className='m-4'>
+          <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black bg-black text-white">
+            <div className="uppercase flex items-center justify-center">
+              Back
+            </div>
+          </button>
+        </Link>
+
+        <Link href="/order/payment-details" className='m-4'>
+          <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
+            <div className="uppercase flex items-center justify-center">
+              Pay Now
+            </div>
+          </button>
+        </Link>
+      </div>
 
     </div>
   );
