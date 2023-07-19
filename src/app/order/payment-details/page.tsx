@@ -9,6 +9,14 @@ import CreditCardDropDown from "@/app/_components/CreditCardDropDown";
 const Page = () => {
 
   const [creditCardOpen, setCreditCardOpen] = useState(false);
+
+  const handleFocus = () => {
+    setCreditCardOpen(true);
+  };
+
+  const handleBlur = () => {
+    setCreditCardOpen(false);
+  };
   
   return (
     <div className="py-16 px-8">
@@ -45,8 +53,8 @@ const Page = () => {
 
             <div className="m-9 text-sm">
               <div className="flex flex-row justify-between">
-                <div onClick={() => setCreditCardOpen(true)}>
-                  <input type="radio" id="creditCard" name="paymentType" value="creditCard" className="me-3 focus:ring-0 text-black"/>
+                <div>
+                  <input type="radio" id="creditCard" name="paymentType" value="creditCard" className="me-3 focus:ring-0 text-black" onFocus={handleFocus} onBlur={handleBlur}/>
                   <label htmlFor="creditCard px-2">Credit Card</label>
                 </div>
                 <div className="flex">
