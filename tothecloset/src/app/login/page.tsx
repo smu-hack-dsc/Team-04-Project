@@ -97,10 +97,10 @@ export default function Page() {
       {line}
       <div className='buttons' style={{ display: 'inline' }}>
         <button className='goggleButton' type="button" style={googleButtonStyle}>
-        <FaGoogle />
+        <FaGoogle/>
       </button>
         <button className='appleButton' type="button" style={appleButtonStyle}>
-          <FaApple />
+          <FaApple/>
         </button></div>
       <div className='resetPwd' style={container2Style}> 
         <p> Trouble logging in? </p>
