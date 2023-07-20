@@ -72,7 +72,7 @@ const Page = () => {
                   <label htmlFor="payPal px-2">PayPal</label>
                 </div>
                 <div className="flex">
-                  <PaymentLogo imageUrl="/images/PayPalLogo.png" bgColour="#252525"/>
+                  <PaymentLogo imageUrl="/images/PaypalLogo.png" bgColour="#252525"/>
                 </div>
               </div>
 
