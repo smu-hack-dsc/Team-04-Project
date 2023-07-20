@@ -1,5 +1,5 @@
 import './globals.css'
-import Navbar from './_components/NavBar'
+import Navbar from "./_components/NavBar"
 import {Lato } from 'next/font/google'
 import Footer from './_components/Footer'
 
