@@ -255,14 +255,14 @@ def delete_product_api(product_id):
     
 # get products by type
 @app.route("/api/product/<type>", methods=["GET"])
-def get_product_by_type_api(type):
+def get_product_by_type(type):
     return get_product_by_type(type)
 
 
 # sort products by price
 @app.route("/api/product/sort", methods=["GET"])
-def sort_products_by_price_api():
-    return sort_products_by_price()
+def sort_products_by_price():
+    return sort_products_by_price
 
 ########## DB: product_availability
 
