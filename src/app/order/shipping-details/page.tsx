@@ -1,8 +1,8 @@
 import FirstComponent from '../images/Group 4.png';
 import SecondComponent from '../images/Group 5.png';
-import Icon1 from '../images/1-circle.svg';
-import Icon2 from '../images/2-circle.svg';
+import Image from 'next/image';
 import { CheckCircleFill } from "react-bootstrap-icons";
+import Link from 'next/link';
 
 const Page = () => {
     const countryCodeArr=[
@@ -29,18 +29,17 @@ const Page = () => {
     ];
 
   return (
-    <section className="fontlato">
-      <div className="h-20 bg-gray-200"></div> {/* Navigation Bar Section */}
+    <div className="py-16">
       <div className="flex flex-rows justify-center my-10 mx-6 text-xs sm:text-base">
-        <div>Shipping</div>
+        <div>Cart</div>
 
         <div className="flex items-center">
-          <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
-          <CheckCircleFill className="text-midgrey" />
-          <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
+          <hr className="w-6 inline-block align-middle text-black mx-2" />
+          <CheckCircleFill className="text-black" />
+          <hr className="w-6 inline-block align-middle text-black mx-2" />
         </div>
 
-        <div className="flex items-center text-midgrey">Review</div>
+        <div className="flex items-center text-black">Shipping</div>
 
         <div className="flex items-center">
           <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
@@ -51,11 +50,11 @@ const Page = () => {
         <div className="text-midgrey">Payment</div>
       </div>
 
-      <section className="mx-40 mt-8 flex">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Contact Information */}
-        <div className="w-1/2 pr-2 pt-4">
+        <div className="px-20 py-5">
           <div className="flex items-center">
-            <img src={Icon1.src} alt="Icon 1" className="h-6 w-6 mr-2" />
+            <Image src="/images/1-circle.svg" width ={25} height={25} alt="Icon 1" className="mr-2" />
             <p className="text">CONTACT INFORMATION</p>
           </div>
 
@@ -104,13 +103,11 @@ const Page = () => {
           </div>
         </div>
 
-        {/* Middle Container */}
-        <div className="w-1/6 pl-2 pt-4"></div>
 
         {/* Shipping Address */}
-        <div className="w-1/2 pl-2 pt-4">
+        <div className="px-20 py-5">
           <div className="flex items-center">
-            <img src={Icon2.src} alt="Icon 2" className="h-6 w-6 mr-2" />
+            <Image src="/images/2-circle.svg" alt="Icon 2" className="mr-2" height={25} width={25}/>
             <p className="text">SHIPPING ADDRESS</p>
           </div>
 
@@ -163,26 +160,37 @@ const Page = () => {
           </div>
 
 
-          <div className="w-1/2 flex items-center mt-4">
+          <div className="flex items-center mt-4">
             <input
               type="checkbox"
               className="mr-2 h-4 w-4 transform scale-75 appearance-none border border-black checked:bg-black checked:border-black focus:ring-0"
               id="sameAddressCheckbox"
             />
-            <label htmlFor="sameAddressCheckbox" className="text-sm whitespace-nowrap text-black">
+            <label htmlFor="sameAddressCheckbox" className="text-sm text-black focus:text-black focus: ring-0">
               My shipping and billing address are the same
             </label>
           </div>
         </div>
-      </section>
-
-      {/* Button */}
-      <div className="flex justify-center"> {/* Centering wrapper */}
-        <button className="my-2 mt-4 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black bg-white text-black hover:bg-black hover:text-white">
-          <div className="uppercase flex items-center justify-center">Continue</div>
-        </button>
       </div>
-    </section>
+
+      <div className='flex flex-cols justify-center'>
+        <Link href="/cart" className='m-4'>
+          <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black bg-black text-white">
+            <div className="uppercase flex items-center justify-center">
+              Back
+            </div>
+          </button>
+        </Link>
+
+        <Link href="/order/payment-details" className='m-4'>
+          <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
+            <div className="uppercase flex items-center justify-center">
+              Continue
+            </div>
+          </button>
+        </Link>
+      </div>
+    </div>
   );
 };
 

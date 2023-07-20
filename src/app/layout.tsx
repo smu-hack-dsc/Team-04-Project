@@ -1,6 +1,7 @@
 import './globals.css'
-import Navbar from './_components/navbar'
+import Navbar from './_components/NavBar'
 import {Lato } from 'next/font/google'
+import Footer from './_components/Footer'
 
 const lato = Lato({ subsets: ['latin'], weight: '400' })
 
@@ -18,9 +19,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={lato.className}>
         <Navbar/>
-        <main>
+        <main className='min-h-screen'>
           {children}
-        </main>    
+        </main> 
+        <Footer/> 
       </body>
     </html>
   )
