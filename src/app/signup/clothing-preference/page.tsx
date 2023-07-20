@@ -21,7 +21,11 @@ const AddressPage = () => {
     };
 
     return (
-    <div className='pt-16'>
+    <div className='py-16 '>
+
+      <div className='flex justify-center mb-10 mt-8'>
+        <span className="text-2xl uppercase tracking-[2.4px]">Sign Up</span>
+      </div>
       <div className="flex flex-rows justify-center my-10 mx-6 text-xs sm:text-base">
 
         <div>Personal Particulars</div>
@@ -53,8 +57,8 @@ const AddressPage = () => {
           <div className='p-2'>
             <div className='flex flex-cols items-center'>
               <p className='me-2 inline-block align-middle w-40'>Height</p>
-              <input type="number" name="password" className='outline-none border border-midgrey border-1 w-full h-7 p-2 me-2'/>
-              <select name="height" className='focus:outline-none border border-midgrey border-1 w-16 px-2 h-7 ms-2'>
+              <input type="number" name="height" className='outline-none border border-midgrey border-1 w-full h-7 p-2 me-2 focus:ring-0 focus:border-grey focus:border-1'/>
+              <select name="height" className='focus:outline-none border border-midgrey border-1 w-16 px-2 h-7 ms-2 focus:ring-0 focus:border-grey focus:border-1'>
                 {heightArr.map((heightMeasurement, index) =>(
                   <option key={index} value={heightMeasurement} className='text-sm'>{heightMeasurement}</option>
                 ))}
@@ -65,8 +69,8 @@ const AddressPage = () => {
           <div className='p-2'>
             <div className='flex flex-cols items-center'>
               <p className='me-2 inline-block align-middle w-40'>Weight</p>
-              <input type="number" name="password" className='outline-none border border-midgrey border-1 w-full h-7 p-2 me-2'/>
-              <select name="weight" className='focus:outline-none border border-midgrey border-1 w-16 px-2 h-7 ms-2'>
+              <input type="number" name="weight" className='outline-none border border-midgrey border-1 w-full h-7 p-2 me-2 focus:ring-0 focus:border-grey focus:border-1'/>
+              <select name="weight" className='focus:outline-none border border-midgrey border-1 w-16 px-2 h-7 ms-2 focus:ring-0 focus:border-grey focus:border-1'>
                 {weightArr.map((weightMeasurement, index) =>(
                   <option key={index} value={weightMeasurement} className='text-sm'>{weightMeasurement}</option>
                 ))}
@@ -133,7 +137,7 @@ const AddressPage = () => {
         <Link href="/" className='m-4'>
           <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
             <div className="uppercase flex items-center justify-center">
-              Continue
+              Sign Up
             </div>
           </button>
         </Link>
