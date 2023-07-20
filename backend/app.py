@@ -256,56 +256,13 @@ def delete_product_api(product_id):
 # get products by type
 @app.route("/api/product/<type>", methods=["GET"])
 def get_product_by_type(type):
-    try:
-        with get_db_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute('SELECT * FROM tothecloset."product" WHERE type = %s', (type,))
-
-
-                if len(rows) == 0:
-                    return jsonify("No product found under type: " + type), 404
-
-                products = [{"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8]} for row in rows]
-        return jsonify(products), 200
-
-    except (Exception, psycopg2.Error) as error:
-        return jsonify({"error": str(error)}), 500
+    return get_product_by_type(type)
 
 
 # sort products by price
 @app.route("/api/product/sort", methods=["GET"])
 def sort_products_by_price():
-    try:
-        with get_db_connection() as connection:
-            with connection.cursor() as cursor:
-                sort_order = request.args.get('order', 'asc')
-                #test using sort?order=dsc or sort?order=asc
-                
-                if sort_order.lower() == 'asc':
-                    cursor.execute('SELECT * FROM tothecloset."product" ORDER BY price ASC')
-                elif sort_order.lower() == 'dsc':
-                    cursor.execute('SELECT * FROM tothecloset."product" ORDER BY price DESC')
-                else:
-                    return jsonify({"error": "Invalid sort order. Use 'asc' or 'dsc'."}), 400
-
-                rows = cursor.fetchall()
-
-                products = [
-                    {
-                        'product_id': row[0],
-                        'brand': row[1],
-                        'size': row[2],
-                        'colour': row[3],
-                        'price': row[4],
-                        'type': row[5]
-                    }
-                    for row in rows
-                ]
-
-        return jsonify(products), 200
-
-    except (Exception, psycopg2.Error) as error:
-        return jsonify({"error": str(error)}), 500
+    return sort_products_by_price
 
 ########## DB: product_availability
 
