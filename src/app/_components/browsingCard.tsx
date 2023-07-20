@@ -4,13 +4,13 @@ import product1 from "../_images/product1.jpg";
 import { Heart } from "react-bootstrap-icons";
 import { useState } from "react";
 
-type browsingCardProps = {
+type BrowsingCardProps = {
     name: string;
     brand: string;
     price: string;
 };
 const imageUrl = product1.src;
-const browsingCard: React.FC<browsingCardProps> = ({ name, brand, price }) => {
+const BrowsingCard: React.FC<BrowsingCardProps> = ({ name, brand, price }) => {
     const [unliked, setUnlike] = useState(false)
     const handleLike = () => {
         setUnlike(!unliked)
@@ -59,4 +59,4 @@ const browsingCard: React.FC<browsingCardProps> = ({ name, brand, price }) => {
 
 };
 
-export default browsingCard;
+export default BrowsingCard;

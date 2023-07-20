@@ -4,13 +4,13 @@ import { HeartFill } from 'react-bootstrap-icons';
 import { Heart } from "react-bootstrap-icons";
 import { useState } from "react";
 
-type wishlistCardProps = {
+type WishlistCardProps = {
     name: string;
     brand: string;
     price: string;
 };
 const imageUrl = product1.src;
-const wishlistCard: React.FC<wishlistCardProps> = ({ name, brand, price }) => {
+const WishlistCard: React.FC<WishlistCardProps> = ({ name, brand, price }) => {
     const [unliked, setUnlike] = useState(false)
     const handleLike = () => {
         setUnlike(!unliked)
@@ -59,4 +59,4 @@ const wishlistCard: React.FC<wishlistCardProps> = ({ name, brand, price }) => {
 
 };
 
-export default wishlistCard;
+export default WishlistCard;
