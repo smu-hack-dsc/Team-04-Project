@@ -1,5 +1,5 @@
-import Black from '../images/black.png';
-import Tick from '../images/vecteezy_tick-icon-accept-approve-sign-design-free-png_20906151_832.png';
+import React from "react";
+import Image from "next/image";
 
 const Page = () => {
   return (
@@ -7,7 +7,7 @@ const Page = () => {
       <div className="h-20 bg-gray-200"></div> {/* Navigation Bar Section */}
 
       <div className="flex items-center justify-center flex-col mt-24">
-        <img src={Tick.src} alt="tick" className="h-40 w-40 mr-2" />
+        <img src="/images/tickIcon.png" alt="tick" className="h-40 w-40 mr-2" />
       </div>
 
       <div className="flex items-center justify-center flex-col mt-4">
