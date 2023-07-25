@@ -8,7 +8,7 @@ import { twMerge } from "tailwind-merge"
 
 const playfair = Playfair_Display({ subsets: ['latin'], weight :'400'})
 
-const Navbar = () => {
+const NavBar = () => {
     // hamburger menu
     const [menuOpen, setMenuOpen] = useState(false)
     const handleNav = () => {
@@ -445,4 +445,4 @@ const Navbar = () => {
     )
 }
 
-export default Navbar
+export default NavBar
