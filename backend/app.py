@@ -2,20 +2,7 @@ from flask import Flask, jsonify, request
 from dotenv import load_dotenv
 import os
 import psycopg2
-from address import *
-from cart import *
-from clothing_preference import *
-from delivery import *
-from payment import *
-from product import *
-from product_availability import *
-from rental import *
-from returns import *
-from transaction import *
-from user import *
-from wishlist import *
-from size_recommender import *
-from image_search import *
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -33,6 +20,20 @@ def get_db_connection():
 
     return psycopg2.connect(host=db_host, port=db_port, dbname=db_name, user=db_user, password=db_password)
 
+from address import *
+from cart import *
+from clothing_preference import *
+from delivery import *
+from payment import *
+from product import *
+from product_availability import *
+from rental import *
+from returns import *
+from transaction import *
+from user import *
+from wishlist import *
+from size_recommender import *
+# from image_search import *
 
 # to check connection
 @app.route("/api/check_connection")
@@ -255,14 +256,14 @@ def delete_product_api(product_id):
     
 # get products by type
 @app.route("/api/product/<type>", methods=["GET"])
-def get_product_by_type(type):
+def get_product_by_type_api(type):
     return get_product_by_type(type)
 
 
 # sort products by price
 @app.route("/api/product/sort", methods=["GET"])
-def sort_products_by_price():
-    return sort_products_by_price
+def sort_products_by_price_api():
+    return sort_products_by_price()
 
 ########## DB: product_availability
 
@@ -364,7 +365,6 @@ def delete_product_from_wishlist_api(user_id, product_id):
 @app.route("/api/size_recommender/<user_id>/<product_id>", methods=["GET"])
 def size_recommender_api(user_id, product_id):
     return size_recommender(user_id, product_id)
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
