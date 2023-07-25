@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-import psycopg2
+from flask_cors import CORS
 from address import *
 from cart import *
 from clothing_preference import *
@@ -17,6 +17,7 @@ from image_search import *
 from db_config import *
 
 app = Flask(__name__)
+CORS(app)
 
 # to check connection
 @app.route("/api/check_connection")

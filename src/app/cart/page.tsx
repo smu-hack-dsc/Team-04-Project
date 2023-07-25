@@ -1,14 +1,30 @@
-import React from "react";
+"use client"
+import React, { useEffect } from "react";
 import CartItem from "../_components/CartItem";
 import Link from "next/link";
 import CartItemSmViewport from "../_components/CartItemSmViewport";
 import { CheckCircleFill } from "react-bootstrap-icons";
+import axios from 'axios';
 
 export default function Page() {
 
-  
-  
-  var numOfItems = 1; // get count after axios call
+  useEffect(() => {
+    const fetchDataFromBackend = async () => {
+      const userId = sessionStorage.getItem("userId");
+      console.log(userId);
+      try {
+        const response = await axios.get('http://13.214.39.139:5000/api/cart/' + userId);
+
+        console.log(response.data);
+        var numOfItems = 0;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        var numOfItems = 0;
+      }
+    };
+
+    fetchDataFromBackend();
+  }, []);
 
   return (
     <div className="py-16 px-8">

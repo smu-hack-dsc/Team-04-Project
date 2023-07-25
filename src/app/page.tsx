@@ -11,7 +11,7 @@ import landing5 from "./_images/landing5.jpg";
 import rent from "./_images/rent.png";
 import wear from "./_images/wear.png";
 import returnpic from "./_images/return.png";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { RxDotFilled } from 'react-icons/rx';
 
@@ -27,7 +27,20 @@ const wearUrl = wear.src;
 const returnUrl = returnpic.src;
 
 const Landing: React.FC = () => {
+
+  //initialising session storage whenever the landing page is first loaded
+  useEffect(() => {
+    // Check if session storage is available (for CSR)
+    if (typeof window !== 'undefined') {
+      // Set data in session storage
+      if (!sessionStorage.getItem('userId')){
+        const userId = 3; // CHANGE THIS FOR NOW
+        sessionStorage.setItem('userId', userId.toString()); // userId=0 if user is not logged in
+      }
+    }
+  }, [])
   
+
   const slides = [
     {
       url: imageUrl,
