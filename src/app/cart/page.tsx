@@ -18,12 +18,12 @@ export default function Page() {
           <div>Cart</div>
 
           <div className="flex items-center">
-            <hr className="w-6 inline-block align-middle text-black mx-2" />
-            <CheckCircleFill className="text-black" />
-            <hr className="w-6 inline-block align-middle text-black mx-2" />
+            <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
+            <CheckCircleFill className="text-midgrey" />
+            <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
           </div>
 
-          <div className="flex items-center text-black">Shipping</div>
+          <div className="flex items-center text-midgrey">Shipping</div>
 
           <div className="flex items-center">
             <hr className="w-6 inline-block align-middle text-midgrey mx-2" />
