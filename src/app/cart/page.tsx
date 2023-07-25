@@ -5,6 +5,8 @@ import CartItemSmViewport from "../_components/CartItemSmViewport";
 import { CheckCircleFill } from "react-bootstrap-icons";
 
 export default function Page() {
+
+  
   
   var numOfItems = 1; // get count after axios call
 

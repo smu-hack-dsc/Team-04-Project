@@ -1,6 +1,4 @@
 from flask import Flask, jsonify, request
-from dotenv import load_dotenv
-import os
 import psycopg2
 from address import *
 from cart import *
@@ -16,32 +14,14 @@ from user import *
 from wishlist import *
 from size_recommender import *
 from image_search import *
-
-# Load environment variables from .env file
-load_dotenv()
+from db_config import *
 
 app = Flask(__name__)
 
-
-# get db connection
-def get_db_connection():
-    db_host = os.getenv("DB_HOST")
-    db_port = os.getenv("DB_PORT")
-    db_name = os.getenv("DB_NAME")
-    db_user = os.getenv("DB_USER")
-    db_password = os.getenv("DB_PASSWORD")
-
-    return psycopg2.connect(host=db_host, port=db_port, dbname=db_name, user=db_user, password=db_password)
-
-
 # to check connection
 @app.route("/api/check_connection")
-def check_connection():
-    try:
-        with get_db_connection() as connection:
-            return "PostgreSQL connection successful"
-    except (Exception, psycopg2.Error) as error:
-        return jsonify({"error": str(error)}), 500
+def check_connection_api():
+    return check_connection()
 
 
 ########## DB: address
@@ -367,4 +347,4 @@ def size_recommender_api(user_id, product_id):
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
