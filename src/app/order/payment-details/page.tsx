@@ -23,7 +23,7 @@ const Page = () => {
 
       {/* Progress bar */}
       <div className="flex flex-rows justify-center my-10 mx-6 text-xs sm:text-base">
-        <div>Shipping</div>
+        <div>Cart</div>
 
         <div className="flex items-center">
           <hr className="w-6 inline-block align-middle text-black mx-2" />
@@ -31,7 +31,7 @@ const Page = () => {
           <hr className="w-6 inline-block align-middle text-black mx-2" />
         </div>
 
-        <div className="flex items-center text-black">Review</div>
+        <div className="flex items-center text-black">Shipping</div>
 
         <div className="flex items-center">
           <hr className="w-6 inline-block align-middle text-black mx-2" />
@@ -72,7 +72,7 @@ const Page = () => {
                   <label htmlFor="payPal px-2">PayPal</label>
                 </div>
                 <div className="flex">
-                  <PaymentLogo imageUrl="/images/PayPalLogo.png" bgColour="#252525"/>
+                  <PaymentLogo imageUrl="/images/PaypalLogo.png" bgColour="#252525"/>
                 </div>
               </div>
 
