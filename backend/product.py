@@ -176,8 +176,7 @@ def get_product_by_type(type):
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute('SELECT * FROM tothecloset."product" WHERE type = %s', (type,))
-
-
+                rows = cursor.fetchall()
                 if len(rows) == 0:
                     return jsonify("No product found under type: " + type), 404
 

@@ -1,12 +1,25 @@
 'use client'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import product1 from "../_images/product1.jpg";
-import React from 'react';
-import BrowsingCard from '../_components/BrowsingCard';
+import BrowsingCard from "../_components/BrowsingCard";
 
 const imageUrl = product1.src;
 
+interface Product {
+  brand: string;
+  colour: string[]; // Change this to string[] if 'colour' is an array of strings
+  date_added: string;
+  image_url: string;
+  price: string;
+  product_id: number;
+  product_name: string;
+  size: string[]; // Change this to string[] if 'size' is an array of strings
+  type: string[];
+}
+
 const ProductPage: React.FC = () => {
-  
+  const rentalperiod = ["4 Days", "8 Days", "12 Days", "16 Days"]
   const wishlistItems = [
     // List of items in your wishlist
     // Each item can have its own properties like name, brand, price, etc.
@@ -14,60 +27,32 @@ const ProductPage: React.FC = () => {
     { id: 2, name: "Item 2", brand: "Brand 2", price: "79.90 SGD" },
     { id: 3, name: "Item 3", brand: "Brand 3", price: "89.90 SGD" },
   ];
-  const colours = ["Black", "Gray", "Brown"]
-  const size = ["S", "M", "L"]
-  const rentalperiod = ["4 Days", "8 Days", "12 Days", "16 Days"]
-  // const products = [
-  //   {
-  //     id: 1,
-  //     name: "Item 1",
-  //     brand: "Brand 1",
-  //     price: "69.90 SGD",
-  //     colour: ["Black", "Gray", "Brown"],
-  //     size: ["S", "M", "L"],
-  //     rentalperiod: ["4 Days", "8 Days", "12 Days", "16 Days"],
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Item 2",
-  //     brand: "Brand 2",
-  //     price: "79.90 SGD",
-  //     colour: ["Black", "Red", "Blue"],
-  //     size: ["S", "M", "L"],
-  //     rentalperiod: ["4 Days", "8 Days", "12 Days", "16 Days"],
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Item 3",
-  //     brand: "Brand 3",
-  //     price: "89.90 SGD",
-  //     colour: ["Black", "Red", "Blue"],
-  //     size: ["S", "M", "L"],
-  //     rentalperiod: ["4 Days", "8 Days", "12 Days", "16 Days"],
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Item 4",
-  //     brand: "Brand 4",
-  //     price: "99.90 SGD",
-  //     colour: ["Black", "Red", "Blue"],
-  //     size: ["S", "M", "L"],
-  //     rentalperiod: ["4 Days", "8 Days", "12 Days", "16 Days"],
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Item 5",
-  //     brand: "Brand 5",
-  //     price: "99.90 SGD",
-  //     colour: ["Black", "Red", "Blue"],
-  //     size: ["S", "M", "L"],
-  //     rentalperiod: ["4 Days", "8 Days", "12 Days", "16 Days"],
-  //   },
-  //   // Add more attributes as needed
-  // ];
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // const selectedProduct = products.find((product) => product.id === 1);
+  useEffect(() => {
+    const productId = 5; // Replace 1 with the ID of the product you want to display
 
+    // Fetch product details from the backend using the specific product ID
+    axios.get(`http://localhost:8080/api/product/${productId}/`)
+      .then((response) => {
+        setProduct(response.data); // Update the product state with the data from the backend
+        setLoading(false); // Set loading to false once the data is fetched
+        console.log('Response data:', response.data)
+      })
+      .catch((error) => {
+        console.error('Error fetching product:', error);
+        setLoading(false); // Set loading to false in case of an error
+      });
+  }, []);
+
+  // Extract colours and sizes arrays from the product data
+  const colours = product?.colour || [];
+  const sizes = product?.size || [];
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   return (
 
 <section className="py-12 sm:py-16"> 
@@ -98,10 +83,10 @@ const ProductPage: React.FC = () => {
     </div>
 
     <div className="lg:col-span-2 lg:row-span-2 lg:row-end-2">
-      <h1 className="sm: text-2xl text-gray-900 sm:text-3xl uppercase">Item Name Here</h1>
+      <h1 className="sm: text-2xl text-gray-900 sm:text-3xl uppercase">{product?.product_name}</h1>
 
       <div className="my-2 flex items-center">
-        <p className="text-xl font-medium text-gray-500">69.90 SGD</p>
+        <p className="text-xl font-medium text-gray-500">${product?.price}</p>
       </div>
 
       <hr className="mt-3"></hr>
@@ -118,7 +103,7 @@ const ProductPage: React.FC = () => {
 
       <h2 className="mt-4 text-base text-gray-900">Size:</h2>
       <div className="mt-3 flex select-none flex-wrap items-center gap-1">
-      {size.map((sizeName, index) => (
+      {sizes.map((sizeName, index) => (
                 <button
                   key={index}
                   className="box-border py-1 px-3 border-[1px] flex border-solid border-black">
