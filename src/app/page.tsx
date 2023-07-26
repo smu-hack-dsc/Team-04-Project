@@ -83,7 +83,7 @@ const Landing: React.FC = () => {
   return (
     <section>
   <div className="container mx-auto flex py-16 items-center justify-center flex-col">
-    <div className='max-w-full h-[580px] w-screen mx-0 relative group'>
+    <div className='h-screen w-screen mx-0 relative group'>
         <div
           
           style={{ backgroundImage: `url(${slides[currentIndex].url})` }}
@@ -114,7 +114,7 @@ const Landing: React.FC = () => {
           ))}
         </div> */}
         <div
-          className="w-full h-full relative bg-cover"
+          className="w-screen h-screen relative bg-cover"
           style={{ backgroundImage: `url(${image5Url})` }}
         >
         <div className="absolute bottom-0 left-0 right-0 flex justify-center mb-24">
@@ -127,7 +127,7 @@ const Landing: React.FC = () => {
         </div>
 
         <div
-        className="w-full h-full relative bg-cover"
+        className="w-screen h-screen relative bg-cover"
         style={{ backgroundImage: `url(${image4Url})` }}
       >
       <div className="absolute bottom-0 left-0 ml-40 flex justify-center mb-40">
@@ -140,7 +140,7 @@ const Landing: React.FC = () => {
       </div>
 
       <div
-        className="w-full h-full relative bg-cover"
+        className="w-screen h-screen relative bg-cover"
         style={{ backgroundImage: `url(${image3Url})` }}
       >
       <div className="absolute bottom-0 right-0 mr-40 flex justify-center mb-40">
@@ -162,9 +162,11 @@ const Landing: React.FC = () => {
           </div>
           <div>
             <img src={wearUrl}></img>
+            <h3 className=" text-center sm:text-3xl text-xl py-4">Wear</h3>
           </div>
           <div>
             <img src={returnUrl}></img>
+            <h4 className=" text-center sm:text-3xl text-xl py-4">Return</h4>
           </div>
         </div>
       </div> 
