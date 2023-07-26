@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 import psycopg2
@@ -8,7 +9,7 @@ import psycopg2
 load_dotenv()
 
 app = Flask(__name__)
-
+CORS(app)
 
 # get db connection
 def get_db_connection():
@@ -214,7 +215,7 @@ def get_products_api():
 
 
 # get one product
-@app.route("/api/product/<product_id>/", methods=["GET"])
+@app.route("/api/product/<int:product_id>/", methods=["GET"])
 def get_product_api(product_id):
     return get_product(product_id)
 
@@ -255,7 +256,7 @@ def delete_product_api(product_id):
 
     
 # get products by type
-@app.route("/api/product/<type>", methods=["GET"])
+@app.route("/api/product/<string:type>", methods=["GET"])
 def get_product_by_type_api(type):
     return get_product_by_type(type)
 

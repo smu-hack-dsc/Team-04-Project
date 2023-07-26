@@ -35,14 +35,28 @@ def get_product(product_id):
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute('SELECT * FROM tothecloset."product"' "WHERE product_id = %s", (product_id))
+                cursor.execute('SELECT * FROM tothecloset."product" WHERE product_id = %s', (product_id,))
 
-                row = cursor.fetchall()
+                rows = cursor.fetchall()
 
-                if len(row) == 0:
-                    return jsonify("No product found: " + product_id), 404
+                if len(rows) == 0:
+                    return jsonify("No product found: " + str(product_id)), 404
 
-                product = {"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "sizing_chart": row[9], "category": row[10]}
+                # Assuming product_id is unique, there should be only one row
+                row = rows[0]
+                product = {
+                    "product_id": row[0],
+                    "brand": row[1],
+                    "size": row[2],
+                    "colour": row[3],
+                    "price": row[4],
+                    "type": row[5],
+                    "image_url": row[6],
+                    "date_added": row[7],
+                    "product_name": row[8],
+                    "sizing_chart": row[9],
+                    "category": row[10]
+                }
 
         return jsonify(product), 200
 
