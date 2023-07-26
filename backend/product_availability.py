@@ -1,7 +1,7 @@
 from flask import jsonify, request
 import os
 import psycopg2
-from app import get_db_connection
+from db_config import get_db_connection
 
 def get_product_availability_from_product_id(product_id):
     try:

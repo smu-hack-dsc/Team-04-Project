@@ -34,16 +34,16 @@ from transaction import *
 from user import *
 from wishlist import *
 from size_recommender import *
-# from image_search import *
+from image_search import *
+from db_config import *
+
+app = Flask(__name__)
+CORS(app)
 
 # to check connection
 @app.route("/api/check_connection")
-def check_connection():
-    try:
-        with get_db_connection() as connection:
-            return "PostgreSQL connection successful"
-    except (Exception, psycopg2.Error) as error:
-        return jsonify({"error": str(error)}), 500
+def check_connection_api():
+    return check_connection()
 
 
 ########## DB: address
@@ -368,4 +368,4 @@ def size_recommender_api(user_id, product_id):
     return size_recommender(user_id, product_id)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)

@@ -1,7 +1,7 @@
 from flask import jsonify, request
 import os
 import psycopg2
-from app import get_db_connection
+from db_config import get_db_connection
 
 def get_return_from_user_id(user_id):
     try:
