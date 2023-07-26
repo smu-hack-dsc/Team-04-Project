@@ -20,6 +20,48 @@ def get_rental_from_user_id(user_id):
 
     except (Exception, psycopg2.Error) as error:
         return jsonify({"error": str(error)}), 500
+
+def get_past_rental_from_user_id(user_id):
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                current_date = datetime.now().date()
+
+                # Use WHERE clause to filter out rentals with end date before the current date
+                cursor.execute('SELECT * FROM tothecloset."rental" WHERE user_id = %s AND rental_end < %s', (user_id, current_date))
+
+                rows = cursor.fetchall()
+
+                if len(rows) == 0:
+                    return jsonify("No past rentals found under user_id: " + user_id), 404
+
+                rentals = [{"rental_id": row[0], "user_id": row[1], "product_id": row[2], "rental_start": row[3], "rental_end": row[4], "rental_period": row[5], "transaction_id": row[6], "delivery_id": row[7], "return_id": row[8], "is_ongoing": row[9]} for row in rows]
+
+        return jsonify(rentals), 200
+
+    except (Exception, psycopg2.Error) as error:
+        return jsonify({"error": str(error)}), 500
+    
+def get_ongoing_rental_from_user_id(user_id):
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                current_date = datetime.now().date()
+
+                # Use WHERE clause to filter out rentals with end date after or equal to the current date
+                cursor.execute('SELECT * FROM tothecloset."rental" WHERE user_id = %s AND rental_end >= %s', (user_id, current_date))
+
+                rows = cursor.fetchall()
+
+                if len(rows) == 0:
+                    return jsonify("No ongoing rentals found under user_id: " + user_id), 404
+
+                rentals = [{"rental_id": row[0], "user_id": row[1], "product_id": row[2], "rental_start": row[3], "rental_end": row[4], "rental_period": row[5], "transaction_id": row[6], "delivery_id": row[7], "return_id": row[8], "is_ongoing": row[9]} for row in rows]
+
+        return jsonify(rentals), 200
+
+    except (Exception, psycopg2.Error) as error:
+        return jsonify({"error": str(error)}), 500
     
 def create_rental():
     try:
