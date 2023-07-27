@@ -22,8 +22,8 @@ export default function Page() {
 
         //get product details
         for (const item of response.data) {
-          const productId = item.productId
-
+          const productId = item["product_id"]
+          console.log(productId);
           try{
             const response = await axios.get('http://13.215.49.137:5000/api/product/' + productId);
             console.log(response)
