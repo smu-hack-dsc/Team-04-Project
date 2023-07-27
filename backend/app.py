@@ -1,5 +1,26 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os
+import psycopg2
+
+
+# Load environment variables from .env file
+load_dotenv()
+
+app = Flask(__name__)
+CORS(app)
+
+# get db connection
+def get_db_connection():
+    db_host = os.getenv("DB_HOST")
+    db_port = os.getenv("DB_PORT")
+    db_name = os.getenv("DB_NAME")
+    db_user = os.getenv("DB_USER")
+    db_password = os.getenv("DB_PASSWORD")
+
+    return psycopg2.connect(host=db_host, port=db_port, dbname=db_name, user=db_user, password=db_password)
+
 from address import *
 from cart import *
 from clothing_preference import *
@@ -194,7 +215,7 @@ def get_products_api():
 
 
 # get one product
-@app.route("/api/product/<product_id>/", methods=["GET"])
+@app.route("/api/product/<int:product_id>/", methods=["GET"])
 def get_product_api(product_id):
     return get_product(product_id)
 
@@ -235,7 +256,7 @@ def delete_product_api(product_id):
 
     
 # get products by type
-@app.route("/api/product/type/<type>", methods=["GET"])
+@app.route("/api/product/type/<string:type>", methods=["GET"])
 def get_product_by_type_api(type):
     return get_product_by_type(type)
 
