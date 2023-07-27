@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CartItem from "../_components/CartItem";
 import Link from "next/link";
 import CartItemSmViewport from "../_components/CartItemSmViewport";
@@ -7,19 +7,32 @@ import { CheckCircleFill } from "react-bootstrap-icons";
 import axios from 'axios';
 
 export default function Page() {
+  const [numOfItems, setNumOfItems] = useState(-1);
+  const [cartArr, setCartArr] = useState([]);
+  const [productArr, setProductArr] = useState([]);
 
   useEffect(() => {
     const fetchDataFromBackend = async () => {
       const userId = sessionStorage.getItem("userId");
-      console.log(userId);
       try {
-        const response = await axios.get('http://13.214.39.139:5000/api/cart/' + userId);
-
+        const response = await axios.get('http://13.215.49.137:5000/api/cart/' + userId);
+        setNumOfItems(response.data.length);
+        setCartArr(response.data);
         console.log(response.data);
-        var numOfItems = 0;
+
+        //get product details
+        for (const item of response.data) {
+          const productId = item.productId
+
+          try{
+            const response = await axios.get('http://13.215.49.137:5000/api/product/' + productId);
+            console.log(response)
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
-        var numOfItems = 0;
       }
     };
 
@@ -59,7 +72,7 @@ export default function Page() {
           <div className={
             numOfItems>0 ? "grid" : "hidden"
           }>
-            <div className="uppercase text-lg mb-8">Item Summary (2)</div>
+            <div className="uppercase text-lg mb-8">Item Summary ({numOfItems})</div>
             <div className="grid grid-cols-6 gap-4 mb-6 hidden sm:grid">
               <div className="col-span-3">
                 Item Details
@@ -76,8 +89,9 @@ export default function Page() {
             </div>    
             {/* change to for loop */}
             <div className="hidden sm:grid">
-              <CartItem/>
-              <CartItem/>
+              {cartArr.map((item, index) => (
+                <CartItem key={index}/>
+              ))}
             </div>
 
             <div className="flex sm:hidden">
