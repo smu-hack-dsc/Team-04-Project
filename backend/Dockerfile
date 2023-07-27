@@ -13,6 +13,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the backend files to the working directory
 COPY . .
 
+# Copy the .env file into the container
+COPY .env .
+
+# Set environment variables from .env file
+ENV $(cat .env | grep -v ^# | xargs)
+
 # Expose port
 EXPOSE 5000
 
