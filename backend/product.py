@@ -141,7 +141,7 @@ def update_product(product_id):
 
                 rows_affected = cursor.execute('UPDATE tothecloset."address" SET brand = %s, size = %s, colour = %s, price = %s, type = %s, image_url = %s" "date_added = %s, product_name = %s, sizing_chart = %s, category =  %s WHERE product_id = %s', (brand, size, colour, price, type, image_url, date_added, product_name, sizing_chart, category, product_id))
 
-                if rows_affected == 0:
+                if rows_affected == 0 or rows_affected == None:
                     return jsonify({"error": "Product not found"}), 404
 
         connection.commit()
@@ -158,7 +158,7 @@ def delete_product(product_id):
             with connection.cursor() as cursor:
                 rows_affected = cursor.execute('DELETE FROM tothecloset."product" WHERE product_id = %s', (product_id))
 
-            if rows_affected == 0:
+            if rows_affected == 0 or rows_affected == None:
                 connection.rollback()
                 return jsonify({"error": "Product not found"}), 404
 
