@@ -35,7 +35,7 @@ env:
   ECR_REPOSITORY: tothecloset           
   ECS_SERVICE: tothecloset
   ECS_CLUSTER: tothecloset                 
-  ECS_TASK_DEFINITION: backend/aws/task-definition.json
+  ECS_TASK_DEFINITION: backend/aws/task_definition.json
   CONTAINER_NAME: tothecloset  
 
 permissions:
