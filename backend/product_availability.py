@@ -29,7 +29,7 @@ def update_product_availability(product_id, date):
 
                 rows_affected = cursor.execute('UPDATE tothecloset."product_availability" SET ' "is_boooked = %s WHERE product_id = %s AND date = %s", (is_booked, product_id, date))
 
-                if rows_affected == 0:
+                if rows_affected == 0 or rows_affected == None:
                     return jsonify({"error": "Product availability not found"}), 404
 
         connection.commit()

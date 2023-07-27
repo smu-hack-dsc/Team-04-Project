@@ -57,7 +57,7 @@ def update_cart(user_id, product_id):
 
                 rows_affected = cursor.execute('UPDATE tothecloset."cart" SET ' "rental_start = %s, rental_end = %s, " "rental_period = %s, quantity = %s" "WHERE user_id = %s AND product_id = %s", (rental_start, rental_end, rental_period, quantity, user_id, product_id))
 
-                if rows_affected == 0:
+                if rows_affected == 0 or rows_affected == None:
                     return jsonify({"error": "Product not found in this user's cart"}), 404
 
         connection.commit()
@@ -74,13 +74,32 @@ def delete_product_in_cart(user_id, product_id):
             with connection.cursor() as cursor:
                 rows_affected = cursor.execute('DELETE FROM tothecloset."cart" WHERE user_id = %s AND product_id = %s', (user_id, product_id))
 
-            if rows_affected == 0:
+            if rows_affected == 0 or rows_affected == None:
                 connection.rollback()
                 return jsonify({"error": "Product not found in user's cart"}), 404
 
         connection.commit()
 
         return jsonify({"message": "Product deleted successfully from user's cart"}), 200
+
+    except (Exception, psycopg2.Error) as error:
+        connection.rollback()
+        return jsonify({"error": str(error)}), 500
+    
+def update_quantity(user_id, product_id, quantity):
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+
+                rows_affected = cursor.execute('UPDATE tothecloset."cart" SET quantity = %s WHERE user_id = %s AND product_id = %s', 
+                (quantity, user_id, product_id))
+
+                if rows_affected == 0 or rows_affected == None:
+                    return jsonify({"error": "Product not found in this user's cart"}), 404
+
+        connection.commit()
+
+        return jsonify({"message": "Product quantity updated successfully"}), 200
 
     except (Exception, psycopg2.Error) as error:
         connection.rollback()
