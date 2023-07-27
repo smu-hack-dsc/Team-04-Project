@@ -19,7 +19,24 @@ def get_products():
 
     except (Exception, psycopg2.Error) as error:
         return jsonify({"error": str(error)}), 500
-  
+
+def get_product(product_id):
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT * FROM tothecloset."product" WHERE product_id = %s', (product_id,))
+
+                row = cursor.fetchone()
+
+                if len(row) == 0:
+                    return jsonify("No product found: " + product_id), 404
+                print(row)
+                product = {"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "sizing_chart": row[9], "category": row[10]}
+
+        return jsonify(product), 200
+
+    except (Exception, psycopg2.Error) as error:
+        return jsonify({"error": str(error)}), 500
     
 # get filtered products with specified brands, colour, price, size, type
 
@@ -31,24 +48,6 @@ def get_products():
 # type - string[]
 
 # case sensitive, look at db
-def get_product(product_id):
-    try:
-        with get_db_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute('SELECT * FROM tothecloset."product"' "WHERE product_id = %s", (product_id))
-
-                row = cursor.fetchall()
-
-                if len(row) == 0:
-                    return jsonify("No product found: " + product_id), 404
-
-                product = {"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "sizing_chart": row[9], "category": row[10]}
-
-        return jsonify(product), 200
-
-    except (Exception, psycopg2.Error) as error:
-        return jsonify({"error": str(error)}), 500
-    
 def get_filtered_products():
     try:
         brands = request.args.getlist("brand")

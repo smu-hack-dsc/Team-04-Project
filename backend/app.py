@@ -235,7 +235,7 @@ def delete_product_api(product_id):
 
     
 # get products by type
-@app.route("/api/product/<type>", methods=["GET"])
+@app.route("/api/product/type/<type>", methods=["GET"])
 def get_product_by_type_api(type):
     return get_product_by_type(type)
 
