@@ -19,7 +19,24 @@ def get_products():
 
     except (Exception, psycopg2.Error) as error:
         return jsonify({"error": str(error)}), 500
-  
+
+def get_product(product_id):
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT * FROM tothecloset."product" WHERE product_id = %s', (product_id,))
+
+                row = cursor.fetchone()
+
+                if len(row) == 0:
+                    return jsonify("No product found: " + product_id), 404
+                print(row)
+                product = {"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "sizing_chart": row[9], "category": row[10]}
+
+        return jsonify(product), 200
+
+    except (Exception, psycopg2.Error) as error:
+        return jsonify({"error": str(error)}), 500
     
 # get filtered products with specified brands, colour, price, size, type
 
@@ -31,38 +48,6 @@ def get_products():
 # type - string[]
 
 # case sensitive, look at db
-def get_product(product_id):
-    try:
-        with get_db_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute('SELECT * FROM tothecloset."product" WHERE product_id = %s', (product_id,))
-
-                rows = cursor.fetchall()
-
-                if len(rows) == 0:
-                    return jsonify("No product found: " + str(product_id)), 404
-
-                # Assuming product_id is unique, there should be only one row
-                row = rows[0]
-                product = {
-                    "product_id": row[0],
-                    "brand": row[1],
-                    "size": row[2],
-                    "colour": row[3],
-                    "price": row[4],
-                    "type": row[5],
-                    "image_url": row[6],
-                    "date_added": row[7],
-                    "product_name": row[8],
-                    "sizing_chart": row[9],
-                    "category": row[10]
-                }
-
-        return jsonify(product), 200
-
-    except (Exception, psycopg2.Error) as error:
-        return jsonify({"error": str(error)}), 500
-    
 def get_filtered_products():
     try:
         brands = request.args.getlist("brand")
@@ -156,7 +141,7 @@ def update_product(product_id):
 
                 rows_affected = cursor.execute('UPDATE tothecloset."address" SET brand = %s, size = %s, colour = %s, price = %s, type = %s, image_url = %s" "date_added = %s, product_name = %s, sizing_chart = %s, category =  %s WHERE product_id = %s', (brand, size, colour, price, type, image_url, date_added, product_name, sizing_chart, category, product_id))
 
-                if rows_affected == 0:
+                if rows_affected == 0 or rows_affected == None:
                     return jsonify({"error": "Product not found"}), 404
 
         connection.commit()
@@ -173,7 +158,7 @@ def delete_product(product_id):
             with connection.cursor() as cursor:
                 rows_affected = cursor.execute('DELETE FROM tothecloset."product" WHERE product_id = %s', (product_id))
 
-            if rows_affected == 0:
+            if rows_affected == 0 or rows_affected == None:
                 connection.rollback()
                 return jsonify({"error": "Product not found"}), 404
 

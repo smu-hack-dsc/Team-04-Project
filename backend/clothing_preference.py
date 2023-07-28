@@ -71,7 +71,7 @@ def update_clothing_preference(user_id):
 
                 rows_affected = cursor.execute('UPDATE tothecloset."clothing_preference" SET ' "height = %s, weight = %s, top_fit = %s, bottom_fit = %s, shoulder_width = %s, hip = %s, waist = %s WHERE user_id = %s", (height, weight, top_fit, bottom_fit, shoulder_width, hip, waist, user_id))
 
-                if rows_affected == 0:
+                if rows_affected == 0 or rows_affected == None:
                     return jsonify({"error": "Clothing preference not found for user: " + user_id}), 404
 
         connection.commit()
@@ -88,7 +88,7 @@ def delete_clothing_preference(user_id):
             with connection.cursor() as cursor:
                 rows_affected = cursor.execute('DELETE FROM tothecloset."clothing_preference" WHERE user_id = %s', (user_id))
 
-            if rows_affected == 0:
+            if rows_affected == 0 or rows_affected == None:
                 connection.rollback()
                 return jsonify({"error": "Clothing preference not found"}), 404
 
