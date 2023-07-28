@@ -25,20 +25,33 @@ def create_product_in_cart():
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                product_id = request.args.get("product_id")
-                user_id = request.args.get("user_id")
-                rental_start = request.args.get("rental_start")
-                rental_end = request.args.get("rental_end")
-                rental_period = request.args.get("rental_period")
-                quantity = request.args.get("quantity")
+                data = request.json  # Parse JSON data from the request body
 
-                cursor.execute('INSERT INTO tothecloset."cart" ' "(product_id, user_id, rental_start, rental_end, rental_period, quantity) " "VALUES (%s, %s, %s, %s, %s, %s) RETURNING product_id, user_id", (product_id, user_id, rental_start, rental_end, rental_period, quantity))
+                product_id = data.get("product_id")
+                user_id = data.get("user_id")
+                rental_start = data.get("rental_start")
+                rental_period = data.get("rental_period")
+                quantity = data.get("quantity")
 
-                return_values = cursor.fetchall()
+                cursor.execute(
+                    'INSERT INTO tothecloset."cart" '
+                    '(product_id, user_id, rental_start, rental_period, quantity) '
+                    'VALUES (%s, %s, %s, %s, %s) '
+                    'RETURNING product_id, user_id',
+                    (product_id, user_id, rental_start, rental_period, quantity)
+                )
+
+                return_values = cursor.fetchone()
 
                 if return_values is not None:
                     connection.commit()
-                    return jsonify({"message": "Product inserted into cart successfully", "product_id": return_values[0], "user_id": return_values[1]}), 201
+                    return jsonify(
+                        {
+                            "message": "Product inserted into cart successfully",
+                            "product_id": return_values[0],
+                            "user_id": return_values[1],
+                        }
+                    ), 201
                 else:
                     return jsonify({"error": "Failed to insert product in cart"}), 500
 
