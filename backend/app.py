@@ -106,6 +106,9 @@ def update_cart_api(user_id, product_id):
 def delete_product_in_cart_api(user_id, product_id):
     return delete_product_in_cart(user_id, product_id)
 
+@app.route("/api/cart/quantity/<user_id>/<product_id>/<quantity>", methods=["PUT"])
+def update_quantity_api(user_id, product_id, quantity):
+    return update_quantity(user_id, product_id, quantity)
 
 ########## DB: clothing_preferences
 
@@ -256,7 +259,7 @@ def delete_product_api(product_id):
 
     
 # get products by type
-@app.route("/api/product/<string:type>", methods=["GET"])
+@app.route("/api/product/type/<string:type>", methods=["GET"])
 def get_product_by_type_api(type):
     return get_product_by_type(type)
 

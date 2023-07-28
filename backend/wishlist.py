@@ -29,7 +29,7 @@ def create_wishlist():
 
                 rows_affected = cursor.execute('INSERT INTO tothecloset."wishlist" ' "(user_id, product_id) " "VALUES (%s, %s)", (user_id, product_id))
 
-                if rows_affected == 0:
+                if rows_affected == 0 or rows_affected == None:
                     return jsonify({"error": "Failed to insert product into wishlist"}), 500
 
         connection.commit()
@@ -46,7 +46,7 @@ def delete_product_from_wishlist(user_id, product_id):
             with connection.cursor() as cursor:
                 rows_affected = cursor.execute('DELETE FROM tothecloset."wishlist" WHERE user_id = %s AND product_id = %s', (user_id, product_id))
 
-            if rows_affected == 0:
+            if rows_affected == 0 or rows_affected == None:
                 connection.rollback()
                 return jsonify({"error": "Product not found in wishlist"}), 404
 

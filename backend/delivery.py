@@ -72,7 +72,7 @@ def update_delivery(delivery_id):
 
                 rows_affected = cursor.execute('UPDATE tothecloset."delivery" SET ' "address_id = %s, delivery_date = %s, delivery_status = %s, user_id = %s WHERE delivery_id = %s", (address_id, delivery_date, delivery_status, user_id, delivery_id))
 
-                if rows_affected == 0:
+                if rows_affected == 0 or rows_affected == None:
                     return jsonify({"error": "Delivery not found"}), 404
 
         connection.commit()
@@ -89,7 +89,7 @@ def delete_delivery(delivery_id):
             with connection.cursor() as cursor:
                 rows_affected = cursor.execute('DELETE FROM tothecloset."delivery" WHERE delivery_id = %s', (delivery_id))
 
-            if rows_affected == 0:
+            if rows_affected == 0 or rows_affected == None:
                 connection.rollback()
                 return jsonify({"error": "Delivery not found"}), 404
 

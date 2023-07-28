@@ -102,7 +102,7 @@ def update_payment(payment_id):
 
                 rows_affected = cursor.execute('UPDATE tothecloset."payment" SET user_id = %s, cardholder_name = %s, card_number = %s, cvc = %s, expiry_year = %s, expiry_month = %s, is_default=%s WHERE payment_id = %s', (user_id, cardholder_name, card_number, cvc, expiry_year, expiry_month, is_default, payment_id))
 
-                if rows_affected == 0:
+                if rows_affected == 0 or rows_affected == None:
                     return jsonify({"error": "Payment not found"}), 404
 
         connection.commit()
@@ -119,7 +119,7 @@ def delete_payment(payment_id):
             with connection.cursor() as cursor:
                 rows_affected = cursor.execute('DELETE FROM tothecloset."payment" WHERE payment_id = %s', (payment_id))
 
-            if rows_affected == 0:
+            if rows_affected == 0 or rows_affected == None:
                 connection.rollback()
                 return jsonify({"error": "Payment not found"}), 404
 
