@@ -224,3 +224,21 @@ def recommend(category, sizing_chart, user_detail):
             return sizes[len(sizes) - 1]
         else:
             sizes[recc_size]
+
+def size_chart(category, brand):
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT * FROM tothecloset."sizing_chart" WHERE brand = %s AND category = %s', (category, brand))
+
+                row = cursor.fetchone()
+
+                if row is None:
+                    return jsonify("No brand found: " + brand), 404
+                print(row)
+                product_sizing = {"brand": row[0], "category": row[1], "size_chart": row[2]}
+
+        return jsonify(product_sizing), 200
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
