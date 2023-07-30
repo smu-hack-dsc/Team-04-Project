@@ -73,10 +73,10 @@ def delete_product_in_cart(user_id, product_id):
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 rows_affected = cursor.execute('DELETE FROM tothecloset."cart" WHERE user_id = %s AND product_id = %s', (user_id, product_id))
-
-            if rows_affected == 0 or rows_affected == None:
-                connection.rollback()
-                return jsonify({"error": "Product not found in user's cart"}), 404
+                
+            # if rows_affected == 0 or rows_affected == None:
+            #     connection.rollback()
+            #     return jsonify({"error": "Product not found in user's cart"}), 404
 
         connection.commit()
 
@@ -94,8 +94,8 @@ def update_quantity(user_id, product_id, quantity):
                 rows_affected = cursor.execute('UPDATE tothecloset."cart" SET quantity = %s WHERE user_id = %s AND product_id = %s', 
                 (quantity, user_id, product_id))
 
-                if rows_affected == 0 or rows_affected == None:
-                    return jsonify({"error": "Product not found in this user's cart"}), 404
+                # if rows_affected == 0 or rows_affected == None:
+                #     return jsonify({"error": "Product not found in this user's cart"}), 404
 
         connection.commit()
 
