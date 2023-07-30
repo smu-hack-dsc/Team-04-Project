@@ -14,6 +14,7 @@ import returnpic from "./_images/return.png";
 import React, { useState, useEffect } from 'react';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { RxDotFilled } from 'react-icons/rx';
+import Footer from './_components/Footer';
 
 
 const imageUrl = landing.src;
@@ -34,7 +35,8 @@ const Landing: React.FC = () => {
     if (typeof window !== 'undefined') {
       // Set data in session storage
       if (!sessionStorage.getItem('userId')){
-        const userId = 3; // CHANGE THIS FOR NOW
+        var userId = 0; //when not logged in
+        var userId = 3 //hard coding for now, to simulate log in
         sessionStorage.setItem('userId', userId.toString()); // userId=0 if user is not logged in
       }
     }
@@ -118,7 +120,7 @@ const Landing: React.FC = () => {
           style={{ backgroundImage: `url(${image5Url})` }}
         >
         <div className="absolute bottom-0 left-0 right-0 flex justify-center mb-24">
-          <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-solid border-black bg-white text-black">
+          <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-none bg-white text-black">
             <div className="uppercase flex items-center justify-center">
               View Summer 2023 Collection
             </div>
@@ -131,7 +133,7 @@ const Landing: React.FC = () => {
         style={{ backgroundImage: `url(${image4Url})` }}
       >
       <div className="absolute bottom-0 left-0 ml-40 flex justify-center mb-40">
-        <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-solid border-black bg-white text-black">
+        <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-none bg-white text-black">
           <div className="uppercase flex items-center justify-center">
             View Trend 1
           </div>
@@ -144,7 +146,7 @@ const Landing: React.FC = () => {
         style={{ backgroundImage: `url(${image3Url})` }}
       >
       <div className="absolute bottom-0 right-0 mr-40 flex justify-center mb-40">
-        <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-solid border-black bg-white text-black">
+        <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-none bg-white text-black">
           <div className="uppercase flex items-center justify-center">
             View Trend 2
           </div>
@@ -152,25 +154,41 @@ const Landing: React.FC = () => {
       </div>
     </div>
 
-      <div className="container mx-auto py-16">
+      <div className="container mx-auto py-16 h-screen mt-5">
         <h1 className="text-center sm:text-3xl text-xl font-bold uppercase">How it works</h1>
         <div className="mx-auto py-8 max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
         <div className="px-32 grid grid-cols-1 gap-x-12 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-24">
-          <div>
-            <img src={rentUrl}></img>
-            <h2 className=" text-center sm:text-3xl text-xl py-4">Rent</h2>
+          <div className="flex flex-col items-center justify-center">
+            <div>
+              <div className='flex justify-center'>
+                <img src={rentUrl} className="w-40 h-auto"></img>
+              </div>
+              <p className=" text-center font-bold sm:text-md text-lg py-4 align-middle inline-block w-full">RENT</p>
+              <p className='text-center'>Choose your desired outfits from our thoughtfully curated selection.</p>
+            </div>
           </div>
-          <div>
-            <img src={wearUrl}></img>
-            <h3 className=" text-center sm:text-3xl text-xl py-4">Wear</h3>
+          <div className="flex flex-col items-center justify-center">
+            <div>
+            <div className='flex justify-center'>
+                <img src={wearUrl} className="w-40 h-auto"></img>
+              </div>
+              <p className=" text-center font-bold sm:text-md text-lg py-4 align-middle inline-block w-full">WEAR</p>
+              <p className='text-center'>Flaunt your style confidently and make a statement wherever you go.</p>
+            </div>
           </div>
-          <div>
-            <img src={returnUrl}></img>
-            <h4 className=" text-center sm:text-3xl text-xl py-4">Return</h4>
+          <div className="flex flex-col items-center justify-center">
+            <div>
+              <div className='flex justify-center'>
+                <img src={returnUrl} className="w-40 h-auto"></img>
+              </div>
+              <p className=" text-center font-bold sm:text-md text-lg py-4 align-middle inline-block w-full">RETURN</p>
+              <p className='text-center'>After your stylish adventure, easily return the rental and explore more fashion options.</p>
+            </div>
           </div>
         </div>
       </div> 
       </div>
+      <Footer/>
     
     </div>
   </div>

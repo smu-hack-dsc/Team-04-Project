@@ -14,19 +14,19 @@ export default function Page() {
   useEffect(() => {
     const fetchDataFromBackend = async () => {
       const userId = sessionStorage.getItem("userId");
+      console.log(userId);
       try {
-        const response = await axios.get('http://13.215.49.137:5000/api/cart/' + userId);
+        const response = await axios.get('http://localhost:5000/api/cart/' + userId);
         setNumOfItems(response.data.length);
         setCartArr(response.data);
-        console.log(response.data);
 
         //get product details
         for (const item of response.data) {
           const productId = item["product_id"]
           console.log(productId);
           try{
-            const response = await axios.get('http://13.215.49.137:5000/api/product/' + productId);
-            console.log(response)
+            const response = await axios.get('http://localhost:5000/api/product/' + productId);
+            setProductArr(prevProductArr => [...prevProductArr, response.data]);
           } catch (error) {
             console.error('Error fetching data:', error);
           }
@@ -38,6 +38,26 @@ export default function Page() {
 
     fetchDataFromBackend();
   }, []);
+
+  const getTotal = () => {
+    var tempTotal = 0;
+    if(productArr.length != 0){
+      for (var i=0; i<productArr.length; i++){
+        const price = productArr[i]["price"]
+        console.log(cartArr[i]["quantity"] + "---")
+        const quantity = cartArr[i]["quantity"]
+        console.log(quantity)
+        tempTotal += (price * quantity)
+      }
+    }
+    return tempTotal;
+  }
+
+  const [total, setTotal] = useState(getTotal());
+
+  useEffect(() => {
+    setTotal(getTotal());
+  }, [productArr])
 
   return (
     <div className="py-16 px-8">
@@ -73,7 +93,7 @@ export default function Page() {
             numOfItems>0 ? "grid" : "hidden"
           }>
             <div className="uppercase text-lg mb-8">Item Summary ({numOfItems})</div>
-            <div className="grid grid-cols-6 gap-4 mb-6 hidden sm:grid">
+            <div className="grid grid-cols-7 gap-4 mb-6 hidden sm:grid">
               <div className="col-span-3">
                 Item Details
               </div>
@@ -86,16 +106,19 @@ export default function Page() {
               <div className="text-center">
                 Subtotal
               </div>
+              <div></div>
             </div>    
             {/* change to for loop */}
             <div className="hidden sm:grid">
-              {cartArr.map((item, index) => (
-                <CartItem key={index}/>
+              {productArr.map((item, index) => (
+                <CartItem key={index} productArr={productArr} rentalArr={cartArr} productJson={item} rentalJson={cartArr[index]} total={total} setTotal={setTotal}/>
               ))}
             </div>
 
-            <div className="flex sm:hidden">
-              <CartItemSmViewport/>
+            <div className="sm:hidden">
+              {productArr.map((item, index) => (
+                <CartItemSmViewport key={index} productJson={item} rentalJson={cartArr[index]} total={total} setTotal={setTotal}/>
+              ))}
             </div>
           </div>
 
@@ -120,7 +143,7 @@ export default function Page() {
             <div className="text-sm">
               <div className="flex flex-cols justify-between mb-5">
                 <div>Subtotal</div>
-                <div>0.00 SGD</div>
+                <div>{total} SGD</div>
               </div>
               <div className="flex flex-cols justify-between mb-5 ">
                 <div>Discount</div>
@@ -139,7 +162,7 @@ export default function Page() {
               <hr className="my-7"/>
               <div className="flex flex-cols justify-between my-5 ">
                 <div className="uppercase">Total</div>
-                <div>0.00 SGD</div>
+                <div>{total} SGD</div>
               </div>
             </div>
             <Link href="/order/shipping-details" className='flex justify-center mt-4 text-base'>

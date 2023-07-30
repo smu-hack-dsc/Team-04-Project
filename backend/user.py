@@ -37,10 +37,12 @@ def create_user():
                 email = request.args.get("email")
                 phone_num = request.args.get("phone_num")
                 password = request.args.get("password")
+                print(first_name)
 
                 cursor.execute('INSERT INTO tothecloset."user" ' "(first_name, last_name, email, phone_num, password) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING user_id", (first_name, last_name, email, phone_num, password))
 
                 user_id = cursor.fetchone()[0]
+                print(user_id)
 
                 if user_id is not None:
                     connection.commit()
