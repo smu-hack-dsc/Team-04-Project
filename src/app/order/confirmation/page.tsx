@@ -7,12 +7,13 @@ const Page = () => {
       <div className="h-20 bg-gray-200"></div> {/* Navigation Bar Section */}
 
       <div className="flex items-center justify-center flex-col mt-24">
-        <img src="/images/tickIcon.png" alt="tick" className="h-40 w-40 mr-2" />
+
+        <img src="/images/shoppingBag.png" alt="shoppingBag" className="h-14 w-14 mb-5" />
       </div>
 
       <div className="flex items-center justify-center flex-col mt-4">
-        <h1 className="text-2xl font-bold text-center">Thanks for your order!</h1>
-        <p className="text-lg text-center text-gray-500 mt-4">Your order confirmation has been sent to email@gmail.com</p>
+        <h1 className="text-3xl font-bold text-center">Thank you for your order!</h1>
+        <p className="text-lg text-center text-gray-500 mt-4">A confirmation has been sent to your email.</p>
       </div>
 
       {/* Button */}
