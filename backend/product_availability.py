@@ -14,7 +14,7 @@ def get_product_availability_from_product_id(product_id):
                 if len(rows) == 0:
                     return jsonify("No product availability found under product_id: " + product_id), 404
 
-                product_availabilities = [{"date": row[0], "is_booked": row[1]} for row in rows]
+                product_availabilities = [{"product_id": row[0], "date": row[1], "is_booked": row[2]} for row in rows]
 
         return jsonify(product_availabilities), 200
 
