@@ -13,9 +13,9 @@ def get_wishlist_from_user_id(user_id):
                 if len(rows) == 0:
                     return jsonify({"message": "No wishlist items found for user_id: " + user_id}), 404
 
-                product_ids = [row[0] for row in rows]
+                product_id = [row[0] for row in rows]
 
-        return jsonify({"product_ids": product_ids}), 200
+        return jsonify({"product_id": product_id}), 200
 
     except (Exception, psycopg2.Error) as error:
         return jsonify({"error": str(error)}), 500
