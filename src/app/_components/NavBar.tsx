@@ -4,11 +4,14 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {Playfair_Display} from 'next/font/google'
 import { Heart,  Person, Bag, Search, List, X, Plus, Dash, Upload, Camera } from 'react-bootstrap-icons';
-import { twMerge } from "tailwind-merge"
 
-const playfair = Playfair_Display({ subsets: ['latin'], weight :'400'})
-
+// const playfair = Playfair_Display({ subsets: ['latin'], weight :'400'})
+const customFontStyle = Playfair_Display({
+        subsets: ['latin'],
+        weight: ['400'], // Replace 'weight' with 'weights'
+    });
 const NavBar = () => {
+
     // hamburger menu
     const [menuOpen, setMenuOpen] = useState(false)
     const handleNav = () => {
@@ -348,7 +351,7 @@ const NavBar = () => {
                     </ul>
                 </div>
                 <Link href='/' className="lg:w-1/3 absolute left-1/2 transform -translate-x-1/2">
-                    <h2 className="playfair.className text-center">TO THE CLOSET</h2>
+                    <h2 style={customFontStyle} className="text-center">TO THE CLOSET</h2>
                 </Link>
                 <div className="lg:w-1/3">
                     <ul className="hidden lg:flex justify-end items-center">
