@@ -1,31 +1,73 @@
+'use client'
 import type { NextPage } from "next";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import WishlistCard from "../_components/WishlistCard";
 
+interface WishlistItem {
+  id: number;
+}
+
+interface Product {
+  id: number;
+  product_name: string;
+  image_url: string;
+  brand: string;
+  price: string;
+  // Add more properties as needed
+}
 
 const WishlistLoggedIn: NextPage = () => {
-  const wishlistItems = [
-    // List of items in your wishlist
-    // Each item can have its own properties like name, brand, price, etc.
-    { id: 1, name: "Item 1", brand: "Brand 1", price: "69.90 SGD" },
-    { id: 2, name: "Item 2", brand: "Brand 2", price: "79.90 SGD" },
-    { id: 3, name: "Item 3", brand: "Brand 3", price: "89.90 SGD" },
-    { id: 4, name: "Item 4", brand: "Brand 4", price: "99.90 SGD" },
-    { id: 5, name: "Item 5", brand: "Brand 5", price: "99.90 SGD" },
-    // Add more items as needed
-  ];
+  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const user_id = 1; // Replace with the actual user ID or retrieve it from your authentication system
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:5000/api/wishlist/${user_id}/`)
+      .then((response) => {
+        console.log("response:", response.data);
+        setWishlistItems(response.data); // Update the wishlist items state with the data from the API
+      })
+      .catch((error) => {
+        console.error("Error fetching wishlist:", error);
+      });
+  }, [user_id]);
+
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      try {
+        // Check if the wishlistItems has the product_id array
+        if (!wishlistItems.product_id) {
+          return; // If the product_id array is not available, do not make the API call
+        }
+  
+        // Loop through each product_id in the array and fetch product details
+        const productPromises = wishlistItems.product_id.map((productId) =>
+          axios.get<Product>(`http://localhost:5000/api/product/${productId}/`)
+        );
+        const productResponses = await Promise.all(productPromises);
+        const productsData = productResponses.map((response) => response.data);
+        setProducts(productsData);
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+      }
+    };
+  
+    fetchProductDetails();
+  }, [wishlistItems]);
 
   return (
-
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <h1 className="text-2xl uppercase tracking-[2.4px] mb-10 mt-5">Wish List</h1>
-        <div className="mt-6 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4 xl:gap-x-8">
-          {wishlistItems.map((item) => (
-            <div key={item.id} className="group relative">
-              <WishlistCard name={item.name} brand={item.brand} price={item.price} />
-            </div>
-          ))}
-        </div>
-      </div>  
+    <div className="mx-auto max-w-2xl px-4 py-16 sm:py-24 lg:max-w-7xl">
+      <h1 className="text-2xl uppercase tracking-[2.4px] mb-10 mt-5">Wish List</h1>
+      <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:gap-x-8">
+        {products.map((product) => (
+          <div key={product.id} className="">
+            <WishlistCard product={product} />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 

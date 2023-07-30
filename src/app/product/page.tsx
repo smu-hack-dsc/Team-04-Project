@@ -6,6 +6,8 @@ import BrowsingCard from "../_components/BrowsingCard";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { addDays } from 'date-fns';
+import { Dialog } from '@headlessui/react';
+import SizeChart from '../_components/SizeChart'
 
 interface Product {
   brand: string;
@@ -17,6 +19,8 @@ interface Product {
   product_name: string;
   size: string[]; // Change this to string[] if 'size' is an array of strings
   type: string[];
+  category: string;
+  size_chart: JSON;
 }
 
 interface AvailabilityData {
@@ -26,6 +30,7 @@ interface AvailabilityData {
 }
 
 const ProductPage: React.FC = () => {
+
   const rentalPeriodOptions = [
     { label: '4 Days', days: 4 },
     { label: '8 Days', days: 8 },
@@ -46,17 +51,23 @@ const ProductPage: React.FC = () => {
   const [addToCartSelected, setAddToCartSelected] = useState<boolean>(false);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
 
+
+
+  const toggleSizeChart = () => {
+      setIsSizeChartOpen((prev) => !prev);
+    };
 
   useEffect(() => {
-    const productId = 10; // Replace 1 with the ID of the product you want to display
+    const productId = 5; // Replace 1 with the ID of the product you want to display
 
     // Fetch product details from the backend using the specific product ID
     axios.get(`http://localhost:5000/api/product/${productId}/`)
       .then((response) => {
         setProduct(response.data); // Update the product state with the data from the backend
         setLoading(false); // Set loading to false once the data is fetched
-        console.log('Response data:', response.data)
+        console.log('Response data:', response.data);
       })
       .catch((error) => {
         console.error('Error fetching product:', error);
@@ -110,7 +121,7 @@ const ProductPage: React.FC = () => {
 
 <section className="py-12 sm:py-16"> 
 <div className="container mx-auto px-4">
-  <div className="px-4 lg:col-gap-12 xl:col-gap-16 mt-8 grid grid-cols-1 gap-12 lg:mt-12 lg:grid-cols-5 lg:gap-16">
+  <div className="px-4 lg:col-gap-8 mt-8 grid grid-cols-1 gap-4 lg:mt-12 lg:grid-cols-5 lg:gap-8">
     <div className="lg:col-span-3 lg:row-end-1">
       <div className="lg:flex lg:items-center">
         <div className="lg:order-2 lg:ml-5">
@@ -200,7 +211,7 @@ const ProductPage: React.FC = () => {
       </div>
 
       <h2 className="mt-4 text-base text-gray-900">Size:</h2>
-      <div className="mt-3 flex select-none flex-wrap items-center gap-1">
+      <div className="mt-3 flex select-none flex-wrap items-center gap-1 justify-between">
       {Array.isArray(sizes)
     ? sizes.map((sizeName, index) => (
         <button
@@ -228,7 +239,37 @@ const ProductPage: React.FC = () => {
       </button>
     )
   }
+  <span>
+  <button
+          className="text-blue-600 underline cursor-pointer"
+          onClick={toggleSizeChart}
+        >
+          Size Chart
+        </button>
+  </span>
       </div>
+      <Dialog open={isSizeChartOpen} onClose={toggleSizeChart}>
+        <div className="fixed inset-0 z-10 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen">
+            <Dialog.Overlay className="fixed inset-0" />
+
+            <div className="bg-white p-6 max-w-2xl mx-auto rounded-lg shadow-lg">
+              <Dialog.Title className="text-xl font-semibold">Size Chart</Dialog.Title>
+              <div className="mt-4">
+                {/* Pass brand and category props to SizeChart component */}
+                {product && product.brand && product.category && (
+                  <SizeChart brand={product.brand} category={product.category} />
+                )}
+              </div>
+              <div className="mt-4 text-right">
+                <button className="text-blue-600 underline cursor-pointer" onClick={toggleSizeChart}>
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Dialog>
 
       <h2 className="mt-4 text-base text-gray-900">Rental Period:</h2>
       <div className="mt-3 flex select-none flex-wrap items-center gap-1">
@@ -312,6 +353,7 @@ const ProductPage: React.FC = () => {
 </section>
   );
 };
+
 const addToCart = (
   product_id: number | null,
   rental_start: string | null,
