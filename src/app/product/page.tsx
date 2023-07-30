@@ -262,7 +262,7 @@ const ProductPage: React.FC = () => {
                 )}
               </div>
               <div className="mt-4 text-right">
-                <button className="text-blue-600 underline cursor-pointer" onClick={toggleSizeChart}>
+                <button className="text-blue-600 underline" onClick={toggleSizeChart}>
                   Close
                 </button>
               </div>
@@ -336,7 +336,7 @@ const ProductPage: React.FC = () => {
 
 <hr></hr>
 <div className="flex justify-center mt-4">
-  <div className="text-center">Complete your look</div>
+  <div className="text-center text-xl">Complete your look</div>
 </div>
 
       <div className="mx-auto py-8 max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">

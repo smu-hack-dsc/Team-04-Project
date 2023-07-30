@@ -17,7 +17,19 @@ interface SizeData {
 // Helper function to get the first key of an object
 const getFirstKey = (obj: any) => {
     return Object.keys(obj)[0];
-  };
+};
+const getMeasurementText = (measurement: string) => {
+    switch (measurement) {
+    case 'shoulder_width':
+        return 'Shoulder Width (in cm)';
+    case 'hip_width':
+        return 'Hip Width (in cm)';
+    case 'waist':
+        return 'Waist (in cm)';
+    default:
+        return measurement;
+    }
+};
 
 const SizeChart: React.FC<SizeChartProps> = ({ brand, category }) => {
 const [sizeData, setSizeData] = useState<SizeData | null>(null);
@@ -40,36 +52,38 @@ if (!sizeData) {
 }
 
 // Define the order of sizes you want
-const sizeOrder = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
+const sizeOrders = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 // Extract all available measurements from the size data
 const availableMeasurements = Object.keys(sizeData[getFirstKey(sizeData)]);
 return (
     <div>
-      <h2>Size Chart for {brand} - {category}</h2>
-      <table className="border-collapse border border-gray-400">
+    <table className="border-collapse border border-gray-400">
         <thead>
-          <tr>
+        <tr>
             <th className="border border-gray-400 p-2">Size</th>
             {availableMeasurements.map((measurement) => (
-              <th key={measurement} className="border border-gray-400 p-2">{measurement}</th>
+            <th key={measurement} className="border border-gray-400 p-2">
+                {getMeasurementText(measurement)}
+            </th>
             ))}
-          </tr>
+        </tr>
         </thead>
         <tbody>
-          {Object.entries(sizeData).map(([size, measurements]) => (
+        {sizeOrders.map((size) => (
             <tr key={size}>
-              <td className="border border-gray-400 p-2">{size}</td>
-              {availableMeasurements.map((measurement) => (
+            <td className="border border-gray-400 p-2">{size}</td>
+            {availableMeasurements.map((measurement) => (
                 <td key={measurement} className="border border-gray-400 p-2">
-                  {measurements[measurement][0]} - {measurements[measurement][1]}
+                {sizeData[size][measurement][0]} - {sizeData[size][measurement][1]}
                 </td>
-              ))}
+            ))}
             </tr>
-          ))}
+        ))}
         </tbody>
-      </table>
+    </table>
     </div>
-  );
+);
 };
+
 export default SizeChart;
