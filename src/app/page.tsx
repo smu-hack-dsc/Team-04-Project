@@ -35,7 +35,8 @@ const Landing: React.FC = () => {
     if (typeof window !== 'undefined') {
       // Set data in session storage
       if (!sessionStorage.getItem('userId')){
-        const userId = 3; // CHANGE THIS FOR NOW
+        var userId = 0; //when not logged in
+        var userId = 3 //hard coding for now, to simulate log in
         sessionStorage.setItem('userId', userId.toString()); // userId=0 if user is not logged in
       }
     }
