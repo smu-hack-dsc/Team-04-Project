@@ -2,6 +2,7 @@ from flask import jsonify, request
 import os
 import psycopg2
 from db_config import get_db_connection
+from datetime import datetime, timedelta
 
 def get_cart_from_user_id(user_id):
     try:
@@ -33,6 +34,27 @@ def create_product_in_cart():
                 rental_period = data.get("rental_period")
                 quantity = data.get("quantity")
 
+                # Check if the product is already booked by another user on the selected days
+                cursor.execute(
+                    'SELECT COUNT(*) FROM tothecloset."cart" '
+                    'WHERE product_id = %s AND rental_start = %s AND rental_period = %s',
+                    (product_id, rental_start, rental_period)
+                )
+                count = cursor.fetchone()[0]
+                if count > 0:
+                    return jsonify({"error_code": 4091, "error_message": "Product is already booked on the selected days"}), 409
+
+                # Check if the product is already booked by another user on any day within the selected period
+                end_date = datetime.strptime(rental_start, '%Y-%m-%d').date() + timedelta(days=rental_period - 1)
+                cursor.execute(
+                    'SELECT COUNT(*) FROM tothecloset."cart" '
+                    'WHERE product_id = %s AND rental_start <= %s AND rental_start + rental_period - 1 >= %s',
+                    (product_id, rental_start, end_date)
+                )
+                count = cursor.fetchone()[0]
+                if count > 0:
+                    return jsonify({"error_code": 4092, "error_message": "Product is already booked for some days within the selected period"}), 409
+
                 cursor.execute(
                     'INSERT INTO tothecloset."cart" '
                     '(product_id, user_id, rental_start, rental_period, quantity) '
@@ -53,12 +75,14 @@ def create_product_in_cart():
                         }
                     ), 201
                 else:
-                    return jsonify({"error": "Failed to insert product in cart"}), 500
+                    return jsonify({"error_code": 5001, "error_message": "Failed to insert product in cart"}), 500
 
     except (Exception, psycopg2.Error) as error:
         connection.rollback()
-        return jsonify({"error": str(error)}), 500
+        return jsonify({"error_code": 500, "error_message": str(error)}), 500
+
     
+
 def update_cart(user_id, product_id):
     try:
         with get_db_connection() as connection:
