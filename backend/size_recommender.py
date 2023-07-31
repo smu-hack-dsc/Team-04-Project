@@ -14,10 +14,12 @@ def size_recommender(user_id, brand, category):
     if status_code == 200:
         sizing_chart_data = sizing_chart_response.get_json()
         sizing_chart = sizing_chart_data["size_chart"]
+        print(sizing_chart)
     else:
         error_message = sizing_chart_response.get_data(as_text=True)
         return jsonify({"error": "Failed to get sizing chart data"}), 500
 
+    #get clothing preference
     clothing_preference_response, status_code = get_clothing_preference_from_user_id(user_id)
 
     if status_code == 200:
@@ -126,7 +128,7 @@ def recommend(category, sizing_chart, user_detail):
             if int(waist_arr[0]) <= waist and waist < int(waist_arr[1]):
                 waist_size = indx
 
-            hip_arr = size_info["hip"]  # [min, max]
+            hip_arr = size_info["hip_width"]  # [min, max]
 
             if int(hip_arr[0]) <= hip and hip < int(hip_arr[1]):
                 waist_size = indx
@@ -187,7 +189,7 @@ def recommend(category, sizing_chart, user_detail):
             if int(waist_arr[0]) <= waist and waist < int(waist_arr[1]):
                 waist_size = indx
 
-            hip_arr = size_info["hip"] # [min, max]
+            hip_arr = size_info["hip_width"] # [min, max]
 
             if int(hip_arr[0]) <= hip and hip < int(hip_arr[1]):
                 waist_size = indx
