@@ -14,7 +14,6 @@ def size_recommender(user_id, brand, category):
     if status_code == 200:
         sizing_chart_data = sizing_chart_response.get_json()
         sizing_chart = sizing_chart_data["size_chart"]
-        print(sizing_chart)
     else:
         error_message = sizing_chart_response.get_data(as_text=True)
         return jsonify({"error": "Failed to get sizing chart data"}), 500
