@@ -366,9 +366,9 @@ def delete_product_from_wishlist_api(user_id, product_id):
 ########## size recommender
 
 
-@app.route("/api/size_recommender/<user_id>/<product_id>", methods=["GET"])
-def size_recommender_api(user_id, product_id):
-    return size_recommender(user_id, product_id)
+@app.route("/api/size_recommender/<user_id>/<string:brand>/<string:category>", methods=["GET"])
+def size_recommender_api(user_id, brand, category):
+    return size_recommender(user_id, brand, category)
 
 #get size_chart for brand and category
 @app.route("/api/size_chart/<string:brand>/<string:category>", methods = ['GET'])

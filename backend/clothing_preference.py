@@ -9,7 +9,9 @@ def get_clothing_preference_from_user_id(user_id):
             with connection.cursor() as cursor:
                 cursor.execute('SELECT * FROM tothecloset."clothing_preference"' "WHERE user_id = %s", (user_id))
 
-                row = cursor.fetchone()[0]
+                row = cursor.fetchone()
+                print("row here - ---- ")
+                print(row)
 
                 if len(row) == 0:
                     return jsonify("No clothing preference found under user_id: " + user_id), 404
