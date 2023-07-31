@@ -3,33 +3,34 @@ import os
 import psycopg2
 from db_config import get_db_connection
 import math
+from clothing_preference import *
 
-def size_recommender(user_id, product_id):
+
+def size_recommender(user_id, brand, category):
     # get sizing chart
-    try:
-        with get_db_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute('SELECT sizing_chart, category FROM tothecloset."product"' "WHERE product_id = %s", (product_id))
+    # Call the size_chart function to get the sizing chart data
+    sizing_chart_response, status_code = size_chart(brand, category)
 
-                row = cursor.fetchone()
-                sizing_chart = jsonify(row[0])
-                category = row[1]
+    if status_code == 200:
+        sizing_chart_data = sizing_chart_response.get_json()
+        sizing_chart = sizing_chart_data["size_chart"]
+    else:
+        error_message = sizing_chart_response.get_data(as_text=True)
+        return jsonify({"error": "Failed to get sizing chart data"}), 500
 
-    except (Exception, psycopg2.Error) as error:
-        return jsonify({"error": str(error)}), 500
+    clothing_preference_response, status_code = get_clothing_preference_from_user_id(user_id)
 
-    # get user preference
-    try:
-        with get_db_connection() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute('SELECT * FROM tothecloset."clothing_preference"' "WHERE user_id = %s", (user_id))
+    if status_code == 200:
+        clothing_preference_data = clothing_preference_response.get_json()
+    else:
+        error_message = clothing_preference_response.get_data(as_text=True)
+        return jsonify({"error": "Failed to get clothing preference data"}), 500
 
-                user_preference = jsonify(cursor.fetchone()[0])
+    # get recommended size 
+    recommended_size = recommend(category, sizing_chart, clothing_preference_data) 
+    
+    return jsonify({"size_recommendation": recommended_size}), 200
 
-    except (Exception, psycopg2.Error) as error:
-        return jsonify({"error": str(error)}), 500
-
-    return recommend(category, sizing_chart, user_preference)
 
 
 # all measurements are in cm
@@ -39,7 +40,8 @@ def size_recommender(user_id, product_id):
 def recommend(category, sizing_chart, user_detail):
     if category == "Accessory":
         return "Size cannot be reccommended for accessories"
-
+    
+    category = category.lower()
     height = user_detail["height"]
     weight = user_detail["weight"]
     shoulder_width = user_detail["shoulder_width"]
@@ -64,15 +66,15 @@ def recommend(category, sizing_chart, user_detail):
     sizes = []
 
     # TOP: Use shoulder_width, bmi, top_fit
-    if category == "Top":
+    if category == "top":
         # get shoulder size
         shoulder_size = 0
         indx = 0
 
-        for size in sizing_chart:
-            sizes.append(size)
+        for size_label, size_info in sizing_chart.items():
+            sizes.append(size_label)
 
-            shoulder_width_arr = size["shoulder_width"].split("-")  # [min, max]
+            shoulder_width_arr = size_info["shoulder_width"]  # [min, max]
 
             if int(shoulder_width_arr[0]) <= shoulder_width and shoulder_width < int(shoulder_width_arr[1]):
                 shoulder_size = indx
@@ -107,24 +109,24 @@ def recommend(category, sizing_chart, user_detail):
         elif recc_size >= len(sizes):
             return sizes[len(sizes) - 1]
         else:
-            sizes[recc_size]
+            return sizes[recc_size]
 
     # BOTTOM: use waist, hip, bmi, bottom_fit
-    elif category == "Bottom":
+    elif category == "bottom":
         # get waist and hip size
         waist_size = 0
         hip_size = 0
         indx = 0
 
-        for size in sizing_chart:
-            sizes.append(size)
+        for size_label, size_info in sizing_chart.items():
+            sizes.append(size_label)
 
-            waist_arr = size["waist"].split("-")  # [min, max]
+            waist_arr = size_info["waist"] # [min, max]
 
             if int(waist_arr[0]) <= waist and waist < int(waist_arr[1]):
                 waist_size = indx
 
-            hip_arr = size["hip"].split("-")  # [min, max]
+            hip_arr = size_info["hip"]  # [min, max]
 
             if int(hip_arr[0]) <= hip and hip < int(hip_arr[1]):
                 waist_size = indx
@@ -147,9 +149,9 @@ def recommend(category, sizing_chart, user_detail):
             bmi_size = avg_chart_size + 1
 
         # get preference size
-        if top_fit == "tight":
+        if bottom_fit == "tight":
             preference_size = avg_chart_size - 1
-        elif top_fit == "normal":
+        elif bottom_fit == "normal":
             preference_size = avg_chart_size
         else:
             preference_size = avg_chart_size + 1
@@ -162,7 +164,7 @@ def recommend(category, sizing_chart, user_detail):
         elif recc_size >= len(sizes):
             return sizes[len(sizes) - 1]
         else:
-            sizes[recc_size]
+            return sizes[recc_size]
 
     # One-piece: use shoulder_width, waist, hip, bmi, top_fit
     else:
@@ -172,20 +174,20 @@ def recommend(category, sizing_chart, user_detail):
         hip_size = 0
         indx = 0
 
-        for size in sizing_chart:
-            sizes.append(size)
+        for size_label, size_info in sizing_chart.items():
+            sizes.append(size_label)
 
-            shoulder_arr = size["shoulder"].split("-")  # [min, max]
+            shoulder_arr = size_info["shoulder_width"]  # [min, max]
 
             if int(shoulder_arr[0]) <= shoulder_width and shoulder_width < int(shoulder_arr[1]):
                 shoulder_size = indx
 
-            waist_arr = size["waist"].split("-")  # [min, max]
+            waist_arr = size_info["waist"]  # [min, max]
 
             if int(waist_arr[0]) <= waist and waist < int(waist_arr[1]):
                 waist_size = indx
 
-            hip_arr = size["hip"].split("-")  # [min, max]
+            hip_arr = size_info["hip"] # [min, max]
 
             if int(hip_arr[0]) <= hip and hip < int(hip_arr[1]):
                 waist_size = indx
@@ -223,19 +225,18 @@ def recommend(category, sizing_chart, user_detail):
         elif recc_size >= len(sizes):
             return sizes[len(sizes) - 1]
         else:
-            sizes[recc_size]
+            return sizes[recc_size]
 
-def size_chart(category, brand):
+def size_chart(brand, category):
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute('SELECT * FROM tothecloset."sizing_chart" WHERE brand = %s AND category = %s', (category, brand))
+                cursor.execute('SELECT * FROM tothecloset."sizing_chart" WHERE brand = %s AND category = %s', (brand, category))
 
                 row = cursor.fetchone()
 
                 if row is None:
                     return jsonify("No brand found: " + brand), 404
-                print(row)
                 product_sizing = {"brand": row[0], "category": row[1], "size_chart": row[2]}
 
         return jsonify(product_sizing), 200
