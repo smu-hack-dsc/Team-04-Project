@@ -44,10 +44,10 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
 
   return (
     <div className="mb-10"> {/* Always show the card */}
-      <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+      <div className="w-full h-auto overflow-hidden bg-gray-200 lg:aspect-none group-hover:opacity-75">
         {/* Use the first image from the imageUrls array */}
         {product.image_url.length > 0 && (
-          <img src={product.image_url[0]} className="h-full w-full object-cover object-center lg:h-full lg:w-full" alt="" />
+          <img src={product.image_url[0]} className="h-auto w-full object-cover object-center lg:w-full" alt="" />
         )}
       </div>
       <div className="mt-4 flex justify-between">
