@@ -370,5 +370,10 @@ def delete_product_from_wishlist_api(user_id, product_id):
 def size_recommender_api(user_id, product_id):
     return size_recommender(user_id, product_id)
 
+#get size_chart for brand and category
+@app.route("/api/size_chart/<string:brand>/<string:category>", methods = ['GET'])
+def size_chart_api(brand, category):
+    return size_chart(brand, category)
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
