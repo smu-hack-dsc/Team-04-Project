@@ -39,7 +39,7 @@ return (
         </a>
         </h3>
         <p className="mt-1 text-slate-500 uppercase">{product.product_name}</p>
-        <p className="text-slate-500 font-lato">{product.price} SGD</p>
+        <p className="text-slate-500 font-lato">{product.price} SGD test</p>
         <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
         <div className="uppercase flex items-center justify-center">
             Add to cart
