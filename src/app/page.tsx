@@ -3,62 +3,84 @@ import ReactTypingEffect from 'react-typing-effect';
 import { render } from "react-dom";
 import { ParallaxProvider } from 'react-scroll-parallax';
 import landing from "./_images/landing.jpg";
+import landingSmall from "./_images/landingSmall.jpg";
 import landing1 from "./_images/landing1.jpg";
+import landing1Small from "./_images/landing1Small.jpg";
 import landing2 from "./_images/landing2.jpg";
+import landing2Small from "./_images/landing2Small.jpg";
 import landing3 from "./_images/landing3.jpg";
+import landing3Small from "./_images/landing3Small.jpg";
 import landing4 from "./_images/landing4.jpg";
+import landing4Small from "./_images/landing4Small.jpg";
 import landing5 from "./_images/landing5.jpg";
+import landing5Small from "./_images/landing5Small.jpg";
 import rent from "./_images/rent.png";
 import wear from "./_images/wear.png";
 import returnpic from "./_images/return.png";
 import React, { useState, useEffect } from 'react';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { RxDotFilled } from 'react-icons/rx';
+import { useMediaQuery } from 'react-responsive'; // If you don't have this library, install it: npm install react-responsive
 
+const isSmallScreen = () => {
+  if (useMediaQuery({ maxWidth: 400 })) {
+    return true;
+  }
+  else {
+    return false;
+  }
+
+} 
 
 const imageUrl = landing.src;
+const imageSmallUrl = landingSmall.src;
 const image1Url = landing1.src;
+const image1SmallUrl = landing1Small.src;
 const image2Url = landing2.src;
+const image2SmallUrl = landing2Small.src;
 const image3Url = landing3.src;
+const image3SmallUrl = landing3Small.src;
 const image4Url = landing4.src;
+const image4SmallUrl = landing4Small.src;
 const image5Url = landing5.src;
+const image5SmallUrl = landing5Small.src;
 const rentUrl = rent.src;
 const wearUrl = wear.src;
 const returnUrl = returnpic.src;
-
 const Landing: React.FC = () => {
+
 
   //initialising session storage whenever the landing page is first loaded
   useEffect(() => {
     // Check if session storage is available (for CSR)
     if (typeof window !== 'undefined') {
       // Set data in session storage
-      if (!sessionStorage.getItem('userId')){
+      if (!sessionStorage.getItem('userId')) {
         const userId = 3; // CHANGE THIS FOR NOW
         sessionStorage.setItem('userId', userId.toString()); // userId=0 if user is not logged in
       }
     }
   }, [])
-  
+
 
   const slides = [
     {
-      url: imageUrl,
+      url: isSmallScreen() ? imageSmallUrl : imageUrl,
     },
     {
-      url: image1Url,
+      url: isSmallScreen() ? image1SmallUrl : image1Url,
     },
     {
-      url: image2Url,
+      url: isSmallScreen() ? image2SmallUrl : image2Url,
     },
 
     {
-      url: image3Url,
+      url: isSmallScreen() ? image3SmallUrl : image3Url,
     },
   ];
-  
+
   const secondImg = [
-    {url: image4Url},
+    { url: image4Url },
   ]
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -78,31 +100,30 @@ const Landing: React.FC = () => {
     setCurrentIndex(slideIndex);
   };
 
-  
+
 
   return (
     <section>
-  <div className="container mx-auto flex py-16 items-center justify-center flex-col">
-    <div className='h-screen w-screen mx-0 relative group'>
-        <div
-          
-          style={{ backgroundImage: `url(${slides[currentIndex].url})` }}
-          className='w-full h-full bg-cover bg-cover duration-500'
-        ></div>
-        <div className='absolute top-0 pt-4 w-full h-full flex items-center justify-center'>
-          <ReactTypingEffect className='text-white text-center sm:text-3xl text-xl font-bold' speed={100} eraseSpeed={100} typingDelay={500}
-          text={['RENT DESIGNER CLOTHING FOR ANY OCCASION']}
-          />
-        </div>
-        {/* Left Arrow */}
-        <div className='hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer'>
-          <BsChevronCompactLeft onClick={prevSlide} size={30} />
-        </div>
-        {/* Right Arrow */}
-        <div className='hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] right-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer'>
-          <BsChevronCompactRight onClick={nextSlide} size={30} />
-        </div>
-        {/* <div className='flex top-4 justify-center py-2'>
+      <div className="container mx-auto flex py-16 items-center justify-center flex-col">
+        <div className='group'>
+          <div
+            style={{ backgroundImage: `url(${slides[currentIndex].url})` }}
+            className='w-screen h-screen bg-cover bg-center duration-500'
+          ></div>
+          <div className='absolute top-0 pt-4 w-full h-full flex items-center justify-center'>
+            <ReactTypingEffect className='text-white text-center sm:text-3xl font-bold' speed={100} eraseSpeed={100} typingDelay={500}
+              text={['RENT DESIGNER CLOTHING FOR ANY OCCASION']}
+            />
+          </div>
+          {/* Left Arrow */}
+          <div className='hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer'>
+            <BsChevronCompactLeft onClick={prevSlide} size={30} />
+          </div>
+          {/* Right Arrow */}
+          <div className='hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] right-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer'>
+            <BsChevronCompactRight onClick={nextSlide} size={30} />
+          </div>
+          {/* <div className='flex top-4 justify-center py-2'>
           {slides.map((slide, slideIndex) => (
             <div
               key={slideIndex}
@@ -113,68 +134,68 @@ const Landing: React.FC = () => {
             </div>
           ))}
         </div> */}
-        <div
-          className="w-screen h-screen relative bg-cover"
-          style={{ backgroundImage: `url(${image5Url})` }}
-        >
-        <div className="absolute bottom-0 left-0 right-0 flex justify-center mb-24">
-          <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-solid border-black bg-white text-black">
-            <div className="uppercase flex items-center justify-center">
-              View Summer 2023 Collection
+          <div
+            className="w-screen h-screen relative bg-cover bg-center"
+            style={{ backgroundImage: isSmallScreen() ? `url(${image5SmallUrl})` : `url(${image5Url})`}}
+          >
+            <div className="absolute bottom-0 left-0 right-0 flex justify-center mb-24">
+              <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-solid border-black bg-white text-black">
+                <div className="uppercase flex items-center justify-center">
+                  View Summer 2023 Collection
+                </div>
+              </button>
             </div>
-          </button>
-        </div>
-        </div>
+          </div>
 
-        <div
-        className="w-screen h-screen relative bg-cover"
-        style={{ backgroundImage: `url(${image4Url})` }}
-      >
-      <div className="absolute bottom-0 left-0 ml-40 flex justify-center mb-40">
-        <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-solid border-black bg-white text-black">
-          <div className="uppercase flex items-center justify-center">
-            View Trend 1
+          <div
+            className="sm:w-screen h-screen relative bg-cover bg-center"
+            style={{ backgroundImage: isSmallScreen() ? `url(${image4SmallUrl})` : `url(${image4Url})` }}
+          >
+            <div className="absolute bottom-0 left-0 ml-40 flex justify-center mb-40">
+              <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-solid border-black bg-white text-black">
+                <div className="uppercase flex items-center justify-center">
+                  View Trend 1
+                </div>
+              </button>
+            </div>
           </div>
-        </button>
-      </div>
-      </div>
 
-      <div
-        className="w-screen h-screen relative bg-cover"
-        style={{ backgroundImage: `url(${image3Url})` }}
-      >
-      <div className="absolute bottom-0 right-0 mr-40 flex justify-center mb-40">
-        <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-solid border-black bg-white text-black">
-          <div className="uppercase flex items-center justify-center">
-            View Trend 2
+          <div
+            className=" w-screen h-screen relative bg-cover  sm:bg-relative"
+            style={{ backgroundImage: isSmallScreen() ? `url(${image3SmallUrl})` : `url(${image3Url})`}}
+          >
+            <div className="absolute bottom-0 right-0 mr-40 flex justify-center mb-40">
+              <button className="rotate-0 box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-solid border-black bg-white text-black">
+                <div className="uppercase flex items-center justify-center">
+                  View Trend 2 
+                </div>
+              </button>
+            </div>
           </div>
-        </button>
-      </div>
-    </div>
 
-      <div className="container mx-auto py-16">
-        <h1 className="text-center sm:text-3xl text-xl font-bold uppercase">How it works</h1>
-        <div className="mx-auto py-8 max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-        <div className="px-32 grid grid-cols-1 gap-x-12 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-24">
-          <div>
-            <img src={rentUrl}></img>
-            <h2 className=" text-center sm:text-3xl text-xl py-4">Rent</h2>
+          <div className="container mx-auto py-16">
+            <h1 className="text-center text-4xl sm:text-3xl font-bold uppercase">How it works</h1>
+            <div className="mx-auto py-8  px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+              <div className="px-21 grid grid-cols-1 gap-x-12 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-24">
+                <div>
+                  <img src={rentUrl}></img>
+                  <h2 className=" text-center text-4xl sm:text-3xl py-4">Rent</h2>
+                </div>
+                <div>
+                  <img src={wearUrl} ></img>
+                  <h3 className=" text-center text-4xl sm:text-3xl py-4">Wear</h3>
+                </div>
+                <div>
+                  <img src={returnUrl}></img>
+                  <h4 className=" text-center text-4xl sm:text-3xl py-4">Return</h4>
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <img src={wearUrl}></img>
-            <h3 className=" text-center sm:text-3xl text-xl py-4">Wear</h3>
-          </div>
-          <div>
-            <img src={returnUrl}></img>
-            <h4 className=" text-center sm:text-3xl text-xl py-4">Return</h4>
-          </div>
+
         </div>
-      </div> 
       </div>
-    
-    </div>
-  </div>
-</section>
+    </section>
   )
 }
 
