@@ -2,6 +2,7 @@
 import { HeartFill, Heart } from "react-bootstrap-icons";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Skeleton } from 'antd';
 
 type BrowsingCardProps = {
   productId: number; // Add the product ID prop to identify the specific product
@@ -39,7 +40,7 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
 
   if (!product) {
     // Handle loading state while waiting for the data to be fetched
-    return <div>Loading...</div>;
+    return <Skeleton active />;
   }
 
   return (
@@ -59,7 +60,7 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
             </a>
           </h3>
           <p className="mt-1 text-slate-500 uppercase">{product.product_name}</p>
-          <p className="text-slate-500 font-lato">${product.price}</p>
+          <p className="text-slate-500 font-lato">{product.price} SGD</p>
           <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
             <div className="uppercase flex items-center justify-center">Add to cart</div>
           </button>

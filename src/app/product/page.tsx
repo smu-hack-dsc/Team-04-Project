@@ -8,7 +8,7 @@ import 'antd/dist/antd';
 import { Dialog } from '@headlessui/react';
 import SizeChart from '../_components/SizeChart'
 import toast, { Toaster } from 'react-hot-toast';
-
+import { Skeleton } from 'antd';
 
 interface Product {
   brand: string;
@@ -129,7 +129,7 @@ const ProductPage: React.FC = () => {
   const colours = product?.colour || [];
   const sizes = product?.size || [];
   if (loading) {
-    return <div>Loading...</div>;
+    return <Skeleton active />;
   }
   return (
 
@@ -356,17 +356,25 @@ const ProductPage: React.FC = () => {
   <div className="text-center text-xl">Complete your look</div>
 </div>
 
-      <div className="mx-auto py-8 max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-            {Array.from({ length: similarItemCount }).map((_, index) => (
-          <div key={index} className="">
-            {product && (
-              <BrowsingCard productId={product.product_id} />
-            )}
-          </div>
-        ))}
-        </div>
-      </div> 
+  <div className="mx-auto py-8 max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+      <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+        {/* Render the Skeleton when loading is true */}
+        {loading ? (
+          <>
+            <Skeleton active />
+            <Skeleton active />
+            <Skeleton active />
+          </>
+        ) : (
+          // Render the actual cards when loading is false
+          Array.from({ length: similarItemCount }).map((_, index) => (
+            <div key={index} className="">
+              {product && <BrowsingCard productId={product.product_id} />}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
 </section>
   );
 };
