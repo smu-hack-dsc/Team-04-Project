@@ -30,7 +30,7 @@ const isSmallScreen = () => {
     return false;
   }
 
-} 
+}
 
 const imageUrl = landing.src;
 const imageSmallUrl = landingSmall.src;
@@ -136,10 +136,10 @@ const Landing: React.FC = () => {
         </div> */}
           <div
             className="w-screen h-screen relative bg-cover bg-center"
-            style={{ backgroundImage: isSmallScreen() ? `url(${image5SmallUrl})` : `url(${image5Url})`}}
+            style={{ backgroundImage: isSmallScreen() ? `url(${image5SmallUrl})` : `url(${image5Url})` }}
           >
             <div className="absolute bottom-0 left-0 right-0 flex justify-center mb-24">
-              <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-solid border-black bg-white text-black">
+              <button className="box-border py-3 px-8  w-150px tracking-[1.5px] flex  bg-white text-black">
                 <div className="uppercase flex items-center justify-center">
                   View Summer 2023 Collection
                 </div>
@@ -152,7 +152,7 @@ const Landing: React.FC = () => {
             style={{ backgroundImage: isSmallScreen() ? `url(${image4SmallUrl})` : `url(${image4Url})` }}
           >
             <div className="absolute bottom-0 left-0 ml-40 flex justify-center mb-40">
-              <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-solid border-black bg-white text-black">
+              <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-none bg-white text-black">
                 <div className="uppercase flex items-center justify-center">
                   View Trend 1
                 </div>
@@ -162,12 +162,12 @@ const Landing: React.FC = () => {
 
           <div
             className=" w-screen h-screen relative bg-cover  sm:bg-relative"
-            style={{ backgroundImage: isSmallScreen() ? `url(${image3SmallUrl})` : `url(${image3Url})`}}
+            style={{ backgroundImage: isSmallScreen() ? `url(${image3SmallUrl})` : `url(${image3Url})` }}
           >
             <div className="absolute bottom-0 right-0 mr-40 flex justify-center mb-40">
-              <button className="rotate-0 box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-solid border-black bg-white text-black">
+              <button className="rotate-0 box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-none bg-white text-black">
                 <div className="uppercase flex items-center justify-center">
-                  View Trend 2 
+                  View Trend 2
                 </div>
               </button>
             </div>
@@ -180,14 +180,17 @@ const Landing: React.FC = () => {
                 <div>
                   <img src={rentUrl}></img>
                   <h2 className=" text-center text-4xl sm:text-3xl py-4">Rent</h2>
+                  <p className='text-center'>Choose your desired outfits from our thoughtfully curated selection.</p>
                 </div>
                 <div>
                   <img src={wearUrl} ></img>
                   <h3 className=" text-center text-4xl sm:text-3xl py-4">Wear</h3>
+                  <p className='text-center'>Flaunt your style confidently and make a statement wherever you go.</p>
                 </div>
                 <div>
                   <img src={returnUrl}></img>
                   <h4 className=" text-center text-4xl sm:text-3xl py-4">Return</h4>
+                  <p className='text-center'>After your stylish adventure, easily return the rental and explore more fashion options.</p>
                 </div>
               </div>
             </div>
