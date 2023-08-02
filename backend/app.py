@@ -300,6 +300,16 @@ def create_rental_api():
     return create_rental()
 
 
+# get past rentals under user id
+@app.route("/api/rental/<user_id>/", methods=["GET"])
+def get_past_rental_from_user_id_api(user_id):
+    return get_past_rental_from_user_id(user_id)
+
+# get ongoing rentals under user id
+@app.route("/api/rental/<user_id>/", methods=["GET"])
+def get_ongoing_rental_from_user_id_api(user_id):
+    return get_ongoing_rental_from_user_id(user_id)
+
 ########## DB: return
 
 
