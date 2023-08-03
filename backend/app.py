@@ -148,13 +148,13 @@ def get_deliveries_api():
     return get_deliveries()
 
 # get delivery under delivery id
-@app.route("/api/delivery/<delivery_id>/", methods=["GET"])
+@app.route("/api/delivery/deliveryid/<delivery_id>/", methods=["GET"])
 def get_delivery_from_delivery_id_api(delivery_id):
     return get_delivery_from_delivery_id(delivery_id)
 
 
 # get all deliveries under user id
-@app.route("/api/delivery/<user_id>/", methods=["GET"])
+@app.route("/api/delivery/userid/<user_id>/", methods=["GET"])
 def get_delivery_from_user_id_api(user_id):
     return get_delivery_from_user_id(user_id)
 
@@ -306,12 +306,12 @@ def create_rental_api():
 
 
 # get past rentals under user id
-@app.route("/api/rental/<user_id>/", methods=["GET"])
+@app.route("/api/rental/past/<user_id>", methods=["GET"])
 def get_past_rental_from_user_id_api(user_id):
     return get_past_rental_from_user_id(user_id)
 
 # get ongoing rentals under user id
-@app.route("/api/rental/<user_id>/", methods=["GET"])
+@app.route("/api/rental/ongoing/<user_id>", methods=["GET"])
 def get_ongoing_rental_from_user_id_api(user_id):
     return get_ongoing_rental_from_user_id(user_id)
 
