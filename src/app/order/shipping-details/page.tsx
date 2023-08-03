@@ -64,7 +64,7 @@ const Page = () => {
                 <p className="text-sm text-gray-500">First Name</p>
                 <input
                   type="text"
-                  className="border border-gray-300 p-2 w-full h-8 bg-transparent focus:outline-none"
+                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent focus:outline-none"
                 />
               </div>
 
@@ -72,7 +72,7 @@ const Page = () => {
                 <p className="text-sm text-gray-500">Last Name</p>
                 <input
                   type="text"
-                  className="border border-gray-300 p-2 w-full h-8 bg-transparent focus:outline-none"
+                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent focus:outline-none"
                 />
               </div>
             </div>
@@ -82,7 +82,7 @@ const Page = () => {
             <p className="text-sm text-gray-500">Email</p>
             <input
               type="text"
-              className="border border-gray-300 p-2 w-full h-8 bg-transparent focus:outline-none"
+              className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent focus:outline-none"
             />
           </div>
 
@@ -91,14 +91,14 @@ const Page = () => {
             <div className='flex flex-cols'>
             <select
               name="countryCode"
-              className="focus:outline-none border border-gray-300 border-1 w-24 px-2 h-8 me-2 text-sm"
+              className="focus:outline-none focus:border-grey focus:border focus:ring-0 border-1 w-24 px-2 h-8 me-2 text-sm"
               style={{ paddingTop: '0.15rem', paddingBottom: '0.15rem', marginTop: '-0.15rem', verticalAlign: 'middle'}}
             >
                 {countryCodeArr.map((countryCode, index) =>(
                   <option key={index} value={countryCode} className='text-sm'>{countryCode}</option>
                 ))}
               </select>
-              <input type="number" name="password" className='outline-none border border-gray-300 border-1 w-full h-8 p-2 ms-2'/>
+              <input type="number" name="password" className='outline-none focus:border-grey focus:border focus:ring-0 border-1 w-full h-8 p-2 ms-2'/>
             </div>
           </div>
         </div>
@@ -115,7 +115,7 @@ const Page = () => {
             <p className="text-sm text-gray-500">Address 1</p>
             <input
               type="text"
-              className="border border-gray-300 p-2 w-full h-8 bg-transparent focus:outline-none"
+              className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent"
             />
           </div>
 
@@ -123,7 +123,7 @@ const Page = () => {
             <p className="text-sm text-gray-500">Address 2</p>
             <input
               type="text"
-              className="border border-gray-300 p-2 w-full h-8 bg-transparent focus:outline-none"
+              className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent"
             />
           </div>
 
@@ -133,7 +133,7 @@ const Page = () => {
                 <p className="text-sm text-gray-500">City</p>
                 <input
                   type="text"
-                  className="border border-gray-300 p-2 w-full h-8 bg-transparent focus:outline-none"
+                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent"
                 />
               </div>
 
@@ -141,7 +141,7 @@ const Page = () => {
                 <p className="text-sm text-gray-500">State</p>
                 <input
                   type="text"
-                  className="border border-gray-300 p-2 w-full h-8 bg-transparent focus:outline-none"
+                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent"
                 />
               </div>
             </div>
@@ -153,7 +153,7 @@ const Page = () => {
                 <p className="text-sm text-gray-500">Postal Code</p>
                 <input
                   type="text"
-                  className="border border-gray-300 p-2 w-full h-8 bg-transparent focus:outline-none"
+                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent "
                 />
               </div>
             </div>

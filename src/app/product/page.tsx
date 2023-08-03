@@ -1,13 +1,14 @@
 'use client'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import BrowsingCard from "../_components/BrowsingCard";
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import { addDays } from 'date-fns';
+import { DatePicker } from 'antd';
+import moment, { Moment } from 'moment';
+import 'antd/dist/antd';
 import { Dialog } from '@headlessui/react';
 import SizeChart from '../_components/SizeChart'
+import toast, { Toaster } from 'react-hot-toast';
+import { Skeleton } from 'antd';
 
 interface Product {
   brand: string;
@@ -24,13 +25,18 @@ interface Product {
 }
 
 interface AvailabilityData {
-  date: string;
+  date: Date;
   is_booked: boolean;
   product_id: number;
 }
 
 const ProductPage: React.FC = () => {
 
+  const notify = () => toast('Here is your toast.');
+  // Convert Moment to Dayjs before setting the selectedDate state
+  const handleDateChange = (date: Moment | null) => {
+    setSelectedDate(date ? moment(date) : null);
+  };
   const rentalPeriodOptions = [
     { label: '4 Days', days: 4 },
     { label: '8 Days', days: 8 },
@@ -42,12 +48,12 @@ const ProductPage: React.FC = () => {
   // State to hold the product availability data
   const [availabilityData, setAvailabilityData] = useState<AvailabilityData[]>([]);
   const [availabilityDates, setAvailabilityDates] = useState<Date[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Moment | null>(null);
+  const [returnDate, setReturnDate] = useState<Moment | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<number | null>(null);
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
   const [selectedRentalPeriod, setSelectedRentalPeriod] = useState<number | null>(null);
-  const [returnDate, setReturnDate] = useState<Date | null>(null);
   const [addToCartSelected, setAddToCartSelected] = useState<boolean>(false);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -67,7 +73,6 @@ const ProductPage: React.FC = () => {
       .then((response) => {
         setProduct(response.data); // Update the product state with the data from the backend
         setLoading(false); // Set loading to false once the data is fetched
-        console.log('Response data:', response.data);
       })
       .catch((error) => {
         console.error('Error fetching product:', error);
@@ -75,14 +80,23 @@ const ProductPage: React.FC = () => {
       });
 
       // Fetch product availability data from the backend using the specific product ID
-      axios
-      .get(`http://localhost:5000/api/product_availability/${productId}/`)
-      .then((response) => {
-        setAvailabilityData(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching product availability:', error);
-      });
+    axios
+    .get(`http://localhost:5000/api/product_availability/${productId}/`)
+    .then((response) => {
+      const availabilityData: AvailabilityData[] = response.data.map((availability: any) => ({
+        ...availability,
+        date: new Date(availability.date), // Parse the date string into a Date object
+      }));
+      setAvailabilityData(availabilityData);
+      // Get the dates that are booked (is_booked: true)
+      const bookedDates = availabilityData.filter((availability) => availability.is_booked);
+      // Extract the Date objects of booked dates
+      const bookedDateObjects = bookedDates.map((availability) => availability.date);
+      setAvailabilityDates(bookedDateObjects);
+    })
+    .catch((error) => {
+      console.error('Error fetching product availability:', error);
+    });
   }, []);
 
   const isDateBooked = (date: Date): boolean => {
@@ -96,7 +110,7 @@ const ProductPage: React.FC = () => {
   const similarItemCount = 3;
 
   useEffect(() => {
-    // When the product is loaded or changes, we'll set the first image as the default selected image
+    // When the product is loaded or changes, set the first image as the default selected image
     if (product && product.image_url) {
       const images = Object.values(product.image_url);
       setSelectedImage(images[0]);
@@ -106,7 +120,7 @@ const ProductPage: React.FC = () => {
   useEffect(() => {
     if (selectedDate && selectedRentalPeriod !== null) {
       const selectedRentalPeriodDays = rentalPeriodOptions[selectedRentalPeriod].days;
-      const newReturnDate = addDays(selectedDate, selectedRentalPeriodDays);
+      const newReturnDate = selectedDate.clone().add(selectedRentalPeriodDays, 'days');
       setReturnDate(newReturnDate);
     }
   }, [selectedDate, selectedRentalPeriod]);
@@ -115,7 +129,7 @@ const ProductPage: React.FC = () => {
   const colours = product?.colour || [];
   const sizes = product?.size || [];
   if (loading) {
-    return <div>Loading...</div>;
+    return <Skeleton active />;
   }
   return (
 
@@ -211,6 +225,8 @@ const ProductPage: React.FC = () => {
       </div>
 
       <h2 className="mt-4 text-base text-gray-900">Size:</h2>
+      <span className="">Recommended Size:</span>
+
       <div className="mt-3 flex select-none flex-wrap items-center gap-1 justify-between">
       {Array.isArray(sizes)
     ? sizes.map((sizeName, index) => (
@@ -241,7 +257,7 @@ const ProductPage: React.FC = () => {
   }
   <span>
   <button
-          className="text-blue-600 underline cursor-pointer"
+          className="underline cursor-pointer"
           onClick={toggleSizeChart}
         >
           Size Chart
@@ -291,22 +307,22 @@ const ProductPage: React.FC = () => {
       <h2 className="mt-4 text-base text-gray-900">Delivery:</h2>
       <div className="mt-3 flex flex-wrap items-center gap-1">
       <DatePicker
-  selected={selectedDate}
-  onChange={(date) => setSelectedDate(date)}
-  minDate={new Date()}
-  filterDate={(date) => {
-    const dateString = date.toISOString().split('T')[0];
-    const isBooked = availabilityData.some(
-      (availability) => availability.date.split('T')[0] === dateString && availability.is_booked
-    );
-    return !isBooked;
-  }}
-/>
+          className="border-black border-[1px]"
+          selected={selectedDate ? moment(selectedDate) : null}
+          onChange={handleDateChange}
+          disabledDate={(current) => {
+            // Disable dates where product is alr booked
+            return (
+              current &&
+              (current < moment() || isDateBooked(current.toDate())) // Convert Dayjs to Date
+            );
+          }}
+        />
       </div>
 
       <h2 className="mt-4 text-base text-gray-900">Return Date:</h2>
       <div className="mt-2 flex select-none flex-wrap items-center gap-1 font-bold">
-        {returnDate ? returnDate.toLocaleDateString() : 'DD/MM/YY'}
+        {returnDate ? returnDate.format('YY/MM/DD') : 'YY/MM/DD'}
       </div>
 
       <div className="mt-3 flex flex-wrap justify-center items-center gap-1">
@@ -321,13 +337,14 @@ const ProductPage: React.FC = () => {
       product?.product_id,
       selectedDate ? selectedDate.toISOString().split('T')[0] : null,
       rentalPeriodOptions[selectedRentalPeriod]?.days || 0,
-      1 // Assuming quantity is 1 for now, you can change it if needed
+      1 // Assuming quantity is 1
     );
+    notify
   }}
 >
   <div className="uppercase flex items-center justify-center">Add to cart</div>
 </button>
-
+<Toaster />
 
       </div>
     </div>
@@ -339,17 +356,25 @@ const ProductPage: React.FC = () => {
   <div className="text-center text-xl">Complete your look</div>
 </div>
 
-      <div className="mx-auto py-8 max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-            {Array.from({ length: similarItemCount }).map((_, index) => (
-          <div key={index} className="">
-            {product && (
-              <BrowsingCard productId={product.product_id} />
-            )}
-          </div>
-        ))}
-        </div>
-      </div> 
+  <div className="mx-auto py-8 max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
+      <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
+        {/* Render the Skeleton when loading is true */}
+        {loading ? (
+          <>
+            <Skeleton active />
+            <Skeleton active />
+            <Skeleton active />
+          </>
+        ) : (
+          // Render the actual cards when loading is false
+          Array.from({ length: similarItemCount }).map((_, index) => (
+            <div key={index} className="">
+              {product && <BrowsingCard productId={product.product_id} />}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
 </section>
   );
 };
@@ -368,23 +393,49 @@ const addToCart = (
 
   const productData = {
     product_id,
-    user_id: 2, // Replace this with the actual user ID if available
+    user_id: 2, // Replace this with the actual user ID
     rental_start,
     rental_period,
     quantity,
   };
-  console.log(productData)
+  console.log("productData:", productData)
+
   // Make a POST request to the backend to add the product to the cart database
   axios
-    .post('http://localhost:5000/api/cart', productData)
-    .then((response) => {
-      console.log('Product added to cart:', response.data);
-      // Add any additional logic you need after successfully adding the product to the cart
-    })
-    .catch((error) => {
-      console.error('Error adding product to cart:', error);
-      // Handle errors if necessary
-    });
+  .post('http://localhost:5000/api/cart', productData)
+  .then((response) => {
+    console.log('Product added to cart:', response.data);
+    // Show a success toast notification
+    toast.success('Added to cart!');
+  })
+  .catch((error) => {
+    console.error('Error adding product to cart:', error);
+
+    if (error.response) {
+      // Error from the backend with specific error code
+      const errorCode = error.response.status;
+      const errorMessage = error.response.data.error_message;
+
+      if (errorCode === 400) {
+        if (errorMessage === 'Product is already booked on the selected days') {
+          toast.error('This product is already booked on the selected days.');
+        } else if (errorMessage === 'Product is already booked for some days within the selected period') {
+          toast.error('This product is already booked for some days within the selected period.');
+        } else {
+          toast.error('Unknown error occurred while adding the product to the cart.');
+        }
+      } else if (errorCode === 4091) {
+        toast.error('This product is already booked on the selected days.');
+      } else if (errorCode === 4092) {
+        toast.error('This product is already booked for some days within the selected period.');
+      } else {
+        toast.error('Failed to add the product to the cart.');
+      }
+    } else {
+      // Network error or other general error
+      toast.error('Failed to add the product to the cart.');
+    }
+  });
 };
 
 

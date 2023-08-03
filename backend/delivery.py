@@ -38,6 +38,24 @@ def get_delivery_from_user_id(user_id):
     except (Exception, psycopg2.Error) as error:
         return jsonify({"error": str(error)}), 500
 
+def get_delivery_from_delivery_id(delivery_id):
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT * FROM tothecloset."delivery"' "WHERE delivery_id = %s", (delivery_id))
+
+                rows = cursor.fetchall()
+
+                if len(rows) == 0:
+                    return jsonify("No deliveries found under delivery_id: " + delivery_id), 404
+
+                deliveries = [{"delivery_id": row[0], "address_id": row[1], "delivery_date": row[2], "delivery_status": row[3], "user_id": row[4]}  for row in rows]
+
+        return jsonify(deliveries), 200
+
+    except (Exception, psycopg2.Error) as error:
+        return jsonify({"error": str(error)}), 500
+        
 def create_delivery():
     try:
         with get_db_connection() as connection:

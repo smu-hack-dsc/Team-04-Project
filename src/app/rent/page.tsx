@@ -1,10 +1,11 @@
 'use client';
 import BrowsingCard from "../_components/BrowsingCard";
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { Dialog, Disclosure, Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
 import type { NextPage } from "next";
-
+import axios from 'axios'
+import { genPreviewOperationsStyle } from "antd/es/image/style";
 const sortOptions = [
   { name: 'Popularity', href: '#', current: true },
   { name: 'Latest Arrival', href: '#', current: false },
@@ -62,7 +63,7 @@ const RentPage: NextPage = () => {
   const [colorOptions, setColorOptions] = useState(filtersOptions.find(option => option.id === 'color')?.options || []);
   const [gridColumns, setGridColumns] = useState(4);
   const toggleGridColumns = () => {
-    setGridColumns(prevColumns => (prevColumns === 4 ? 6 : 4));
+    setGridColumns(prevColumns => (prevColumns === 4 ? 3  : 4));
   };
 
 
@@ -76,49 +77,45 @@ const RentPage: NextPage = () => {
     });
   };
 
-  let cols, xgap, xlgap, lgColumns, smColumns, mdColumns;
+  let cols, gap, mdColumns;
 
   if (gridColumns === 4) {
-    cols = 4;
-    xgap = 6
-    xlgap = 8;
-    lgColumns = 4;
-    mdColumns = 2;
-    smColumns = 2;
-  } else if (gridColumns === 6) {
-    cols = 6;
-    xgap = 6;
-    xlgap = 6;
-    lgColumns = 6;
-    mdColumns = 4; // Adjusted value for 6 columns
-    smColumns = 4; // Adjusted value for 6 columns
-}
+    cols = 1;
+    mdColumns = 4;
+    gap = 3;
+  } else if (gridColumns === 3) {
+    mdColumns = 3;
+    cols = 1;
+    gap = 3; 
+  }
 
-const gridClass = `grid grid-cols-${cols} gap-x-${xgap} gap-y-10 sm:grid-cols-${smColumns} md:grid-cols-${mdColumns} lg:grid-cols-${lgColumns} xl:gap-x-${xlgap}`;
+  const gridClass = `grid grid-cols-${cols} gap-3 md:grid-cols-${mdColumns}`;
 
+  const [productArr, setProductArr] = useState([]);
 
-  const wishlistItems = [
-    // List of items in your wishlist
-    // Each item can have its own properties like name, brand, price, etc.
-    { id: 1, name: "Item 1", brand: "Brand 1", price: "69.90 SGD" },
-    { id: 2, name: "Item 2", brand: "Brand 2", price: "79.90 SGD" },
-    { id: 3, name: "Item 3", brand: "Brand 3", price: "89.90 SGD" },
-    { id: 4, name: "Item 4", brand: "Brand 4", price: "99.90 SGD" },
-    { id: 5, name: "Item 5", brand: "Brand 5", price: "99.90 SGD" },
-    { id: 6, name: "Item 6", brand: "Brand 6", price: "99.90 SGD" },
-    { id: 7, name: "Item 5", brand: "Brand 5", price: "99.90 SGD" },
-    { id: 8, name: "Item 5", brand: "Brand 5", price: "99.90 SGD" },
-    { id: 9, name: "Item 5", brand: "Brand 5", price: "99.90 SGD" },
-    { id: 10, name: "Item 5", brand: "Brand 5", price: "99.90 SGD" },
-    { id: 11, name: "Item 5", brand: "Brand 5", price: "99.90 SGD" },
-    // Add more items as needed
-  ];
+  useEffect(() => {
+    const fetchDataFromBackend = async () => {
 
+      try {
+        const response = await axios.get('http://localhost:5000/api/product');
+        //get product details
+        for (const item of response.data) {
+          const productId = item["product_id"]
+          setProductArr((prevProductArr => [...prevProductArr, productId]));
+          console.log(productId);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchDataFromBackend();
+  }, []);
   return (
     <section>
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:pt-20 sm:pb-10 lg:max-w-7xl lg:px-8">
         <div className="flex items-baseline justify-between pb-8">
-          <h1 className="text-2xl uppercase tracking-[2.4px] mt-5">Dresses</h1>
+          <h1 className="text-2xl uppercase tracking-[2.4px] mt-5">All Products</h1>
           <div className="flex items-center">
             <Menu as="div" className="relative inline-block text-left">
               <div>
@@ -148,7 +145,7 @@ const gridClass = `grid grid-cols-${cols} gap-x-${xgap} gap-y-10 sm:grid-cols-${
                               active ? 'bg-gray-100' : '',
                               'block px-4 py-2 text-sm'
                             )}
-                            
+
                           >
                             {option.name}
                           </a>
@@ -162,131 +159,131 @@ const gridClass = `grid grid-cols-${cols} gap-x-${xgap} gap-y-10 sm:grid-cols-${
 
 
             <Menu as="div" className="px-4 relative inline-block text-left">
-        <div>
-          <Menu.Button onClick={() => setFiltersDropdownOpen(false)} className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-            Filters
-            <ChevronDownIcon className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
-          </Menu.Button>
-        </div>
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-100"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
-        >
-          <Menu.Items static className="absolute right-0 z-10 mt-2 w-60 origin-top-right bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
-            <div className="py-1">
-              {filtersOptions.map((option) => (
-                <Menu.Item key={option.id}>
-                  {({ active }) => (
-                    <div>
-                      <Disclosure>
-                        {({ open }) => (
-                          <>
-                            <Disclosure.Button
-                              onClick={event => {
-                                event.stopPropagation();
-                                setFiltersDropdownOpen(false);
-                              }}
-                              className={classNames(
-                                'flex items-center justify-between w-full text-gray-500',
-                                active ? 'bg-gray-100' : '',
-                                'px-4 py-2 text-sm'
-                              )}
-                            >
-                              <span>{option.name}</span>
-                              <span>
-                                {open ? (
-                                  <MinusIcon className="h-5 w-5" aria-hidden="true" />
-                                ) : (
-                                  <PlusIcon className="h-5 w-5" aria-hidden="true" />
-                                )}
-                              </span>
-                            </Disclosure.Button>
-                            <Disclosure.Panel>
-                                <div className="pl-4">
-                                  {option.options.map((subOption, index) => (
-                                    <label
-                                      key={subOption.value}
-                                      className={classNames(
-                                        'flex items-center',
-                                        subOption.checked ? 'font-medium text-gray-900' : 'text-gray-500',
-                                        'block px-4 py-2 text-sm'
-                                      )}
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        className="mr-2"
-                                        checked={subOption.checked}
-                                        onChange={(event) => handleColorOptionChange(index, event)}
-                                      />
-                                      {subOption.label}
-                                    </label>
-                                    ))}
-                                    {option.name === 'Price' && (
-                                      <>
-                                        <div className="border-gray-200 items-center py-2">
-                                          <div className="flex px-4 gap-2">
-                                            <label htmlFor="FilterPriceFrom" className="flex items-center gap-2">
-                                              <span className="text-sm text-gray-600">$</span>
-
-                                              <input
-                                                type="number"
-                                                id="FilterPriceFrom"
-                                                placeholder="From"
-                                                className="w-full border-gray-200 shadow-sm sm:text-sm"
-                                              />
-                                            </label>
-
-                                            <label htmlFor="FilterPriceTo" className="flex items-center gap-2">
-                                              <span className="text-sm text-gray-600">$</span>
-
-                                              <input
-                                                type="number"
-                                                id="FilterPriceTo"
-                                                placeholder="To"
-                                                className="w-full border-gray-200 shadow-sm sm:text-sm"
-                                              />
-                                            </label>
-                                          </div>
-                                        </div>
-                                                                            </>
+              <div>
+                <Menu.Button onClick={() => setFiltersDropdownOpen(false)} className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                  Filters
+                  <ChevronDownIcon className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500" aria-hidden="true" />
+                </Menu.Button>
+              </div>
+              <Transition
+                as={Fragment}
+                enter="transition ease-out duration-100"
+                enterFrom="transform opacity-0 scale-95"
+                enterTo="transform opacity-100 scale-100"
+                leave="transition ease-in duration-75"
+                leaveFrom="transform opacity-100 scale-100"
+                leaveTo="transform opacity-0 scale-95"
+              >
+                <Menu.Items static className="absolute right-0 z-10 mt-2 w-60 origin-top-right bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <div className="py-1">
+                    {filtersOptions.map((option) => (
+                      <Menu.Item key={option.id}>
+                        {({ active }) => (
+                          <div>
+                            <Disclosure>
+                              {({ open }) => (
+                                <>
+                                  <Disclosure.Button
+                                    onClick={event => {
+                                      event.stopPropagation();
+                                      setFiltersDropdownOpen(false);
+                                    }}
+                                    className={classNames(
+                                      'flex items-center justify-between w-full text-gray-500',
+                                      active ? 'bg-gray-100' : '',
+                                      'px-4 py-2 text-sm'
                                     )}
-                                </div>
-                            </Disclosure.Panel>
-                          </>
-                        )}
-                      </Disclosure>
-                    </div>
-                  )}
-                </Menu.Item>
-              ))}
-            </div>
-          </Menu.Items>
-        </Transition>
-      </Menu>
+                                  >
+                                    <span>{option.name}</span>
+                                    <span>
+                                      {open ? (
+                                        <MinusIcon className="h-5 w-5" aria-hidden="true" />
+                                      ) : (
+                                        <PlusIcon className="h-5 w-5" aria-hidden="true" />
+                                      )}
+                                    </span>
+                                  </Disclosure.Button>
+                                  <Disclosure.Panel>
+                                    <div className="pl-4">
+                                      {option.options.map((subOption, index) => (
+                                        <label
+                                          key={subOption.value}
+                                          className={classNames(
+                                            'flex items-center',
+                                            subOption.checked ? 'font-medium text-gray-900' : 'text-gray-500',
+                                            'block px-4 py-2 text-sm'
+                                          )}
+                                        >
+                                          <input
+                                            type="checkbox"
+                                            className="mr-2"
+                                            checked={subOption.checked}
+                                            onChange={(event) => handleColorOptionChange(index, event)}
+                                          />
+                                          {subOption.label}
+                                        </label>
+                                      ))}
+                                      {option.name === 'Price' && (
+                                        <>
+                                          <div className="border-gray-200 items-center py-2">
+                                            <div className="flex px-4 gap-2">
+                                              <label htmlFor="FilterPriceFrom" className="flex items-center gap-2">
+                                                <span className="text-sm text-gray-600">$</span>
 
-      
-          <button
-            type="button"
-            className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-300 sm:ml-7"
-            onClick={toggleGridColumns}
-          >
-            <span className="sr-only">View grid</span>
-            <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
-          </button>
+                                                <input
+                                                  type="number"
+                                                  id="FilterPriceFrom"
+                                                  placeholder="From"
+                                                  className="w-full border-gray-200 shadow-sm sm:text-sm"
+                                                />
+                                              </label>
+
+                                              <label htmlFor="FilterPriceTo" className="flex items-center gap-2">
+                                                <span className="text-sm text-gray-600">$</span>
+
+                                                <input
+                                                  type="number"
+                                                  id="FilterPriceTo"
+                                                  placeholder="To"
+                                                  className="w-full border-gray-200 shadow-sm sm:text-sm"
+                                                />
+                                              </label>
+                                            </div>
+                                          </div>
+                                        </>
+                                      )}
+                                    </div>
+                                  </Disclosure.Panel>
+                                </>
+                              )}
+                            </Disclosure>
+                          </div>
+                        )}
+                      </Menu.Item>
+                    ))}
+                  </div>
+                </Menu.Items>
+              </Transition>
+            </Menu>
+
+
+            <button
+              type="button"
+              className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-300 sm:ml-7"
+              onClick={toggleGridColumns}
+            >
+              <span className="sr-only">View grid</span>
+              <Squares2X2Icon className="h-5 w-5" aria-hidden="true" />
+            </button>
           </div>
         </div>
 
-        <div className={gridClass}>
-          {wishlistItems.map((item) => (
-            <div key={item.id} className="">
-              <BrowsingCard name={item.name} brand={item.brand} price={item.price} />
+        <div>
+            <div  className={gridClass}>
+              {productArr.map((item, index) => (
+                <BrowsingCard productId={productArr[index]} />
+              ))}
             </div>
-          ))}
         </div>
       </div>
     </section>
