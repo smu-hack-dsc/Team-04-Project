@@ -96,11 +96,11 @@ const NavBar = () => {
                             <X size={22}/>
                         </div>
                     </div>
-                    <div className="flex-col">
+                    <div className="flex-col ">
                         <ul>
                             <li className="flex justify-between outline outline-1 rounded-lg py-1 px-2 mb-4 mt-6 w-full">
                                 {/* <Search size={14} className="ml-2 mr-3 self-center"/> */}
-                                <input type="text" name="search" placeholder="Search ..." className="text-xs outline-none border-none focus:outline-none w-[70px]"/>
+                                <input type="text" name="search" placeholder="Search ..." className="text-xs focus:border-grey focus:border focus:ring-0  w-[70px]"/>
                                 <label className="flex items-center">
                                     <Upload size={15} className="mx-2 hidden sm:inline"/>
                                     <Camera size={16} className="mx-2 inline sm:hidden"/>

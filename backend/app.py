@@ -147,11 +147,16 @@ def delete_clothing_preference_api(user_id):
 def get_deliveries_api():
     return get_deliveries()
 
+# get delivery under delivery id
+@app.route("/api/delivery/<delivery_id>/", methods=["GET"])
+def get_delivery_from_delivery_id_api(delivery_id):
+    return get_delivery_from_delivery_id(delivery_id)
+
 
 # get all deliveries under user id
 @app.route("/api/delivery/<user_id>/", methods=["GET"])
 def get_delivery_from_user_id_api(user_id):
-    return get_delivery_from_user_id()
+    return get_delivery_from_user_id(user_id)
 
 
 # add one delivery

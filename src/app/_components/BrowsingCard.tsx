@@ -44,11 +44,11 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
   }
 
   return (
-    <div className="mb-10"> {/* Always show the card */}
-      <div className="w-full h-auto overflow-hidden bg-gray-200 lg:aspect-none group-hover:opacity-75">
+    <div className="mb-10 "> {/* Always show the card */}
+      <div className="w-full bg-gray-200 group-hover:opacity-75">
         {/* Use the first image from the imageUrls array */}
         {product.image_url.length > 0 && (
-          <img src={product.image_url[0]} className="h-auto w-full object-cover object-center lg:w-full" alt="" />
+          <img src={product.image_url[0]} className=" w-full h-auto md:w-full h-80 object-center" alt="" />
         )}
       </div>
       <div className="mt-4 flex justify-between">
@@ -59,7 +59,9 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
               {product.brand}
             </a>
           </h3>
-          <p className="mt-1 text-slate-500 uppercase">{product.product_name}</p>
+          <a href="/product">
+            <span className="mt-1 text-slate-500 uppercase">{product.product_name}</span>
+          </a>
           <p className="text-slate-500 font-lato">{product.price} SGD</p>
           <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
             <div className="uppercase flex items-center justify-center">Add to cart</div>
