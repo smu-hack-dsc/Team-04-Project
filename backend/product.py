@@ -59,7 +59,6 @@ def get_filtered_products():
 
         sql_query = 'SELECT * FROM tothecloset."product" WHERE 1=1'
         params = []
-
         if brands:
             sql_query += " AND brand IN %s"
             params.append(tuple(brands))

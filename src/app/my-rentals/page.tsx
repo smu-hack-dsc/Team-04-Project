@@ -38,7 +38,6 @@ export default function Page() {
       for (const item of response.data) {
         const deliveryId = item["delivery_id"]
         const productId = item["product_id"]
-
         try {
           const response1 = await axios.get('http://localhost:5000/api/delivery/deliveryid/' + deliveryId);
           setOngoingDeliveryArr(prevDeliveryArr => [...prevDeliveryArr, response1.data]);

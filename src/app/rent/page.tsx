@@ -6,6 +6,7 @@ import { ChevronDownIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons
 import type { NextPage } from "next";
 import axios from 'axios'
 import { genPreviewOperationsStyle } from "antd/es/image/style";
+
 const sortOptions = [
   { name: 'Popularity', href: '#', current: true },
   { name: 'Latest Arrival', href: '#', current: false },
@@ -20,7 +21,7 @@ const filtersOptions = [
     options: [
       { value: 'white', label: 'White', checked: false },
       { value: 'beige', label: 'Beige', checked: false },
-      { value: 'blue', label: 'Blue', checked: true },
+      { value: 'blue', label: 'Blue', checked: false },
       { value: 'brown', label: 'Brown', checked: false },
       { value: 'green', label: 'Green', checked: false },
       { value: 'purple', label: 'Purple', checked: false },
@@ -32,7 +33,7 @@ const filtersOptions = [
     options: [
       { value: 'Gucci', label: 'Gucci', checked: false },
       { value: 'Jacquemus', label: 'Jacquemus', checked: false },
-      { value: 'Yves Saint Laurent', label: 'Yves Saint Laurent', checked: true },
+      { value: 'Yves Saint Laurent', label: 'Yves Saint Laurent', checked: false },
       { value: 'Hermès', label: 'Hermès', checked: false },
       { value: 'Chanel', label: 'Chanel ', checked: false },
     ],
@@ -54,28 +55,69 @@ const filtersOptions = [
   },
 ];
 
+type FilterOption = {
+  id: string;
+  name: string;
+  options: {
+    value: string;
+    label: string;
+    checked: boolean;
+  }[];
+};
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ');
 }
 
 const RentPage: NextPage = () => {
   const [filtersDropdownOpen, setFiltersDropdownOpen] = useState(false);
+  const [filterOptions, setFilterOptions] = useState<FilterOption[]>(filtersOptions);
   const [colorOptions, setColorOptions] = useState(filtersOptions.find(option => option.id === 'color')?.options || []);
   const [gridColumns, setGridColumns] = useState(4);
   const toggleGridColumns = () => {
-    setGridColumns(prevColumns => (prevColumns === 4 ? 3  : 4));
+    setGridColumns(prevColumns => (prevColumns === 4 ? 3 : 4));
   };
 
 
-  const handleColorOptionChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+  // const handleColorOptionChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+  //   event.stopPropagation();
+  //   setFiltersDropdownOpen(false); // Close the Filters dropdown
+  //   setColorOptions((prevOptions) => {
+  //     const updatedOptions = [...prevOptions];
+  //     updatedOptions[index].checked = !updatedOptions[index].checked;
+  //     return updatedOptions;
+  //   });
+  // };
+
+  const handleOptionChange = (optionId, index, event) => {
     event.stopPropagation();
     setFiltersDropdownOpen(false); // Close the Filters dropdown
-    setColorOptions((prevOptions) => {
-      const updatedOptions = [...prevOptions];
-      updatedOptions[index].checked = !updatedOptions[index].checked;
-      return updatedOptions;
-    });
+  
+    // Get the appropriate filter options based on the optionId
+    const filterOptions = filtersOptions.find((option) => option.id === optionId)?.options;
+  
+    if (filterOptions) {
+      // Update the checked property of the selected option
+      const updatedOptions = filterOptions.map((option, i) => {
+        if (i === index) {
+          return { ...option, checked: !option.checked };
+        }
+        return option;
+      });
+  
+      // Find the correct filter category and update its options in the state
+      setFilterOptions((prevOptions) => {
+        const updatedFilterOptions = prevOptions.map((option) => {
+          if (option.id === optionId) {
+            return { ...option, options: updatedOptions };
+          }
+          return option;
+        });
+        return updatedFilterOptions;
+      });
+    }
   };
+  
 
   let cols, gap, mdColumns;
 
@@ -86,31 +128,61 @@ const RentPage: NextPage = () => {
   } else if (gridColumns === 3) {
     mdColumns = 3;
     cols = 1;
-    gap = 3; 
+    gap = 3;
   }
 
   const gridClass = `grid grid-cols-${cols} gap-3 md:grid-cols-${mdColumns}`;
 
   const [productArr, setProductArr] = useState([]);
+  const [filteredProducts, setFilteredProductsArr] = useState([]);
 
   useEffect(() => {
-    const fetchDataFromBackend = async () => {
-
-      try {
-        const response = await axios.get('http://localhost:5000/api/product');
-        //get product details
-        for (const item of response.data) {
-          const productId = item["product_id"]
-          setProductArr((prevProductArr => [...prevProductArr, productId]));
-          console.log(productId);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchDataFromBackend();
+    fetchProductsFromBackend();
+    fetchFilteredProducts();
   }, []);
+
+  const fetchProductsFromBackend = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/product');
+      //get product details
+      for (const item of response.data) {
+        const productId = item["product_id"]
+        const productBrand = item["brand"]
+        setProductArr((prevProductArr => [...prevProductArr, productId]));
+        console.log("ARR " + productBrand)
+        console.log(productId);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const fetchFilteredProducts = () => {
+    axios
+      .get('http://localhost:5000/api/product/filter', {
+        // Add any query parameters if required
+        params: {
+          brand: 'Gucci',
+          // size: 'S',
+          // color: 'Beige',
+          // type: 'Jackets & Vests',
+          price_min: 300,
+          price_max: 6000,
+        },
+      })
+      .then((response) => {
+        console.log('Response: ' + JSON.stringify(response.data));
+        for (const item of response.data.products) {
+          const productId = item.product_id;
+          setFilteredProductsArr((prevFilteredProducts) => [...prevFilteredProducts, productId]);
+          console.log('FILTER ' + productId);
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching products:', error);
+      });
+  };
+  
   return (
     <section>
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:pt-20 sm:pb-10 lg:max-w-7xl lg:px-8">
@@ -218,7 +290,7 @@ const RentPage: NextPage = () => {
                                             type="checkbox"
                                             className="mr-2"
                                             checked={subOption.checked}
-                                            onChange={(event) => handleColorOptionChange(index, event)}
+                                            onChange={(event) => handleOptionChange(option.id,index, event)}
                                           />
                                           {subOption.label}
                                         </label>
@@ -279,11 +351,17 @@ const RentPage: NextPage = () => {
         </div>
 
         <div>
-            <div  className={gridClass}>
-              {productArr.map((item, index) => (
-                <BrowsingCard productId={productArr[index]} />
-              ))}
-            </div>
+          <div className={gridClass}>
+            {productArr.map((item, index) => (
+              <BrowsingCard key={index} productId={productArr[index]} />
+            ))}
+          </div>
+          <div className={gridClass}>
+            <h1>FILTERED</h1>
+            {filteredProducts.map((item,index)=>(
+              <BrowsingCard key={index} productId={filteredProducts[index]}/>
+            ))}
+          </div>
         </div>
       </div>
     </section>
