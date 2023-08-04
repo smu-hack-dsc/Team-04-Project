@@ -31,7 +31,7 @@ interface AvailabilityData {
 }
 
 const ProductPage: React.FC = () => {
-
+  
   const notify = () => toast('Here is your toast.');
   // Convert Moment to Dayjs before setting the selectedDate state
   const handleDateChange = (date: Moment | null) => {
