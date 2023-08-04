@@ -44,12 +44,9 @@ def get_delivery_from_delivery_id(delivery_id):
             with connection.cursor() as cursor:
                 cursor.execute('SELECT * FROM tothecloset."delivery"' "WHERE delivery_id = %s", (delivery_id))
 
-                rows = cursor.fetchall()
+                row = cursor.fetchone()
 
-                if len(rows) == 0:
-                    return jsonify("No deliveries found under delivery_id: " + delivery_id), 404
-
-                deliveries = [{"delivery_id": row[0], "address_id": row[1], "delivery_date": row[2], "delivery_status": row[3], "user_id": row[4]}  for row in rows]
+                deliveries = {"delivery_id": row[0], "address_id": row[1], "delivery_date": row[2], "delivery_status": row[3], "user_id": row[4]}
 
         return jsonify(deliveries), 200
 

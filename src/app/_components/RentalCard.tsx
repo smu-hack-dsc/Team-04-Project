@@ -9,29 +9,23 @@ import { ChevronRight } from 'react-bootstrap-icons';
 import axios from 'axios';
 
 interface RentalCardProps {
-    key: number,
-    deliveryStatus: String, //packing OR delivering OR delivered OR returned
-    deliveryDate: String,
-    productJson: Object,
-    rentalJson: Object,
-    deliveryJson: Object,
-    productArr: Array<Object>,
-    rentalArr: Array<Object>,
-    isOngoing: boolean
+    productJson: object,
+    rentalJson: object,
+    deliveryStatus: string | null, //packing OR delivering OR delivered OR returned
+    deliveryDate: string,
 }
 
 const RentalCard: FC<RentalCardProps> = ({
-    key,
-    productArr,
-    rentalArr,
-    deliveryStatus,
-    deliveryJson,
-    deliveryDate,
     productJson,
     rentalJson,
-    isOngoing
+    deliveryStatus,
+    deliveryDate,
 }) => {
-    console.log(productJson["image_url"])
+
+    if (typeof deliveryStatus === 'string') {
+        deliveryStatus = deliveryStatus.toLowerCase();
+    }
+
     function formatDate(dateString: string): string {
         const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const date = new Date(dateString);
@@ -41,10 +35,8 @@ const RentalCard: FC<RentalCardProps> = ({
         return `${day} ${month} ${year}`;
     }
 
-    const userId = sessionStorage.getItem("userId");
-
     return (
-        <div className={isOngoing ? " " : 'hidden'}>
+        <div>
             <div className='border border-grey border-1'>
                 <div className='border-b border-grey border-1 flex flex-cols justify-between'>
                     <div className='items-center flex justify-center px-7'>
@@ -78,7 +70,6 @@ const RentalCard: FC<RentalCardProps> = ({
                     <div className='p-3 flex items-center'>
                         <img src={productJson["image_url"][0]} alt="product image" className='w-24 object-cover' />
                         <div className='px-5'>
-                            <p>{deliveryStatus}</p>
                             <p className='uppercase text-sm'>{productJson["brand"]}</p>
                             <p className='text-xs text-midgrey mt-2'>{productJson["product_name"]}</p>
                             <p className='text-xs text-midgrey mt-2'>Colour: {productJson["colour"]}</p>
@@ -87,12 +78,12 @@ const RentalCard: FC<RentalCardProps> = ({
                     </div>
                     <div className='flex items-center justify-end p-3 '>
                         <ChevronRight size={20} />
-                    </div></div>
-
-            </div>
-            <div className='border-t border-grey border-1 p-3 flex items-center justify-center'>
-                <div className='text-xs'>
-                    Rental Period: {formatDate(rentalJson["rental_start"])} - {formatDate(rentalJson["rental_end"])}
+                    </div>
+                </div>
+                <div className='border-t border-grey border-1 p-3 flex items-center justify-center'>
+                    <div className='text-xs'>
+                        Rental Period: {formatDate(rentalJson["rental_start"])} - {formatDate(rentalJson["rental_end"])}
+                    </div>
                 </div>
             </div>
         </div>

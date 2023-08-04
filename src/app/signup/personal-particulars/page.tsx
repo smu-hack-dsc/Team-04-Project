@@ -91,15 +91,22 @@ const PersonalParticularsPage = () => {
     }
 
     const handleSubmit = async (firstName, lastName, email, phoneNum, password) => {
-      const formData = new FormData();
-      formData.append("first_name", firstName);
-      formData.append("last_name", lastName);
-      formData.append("email", email);
-      formData.append("phone_num", phoneNum);
-      formData.append("password", password);
+      // const formData = new FormData();
+      // formData.append("first_name", firstName);
+      // formData.append("last_name", lastName);
+      // formData.append("email", email);
+      // formData.append("phone_num", phoneNum);
+      // formData.append("password", password);
+      const data = {
+        first_name: 'John',
+        last_name: 'Doe',
+        email: 'john.doe@example.com',
+        phone_num: '1234567890',
+        password: 'secretpassword',
+      };
 
       try {
-        const response = await axios.post("http://localhost:5000/api/user", formData);
+        const response = await axios.post("http://localhost:5000/api/user", data);
         console.log(response)
       } catch (error){
         console.error(error)

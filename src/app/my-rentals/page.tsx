@@ -1,56 +1,90 @@
 "use client"
 import React from "react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import RentalCard from "../_components/RentalCard"
 import axios from 'axios';
 import { renderToHTML } from "next/dist/server/render";
 
 export default function Page() {
+  
 
   const [pastRentalOpen, setPastRentalOpen] = useState(false)
   const handlePastRental = () => {
     setPastRentalOpen(!pastRentalOpen)
   }
-  const [productArr, setProductArr] = useState([]);
-  const [rentalArr, setRentalArr] = useState([]);
-  const [deliveryArr, setDeliveryArr] = useState([]);
-  
-  useEffect(() => {
-    const fetchDataFromBackend = async () => {
-      const userId = sessionStorage.getItem("userId");
-      console.log(userId);
-      try {
-        const response = await axios.get('http://localhost:5000/api/rental/' + userId);
-        setRentalArr(response.data);
+  const [ongoingProductArr, setOngoingProductArr] = useState([]);
+  const [ongoingRentalArr, setOngoingRentalArr] = useState([]);
+  const [ongoingDeliveryArr, setOngoingDeliveryArr] = useState([]);
 
-        //get product details
-        for (const item of response.data) {
-          const deliveryId = item["delivery_id"]
-          const deliveryStatus = item["delivery_id"]["delivery_status"]
-          console.log(deliveryId);
-          const productId = item["product_id"]
-          console.log(productId);
-          
-          try {
-            const response = await axios.get('http://localhost:5000/api/delivery/' + deliveryId);
-            setDeliveryArr(prevDeliveryArr => [...prevDeliveryArr, response.data]);
-            const response1 = await axios.get('http://localhost:5000/api/product/' + productId);
-            setProductArr(prevProductArr => [...prevProductArr, response1.data]);
-            
-          } catch (error) {
-            console.error('Error fetching data:', error);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-    fetchDataFromBackend();
+  const [pastProductArr, setPastProductArr] = useState([]);
+  const [pastRentalArr, setPastRentalArr] = useState([]);
+  const [pastDeliveryArr, setPastDeliveryArr] = useState([]);
+
+  useEffect(() => {
+    fetchOngoingDataFromBackend();
+    fetchPastDataFromBackend();
   }, []);
 
-  const getDeliveryStatus = (index) => {
-    return "delivered";
-    return deliveryArr[index]["delivery_id"];
+  const fetchOngoingDataFromBackend = async () => {
+    // const userId = sessionStorage.getItem("userId");
+    const userId =  2;
+    console.log(userId);
+    try {
+      const response = await axios.get('http://localhost:5000/api/rental/ongoing/' + userId);
+      console.log(response.data)
+      setOngoingRentalArr(response.data);
+
+      //get product details
+      for (const item of response.data) {
+        const deliveryId = item["delivery_id"]
+        const productId = item["product_id"]
+
+        try {
+          const response1 = await axios.get('http://localhost:5000/api/delivery/deliveryid/' + deliveryId);
+          setOngoingDeliveryArr(prevDeliveryArr => [...prevDeliveryArr, response1.data]);
+          
+          const response2 = await axios.get('http://localhost:5000/api/product/' + productId);
+          console.log(response1.data);
+          setOngoingProductArr(prevProductArr => [...prevProductArr, response2.data]);
+          
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
+
+  const fetchPastDataFromBackend = async () => {
+    // const userId = sessionStorage.getItem("userId");
+    const userId =  2;
+    console.log(userId);
+    try {
+      const response = await axios.get('http://localhost:5000/api/rental/past/' + userId);
+      console.log(response.data)
+      setPastRentalArr(response.data);
+
+      //get product details
+      for (const item of response.data) {
+        const deliveryId = item["delivery_id"]
+        const productId = item["product_id"]
+
+        try {
+          const response1 = await axios.get('http://localhost:5000/api/delivery/deliveryid/' + deliveryId);
+          setPastDeliveryArr(prevDeliveryArr => [...prevDeliveryArr, response1.data]);
+          
+          const response2 = await axios.get('http://localhost:5000/api/product/' + productId);
+          console.log(response1.data);
+          setPastProductArr(prevProductArr => [...prevProductArr, response2.data]);
+          
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   }
 
   const getCurrentDate = () => {
@@ -59,10 +93,6 @@ export default function Page() {
     const date = `${current.getUTCDate()} ${months[current.getUTCMonth()]} ${current.getUTCFullYear()}`;
 
     return date;
-  }
-
-  const isOngoing = (index) => {
-    return rentalArr[index]["is_ongoing"]
   }
 
   return (
@@ -81,26 +111,37 @@ export default function Page() {
         {pastRentalOpen && <hr className="w-[110px] ms-[130px] text-black" />}
       </div>
 
-      {/* ongoing rental tab */}
+      {/* ongoing rental */}
       <div className={
-        pastRentalOpen
-          ? "hidden"
-          : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+        !pastRentalOpen
+        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+        : "hidden"
       }>
-        {/* <p>Json{deliveryArr.length}</p> */}
-        {productArr.map((item, index) => (
-          <RentalCard key={index} productArr={productArr} rentalArr={rentalArr} productJson={item} rentalJson={rentalArr[index]} deliveryJson={deliveryArr[index]} deliveryStatus={getDeliveryStatus(index)} deliveryDate={getCurrentDate()} isOngoing = {isOngoing(index)} />
+        {ongoingProductArr.map((item, index) => (
+          <RentalCard 
+            key={index} 
+            productJson={item} 
+            rentalJson={ongoingRentalArr[index]} 
+            deliveryStatus={ongoingDeliveryArr[index]["delivery_status"]} 
+            deliveryDate={getCurrentDate()} 
+          />
         ))}
       </div>
 
-      {/* past rental tab */}
+      {/* past rental */}
       <div className={
-        pastRentalOpen 
-          ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
-          : "hidden"
+        pastRentalOpen
+        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+        : "hidden"
       }>
-       {productArr.map((item, index) => (
-          <RentalCard key={index} productArr={productArr} rentalArr={rentalArr} productJson={item} rentalJson={rentalArr[index]} deliveryJson={deliveryArr[index]} deliveryStatus={getDeliveryStatus(index)} deliveryDate={getCurrentDate()} isOngoing = {!isOngoing(index)} />
+        {pastProductArr.map((item, index) => (
+          <RentalCard 
+            key={index} 
+            productJson={item} 
+            rentalJson={pastRentalArr[index]} 
+            deliveryStatus={pastDeliveryArr[index]["delivery_status"]} 
+            deliveryDate={getCurrentDate()} 
+          />
         ))}
       </div>
     </div>
