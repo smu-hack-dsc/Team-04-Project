@@ -21,6 +21,7 @@ import React, { useState, useEffect } from 'react';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { RxDotFilled } from 'react-icons/rx';
 import { useMediaQuery } from 'react-responsive'; // If you don't have this library, install it: npm install react-responsive
+import axios from 'axios';
 
 const isSmallScreen = () => {
   if (useMediaQuery({ maxWidth: 400 })) {
@@ -59,9 +60,28 @@ const Landing: React.FC = () => {
         const userId = 3; // CHANGE THIS FOR NOW
         sessionStorage.setItem('userId', userId.toString()); // userId=0 if user is not logged in
       }
+
+      if (!sessionStorage.getItem("cartItemNum")) {
+        const userId = sessionStorage.getItem("userId");
+        if (userId != '0') {
+          getCartItemNum(userId);
+        } else {
+          const cartItemNum = 0
+          sessionStorage.setItem('cartItemNum', cartItemNum.toString());
+        }
+      }
     }
   }, [])
 
+  const getCartItemNum = async (userId) => {
+    try {
+        const response = await axios.get('http://localhost:5000/api/cart/' + userId);
+        const cartItemNum = response.data.length
+        sessionStorage.setItem("cartItemNum", cartItemNum.toString())
+    } catch (error) {
+        console.error(error);
+    }
+  };
 
   const slides = [
     {

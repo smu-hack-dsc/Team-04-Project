@@ -4,6 +4,9 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {Playfair_Display} from 'next/font/google'
 import { Heart,  Person, Bag, Search, List, X, Plus, Dash, Upload, Camera } from 'react-bootstrap-icons';
+import { ClockCircleOutlined } from '@ant-design/icons';
+import { Avatar, Badge, Space } from 'antd';
+import axios from 'axios';
 
 // const playfair = Playfair_Display({ subsets: ['latin'], weight :'400'})
 const customFontStyle = Playfair_Display({
@@ -351,7 +354,7 @@ const NavBar = () => {
                     </ul>
                 </div>
                 <Link href='/' className="lg:w-1/3 absolute left-1/2 transform -translate-x-1/2">
-                    <h2 style={customFontStyle} className="text-center">TO THE CLOSET</h2>
+                    <h2 className="text-center">TO THE CLOSET</h2>
                 </Link>
                 <div className="lg:w-1/3">
                     <ul className="hidden lg:flex justify-end items-center">
@@ -378,8 +381,10 @@ const NavBar = () => {
                         <Link href="/wishlist">
                             <Heart className="ml-7" size={15}/>
                         </Link>
-                        <Link href="/cart">
-                            <Bag className="ml-7" size={15}/>
+                        <Link href="/cart">                            
+                            <Badge count={sessionStorage.getItem("cartItemNum")} color="#000000"  size="small">
+                                <Bag className="ml-7" size={15}/>
+                            </Badge>
                         </Link>
                         <Link href="">
                             <Person className="ml-7" size={17} onMouseOver={() => setAccOpen(true)}/>
@@ -446,6 +451,7 @@ const NavBar = () => {
             </div>
         </nav>
     )
+    
 }
 
 export default NavBar
