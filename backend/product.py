@@ -50,10 +50,18 @@ def get_product(product_id):
 # case sensitive, look at db
 def get_filtered_products():
     try:
+<<<<<<< Updated upstream
         brands = request.args.getlist("brand")
         sizes = request.args.getlist("size")
         colours = request.args.getlist("colour")
         types = request.args.getlist("type")
+=======
+        brands = request.args.getlist("brand[]")
+        sizes = request.args.getlist("size[]")
+        colours = request.args.getlist("colour[]")
+        types = request.args.getlist("type[]")
+        gender =request.args.getlist("gender[]")
+>>>>>>> Stashed changes
         price_min = float(request.args.get("price_min", 0))
         price_max = float(request.args.get("price_max", 0))
 
@@ -74,6 +82,9 @@ def get_filtered_products():
         if types:
             sql_query += " AND type IN %s"
             params.append(tuple(types))
+        if gender:
+            sql_query += " AND gender IN %s"
+            params.append(tuple(gender))
 
         sql_query += " AND price BETWEEN %s AND %s"
         params.append(price_min)
