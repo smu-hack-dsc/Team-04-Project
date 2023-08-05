@@ -67,7 +67,7 @@ const AddressPage = () => {
     }
 
     let top_fit = "";
-    let bottom_fit = "";
+    let bottoms_fit = "";
 
     topsSliderValue == 1
       ? (top_fit = "Tight")
@@ -75,10 +75,10 @@ const AddressPage = () => {
       ? (top_fit = "Normal")
       : (top_fit = "Loose");
     bottomsSliderValue == 1
-      ? (bottom_fit = "Tight")
+      ? (bottoms_fit = "Tight")
       : bottomsSliderValue == 2
-      ? (bottom_fit = "Normal")
-      : (bottom_fit = "Loose");
+      ? (bottoms_fit = "Normal")
+      : (bottoms_fit = "Loose");
 
     // if have error
     if (errors > 0) {
@@ -87,7 +87,7 @@ const AddressPage = () => {
         heightElement.value,
         weightElement.value,
         top_fit,
-        bottom_fit,
+        bottoms_fit,
         shoulderElement.value,
         hipElement.value,
         waistElement.value
@@ -150,7 +150,7 @@ const AddressPage = () => {
         weight +
         "&top_fit=" +
         top +
-        "&bottom_fit=" +
+        "&bottoms_fit=" +
         bottom +
         "&shoulder_width=" +
         shoulder +
@@ -161,11 +161,18 @@ const AddressPage = () => {
 
       const clothing = await axios.post(clothingurl);
       console.log("Clothing " + clothing);
+      const token = clothing.data.token;
+      
+      // Store the token in sessionStorage
+      sessionStorage.setItem("userToken", token);
+
       toast.success("You have successfully registered!");
+
       window.location.href = "/";
-    } catch (error) {
-      console.error(error);
-      toast.error;
+    } 
+      catch (error) {
+        console.error(error);
+        toast.error;
     }
   };
 
