@@ -15,4 +15,4 @@ def getCategories(apiKey, input):
         ]
     )
 
-    return completion.choices[0].message.content.split(",")
+    return completion.choices[0].message.content.split(", ")
