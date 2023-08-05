@@ -23,7 +23,6 @@ const PersonalParticularsPage = () => {
     "+86", // China
     "+82", // South Korea
     "+81", // Japan
-    "+855", // Cambodia
     "+670", // East Timor
     "+971", // United Arab Emirates
   ];

@@ -21,6 +21,9 @@ def get_db_connection():
 
     return psycopg2.connect(host=db_host, port=db_port, dbname=db_name, user=db_user, password=db_password)
 
+openaiApi = os.getenv("OPENAI_API_KEY")
+openaiApi = "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"
+
 from address import *
 from cart import *
 from clothing_preference import *
@@ -34,6 +37,7 @@ from transaction import *
 from user import *
 from wishlist import *
 from size_recommender import *
+from text_search import *
 # from image_search import *
 from db_config import *
 
@@ -355,6 +359,15 @@ def get_user_api(user_id):
 def create_user_api():
     return create_user()
 
+# get user from email
+@app.route("/api/user/email/<email>", methods=["GET"])
+def get_user_from_email_api(email):
+    return get_user_from_email(email)
+
+# check user details for login
+@app.route("/api/user/login", methods=["POST"])
+def check_login_api():
+    return check_login()
 
 
 ########## DB: wishlist
@@ -389,6 +402,13 @@ def size_recommender_api(user_id, brand, category):
 @app.route("/api/size_chart/<string:brand>/<string:category>", methods = ['GET'])
 def size_chart_api(brand, category):
     return size_chart(brand, category)
+
+
+########## text search
+
+@app.route("/api/text_search/<prompt>", methods = ["GET"])
+def text_search_api(prompt):
+    return getCategories(openaiApi, prompt)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

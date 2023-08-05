@@ -1,200 +1,319 @@
-"use client"
+"use client";
 import { deleteAppClientCache } from "next/dist/server/lib/render-server";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import {Playfair_Display} from 'next/font/google'
-import { Heart,  Person, Bag, Search, List, X, Plus, Dash, Upload, Camera } from 'react-bootstrap-icons';
-import { ClockCircleOutlined } from '@ant-design/icons';
-import { Avatar, Badge, Space } from 'antd';
-import axios from 'axios';
+import { Playfair_Display } from "next/font/google";
+import {
+  Heart,
+  Person,
+  Bag,
+  Search,
+  List,
+  X,
+  Plus,
+  Dash,
+  Upload,
+  Camera,
+} from "react-bootstrap-icons";
+import { ClockCircleOutlined } from "@ant-design/icons";
+import { Avatar, Badge, Space } from "antd";
+import axios from "axios";
 import CartItem from "./CartItem";
 
 // const playfair = Playfair_Display({ subsets: ['latin'], weight :'400'})
 const customFontStyle = Playfair_Display({
-        subsets: ['latin'],
-        weight: ['400'], // Replace 'weight' with 'weights'
-    });
+  subsets: ["latin"],
+  weight: ["400"], // Replace 'weight' with 'weights'
+});
 const NavBar = () => {
+  // hamburger menu
+  const [menuOpen, setMenuOpen] = useState(false);
+  const handleNav = () => {
+    setMenuOpen(!menuOpen);
+  };
 
-    // hamburger menu
-    const [menuOpen, setMenuOpen] = useState(false)
-    const handleNav = () => {
-        setMenuOpen(!menuOpen)
+  // rent apparel in hamburger menu
+  const [rentOptionOpen, setRentOptionOpen] = useState(false);
+  const handleRentOption = () => {
+    setRentOptionOpen(!rentOptionOpen);
+  };
+
+  // Men option in hamburger menu
+  const [menOptionOpen, setMenOptionOpen] = useState(false);
+  const handleMenOption = () => {
+    setMenOptionOpen(!menOptionOpen);
+  };
+
+  // women option in hamburger menu
+  const [womenOptionOpen, setWomenOptionOpen] = useState(false);
+  const handleWomenOption = () => {
+    setWomenOptionOpen(!womenOptionOpen);
+  };
+
+  // occasions option in hamburger menu
+  const [occasionsOptionOpen, setOccasionsOptionOpen] = useState(false);
+  const handleOccasionsOption = () => {
+    setOccasionsOptionOpen(!occasionsOptionOpen);
+  };
+
+  // collections option in hamburger menu
+  const [collectionsOptionOpen, setCollectionsOptionOpen] = useState(false);
+  const handleCollectionsOption = () => {
+    setCollectionsOptionOpen(!collectionsOptionOpen);
+  };
+
+  // account details in hamburger menu
+  const [accDetailsOpen, setAccDetailsOpen] = useState(false);
+  const handleAccDetails = () => {
+    setAccDetailsOpen(!accDetailsOpen);
+  };
+
+  // rent dropdown
+  const [rentDropdownOpen, setRentDropdownOpen] = useState(false);
+  const handleRentDropdown = () => {
+    setRentDropdownOpen(!rentDropdownOpen);
+  };
+
+  // search
+  const [searchOpen, setSearchOpen] = useState(false);
+  const handleSearch = () => {
+    setSearchOpen(!searchOpen);
+  };
+
+  // account
+  const [accOpen, setAccOpen] = useState(false);
+  const handleAcc = () => {
+    setAccOpen(!accOpen);
+  };
+
+  const handleSubmitSearch = async (event) => {
+    if (event.key === "Enter") {
+      const searchText = document.getElementById(
+        "searchText"
+      ) as HTMLInputElement;
+      const searchFile = document.getElementById(
+        "searchFile"
+      ) as HTMLInputElement;
+
+      console.log(searchText);
+
+      searchText
+        ? handleSearchText(searchText.value)
+        : handleSearchFile(searchFile.value);
     }
+  };
 
-    // rent apparel in hamburger menu
-    const [rentOptionOpen, setRentOptionOpen] = useState(false)
-    const handleRentOption = () => {
-        setRentOptionOpen(!rentOptionOpen)
-    }
+  const handleSearchText = async (searchText) => {
+    const texturl =
+      'http://127.0.0.1:5000/api/text_search/"' + searchText + '"';
+    const categoryArr = await axios.get(texturl);
+    const colorArr = categoryArr.data[0];
+    const typeArr = categoryArr.data[1];
+    const brandArr = categoryArr.data[2];
 
-    // Men option in hamburger menu
-    const [menOptionOpen, setMenOptionOpen] = useState(false)
-    const handleMenOption = () => {
-        setMenOptionOpen(!menOptionOpen)
-    }
+    const filterProductUrl =
+      "http://127.0.0.1:5000/api/product/filter?brand=" +
+      brandArr +
+      "&colour=" +
+      colorArr +
+      "&type=" +
+      typeArr + "&size=M&price_min=0&price_max=999999"
 
-    // women option in hamburger menu
-    const [womenOptionOpen, setWomenOptionOpen] = useState(false)
-    const handleWomenOption = () => {
-        setWomenOptionOpen(!womenOptionOpen)
-    }
+    const filteredProduct = await axios.get(filterProductUrl)
+  };
 
-    // occasions option in hamburger menu
-    const [occasionsOptionOpen, setOccasionsOptionOpen] = useState(false)
-    const handleOccasionsOption = () => {
-        setOccasionsOptionOpen(!occasionsOptionOpen)
-    }
+  const handleSearchFile = async (searchFile) => {};
 
-    // collections option in hamburger menu
-    const [collectionsOptionOpen, setCollectionsOptionOpen] = useState(false)
-    const handleCollectionsOption = () => {
-        setCollectionsOptionOpen(!collectionsOptionOpen)
-    }
+  const menOptionsArr = [
+    "All Products",
+    "New In",
+    "Popular",
+    "Tops",
+    "Bottoms",
+    "Suits",
+    "Jackets & Vests",
+    "Accessories",
+  ];
+  const womenOptionsArr = [
+    "All Products",
+    "New In",
+    "Popular",
+    "Tops",
+    "Bottoms",
+    "Dresses",
+    "Jumpsuits & Rompers",
+    "Outerwear",
+    "Suits",
+    "Accessories",
+    "Maternity",
+  ];
+  const occasionsOptionsArr = [
+    "Black Tie",
+    "Casual",
+    "Cocktail",
+    "Date Night",
+    "Prom",
+    "Wedding",
+    "Work Function",
+  ];
+  const collectionsOptionsArr = [
+    "Autumn 2022",
+    "Winter 2022",
+    "Spring 2023",
+    "Summer 2023",
+  ];
+  const accDetailsOptionsArr = ["Account Details", "My Rentals", "Logout"];
+  const womenFirstCol = [
+    "All Products",
+    "New In",
+    "Popular",
+    "Tops",
+    "Bottoms",
+    "Dresses",
+    "Jumpsuits & Rompers",
+    "Outerwear",
+  ];
+  const womenSecCol = ["Suits", "Accessories", "Maternity"];
 
-    // account details in hamburger menu
-    const [accDetailsOpen, setAccDetailsOpen] = useState(false)
-    const handleAccDetails = () => {
-        setAccDetailsOpen(!accDetailsOpen)
-    }
-
-    // rent dropdown
-    const [rentDropdownOpen, setRentDropdownOpen] = useState(false)
-    const handleRentDropdown = () => {
-        setRentDropdownOpen(!rentDropdownOpen)
-    }
-
-    // search 
-    const [searchOpen, setSearchOpen] = useState(false);
-    const handleSearch = () => {
-        setSearchOpen(!searchOpen)
-    }
-
-    // account 
-    const [accOpen, setAccOpen] = useState(false)
-    const handleAcc = () => {
-        setAccOpen(!accOpen)
-    }
-
-    const menOptionsArr = ["All Products", "New In", "Popular", "Tops", "Bottoms", "Suits", "Jackets & Vests", "Accessories"]
-    const womenOptionsArr = ["All Products", "New In", "Popular", "Tops", "Bottoms", "Dresses", "Jumpsuits & Rompers", "Outerwear", "Suits", "Accessories", "Maternity"]
-    const occasionsOptionsArr = ["Black Tie", "Casual", "Cocktail", "Date Night", "Prom", "Wedding", "Work Function"]
-    const collectionsOptionsArr = ["Autumn 2022", "Winter 2022", "Spring 2023", "Summer 2023"]
-    const accDetailsOptionsArr = ["Account Details", "My Rentals", "Logout"]
-    const womenFirstCol = ["All Products", "New In", "Popular", "Tops", "Bottoms", "Dresses", "Jumpsuits & Rompers", "Outerwear"]
-    const womenSecCol = ["Suits", "Accessories", "Maternity"]
-
-    
-    const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0);
 
     useEffect(() => {
         const initCartItemNum = async () => {
 
             if (typeof window !== 'undefined') {
                 if(!sessionStorage.getItem('userId')){
-                    const userId = 3; //set to 0 if no user
+                    const userId = 0; //set to 0 if no user
                     sessionStorage.setItem("userId", userId.toString());
                 }
 
-                if (!sessionStorage.getItem("cartItemNum")) {
-                    const userId = sessionStorage.getItem("userId");
-                    if (userId !== '0') {
-                        try {
-                            getCartItemNum(userId); // Await the result
-                        } catch (error) {
-                            console.error(error);
-                            const cartItemNum = 0;
-                            sessionStorage.setItem('cartItemNum', cartItemNum.toString());
-                            setCount(cartItemNum);
-                        }
-                    } else {
-                        const cartItemNum = 0;
-                        sessionStorage.setItem('cartItemNum', cartItemNum.toString());
-                        setCount(cartItemNum);
-                    }
-                } else {
-                    // Retrieve count from session storage
-                    setCount(parseInt(sessionStorage.getItem("cartItemNum")));
-                }
+        if (!sessionStorage.getItem("cartItemNum")) {
+          const userId = sessionStorage.getItem("userId");
+          if (userId !== "0") {
+            try {
+              getCartItemNum(userId); // Await the result
+            } catch (error) {
+              console.error(error);
+              const cartItemNum = 0;
+              sessionStorage.setItem("cartItemNum", cartItemNum.toString());
+              setCount(cartItemNum);
             }
-        };
-
-        initCartItemNum();
-    }, []);
-
-    const getCartItemNum = async (userId) => {
-        try {
-            const response = await axios.get('http://localhost:5000/api/cart/' + userId);
-            const cartItemNum = response.data.length;
+          } else {
+            const cartItemNum = 0;
             sessionStorage.setItem("cartItemNum", cartItemNum.toString());
-            setCount(cartItemNum)
-            return cartItemNum; 
-        } catch (error) {
-            console.error(error);
-            return 0
+            setCount(cartItemNum);
+          }
+        } else {
+          // Retrieve count from session storage
+          setCount(parseInt(sessionStorage.getItem("cartItemNum")));
         }
+      }
     };
 
+    initCartItemNum();
+  }, []);
 
+  const getCartItemNum = async (userId) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/cart/" + userId
+      );
+      const cartItemNum = response.data.length;
+      sessionStorage.setItem("cartItemNum", cartItemNum.toString());
+      setCount(cartItemNum);
+      return cartItemNum;
+    } catch (error) {
+      console.error(error);
+      return 0;
+    }
+  };
 
-    return (
-        <nav className="fixed w-full h-16 outline-1 outline-grey outline bg-white px-3 z-50">
-            <div className="flex flex-wrap justify-between items-center h-full w-full px-5 2xl:px-16">
-                <div onClick={handleNav} className="lg:hidden cursor-pointer">
-                    <List size={20}/>
+  return (
+    <nav className="fixed w-full h-16 outline-1 outline-grey outline bg-white px-3 z-50">
+      <div className="flex flex-wrap justify-between items-center h-full w-full px-5 2xl:px-16">
+        <div onClick={handleNav} className="lg:hidden cursor-pointer">
+          <List size={20} />
+        </div>
+        <div
+          className={
+            menuOpen
+              ? "fixed left-0 top-0 w-[50%] lg:hidden h-screen bg-[#ffffff] p-7 ease-in duration-500 scroll-smooth overflow-y-auto z-10"
+              : "fixed left-[-100%] top-0 p-8 ease-in duration-500"
+          }
+        >
+          <div className="flex w-full items-center justify-end">
+            <div onClick={handleNav} className="cursor-pointer">
+              <X size={22} />
+            </div>
+          </div>
+          <div className="flex-col ">
+            <ul>
+              <li className="flex justify-between outline outline-1 rounded-lg py-1 px-2 mb-4 mt-6 w-full">
+                {/* <Search size={14} className="ml-2 mr-3 self-center"/> */}
+                <input
+                  type="text"
+                  name="search"
+                  placeholder="Search ..."
+                  className="text-xs focus:border-grey focus:border focus:ring-0  w-[70px]"
+                />
+                <label className="flex items-center">
+                  <Upload size={15} className="mx-2 hidden sm:inline" />
+                  <Camera size={16} className="mx-2 inline sm:hidden" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    name="search"
+                    className="hidden"
+                  />
+                </label>
+              </li>
+              <Link href="/">
+                <li
+                  onClick={() => setMenuOpen(false)}
+                  className="py-2 cursor-pointer"
+                >
+                  Home
+                </li>
+              </Link>
+              <Link href="">
+                <li
+                  onClick={() => setMenuOpen(false)}
+                  className="py-2 cursor-pointer"
+                >
+                  About
+                </li>
+              </Link>
+              <div className="flex justify-between">
+                <Link href="/rent">
+                  <li className="py-2">
+                    <span
+                      onClick={() => setMenuOpen(false)}
+                      className="cursor-pointer"
+                    >
+                      Rent
+                    </span>
+                  </li>
+                </Link>
+                <div className="flex items-center">
+                  <Plus
+                    size={17}
+                    onClick={handleRentOption}
+                    className={
+                      rentOptionOpen
+                        ? "hidden cursor-pointer"
+                        : "cursor-pointer"
+                    }
+                  />
+                  <Dash
+                    size={16}
+                    onClick={handleRentOption}
+                    className={
+                      rentOptionOpen
+                        ? "cursor-pointer"
+                        : "hidden cursor-pointer"
+                    }
+                  />
                 </div>
-                <div className={
-                    menuOpen
-                    ? "fixed left-0 top-0 w-[50%] lg:hidden h-screen bg-[#ffffff] p-7 ease-in duration-500 scroll-smooth overflow-y-auto z-10"
-                    : "fixed left-[-100%] top-0 p-8 ease-in duration-500"
-                }>
-                    <div className="flex w-full items-center justify-end">
-                        <div onClick={handleNav} className="cursor-pointer">
-                            <X size={22}/>
-                        </div>
-                    </div>
-                    <div className="flex-col ">
-                        <ul>
-                            <li className="flex justify-between outline outline-1 rounded-lg py-1 px-2 mb-4 mt-6 w-full">
-                                {/* <Search size={14} className="ml-2 mr-3 self-center"/> */}
-                                <input type="text" name="search" placeholder="Search ..." className="text-xs focus:border-grey focus:border focus:ring-0  w-[70px]"/>
-                                <label className="flex items-center">
-                                    <Upload size={15} className="mx-2 hidden sm:inline"/>
-                                    <Camera size={16} className="mx-2 inline sm:hidden"/>
-                                    <input type="file" accept="image/*" name="search" className="hidden"/>
-                                </label>
-                            </li>
-                            <Link href="/">
-                                <li onClick={() => setMenuOpen(false)}
-                                    className="py-2 cursor-pointer">
-                                        Home
-                                </li>
-                            </Link>
-                            <Link href="">
-                                <li onClick={() => setMenuOpen(false)}
-                                    className="py-2 cursor-pointer">
-                                        About
-                                </li>
-                            </Link>
-                            <div className="flex justify-between">
-                                <Link href="/rent">
-                                    <li className="py-2">
-                                        <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Rent</span>
-                                    </li>
-                                </Link>
-                                <div className="flex items-center">
-                                    <Plus size={17} onClick={handleRentOption} className={
-                                            rentOptionOpen
-                                            ? "hidden cursor-pointer"
-                                            : "cursor-pointer"
-                                        }/>
-                                    <Dash size={16} onClick={handleRentOption} className={
-                                        rentOptionOpen
-                                        ? "cursor-pointer"
-                                        : "hidden cursor-pointer"
-                                    }/>
-                                </div> 
-                            </div>
+              </div>
 
                             {/* rent option opened */}
                             <ul className={
@@ -436,18 +555,9 @@ const NavBar = () => {
                             <Heart className="ml-7" size={15}/>
                         </Link>
                         <Link href="/cart">                            
-                            <Badge count={count} color="#000000"  size="small" className={
-                                count > 0
-                                ? ""
-                                : "hidden"
-                            }>
+                            <Badge count={count} color="#000000"  size="small">
                                 <Bag className="ml-7" size={15}/>
                             </Badge>
-                            <Bag size={15} className={
-                                count == 0
-                                ? "ml-7"
-                                : "hidden" 
-                            }/>
                         </Link>
                         <Link href="">
                             <Person className="ml-7" size={17} onMouseOver={() => setAccOpen(true)}/>

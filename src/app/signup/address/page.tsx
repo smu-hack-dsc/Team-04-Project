@@ -5,6 +5,7 @@ import { CheckCircleFill } from "react-bootstrap-icons";
 import axios from "axios";
 
 const AddressPage = () => {
+
   var [address1Validation, setAddress1Validation] = useState("");
   var [address2Validation, setAddress2Validation] = useState("");
   var [cityValidation, setCityValidation] = useState("");
@@ -52,13 +53,45 @@ const AddressPage = () => {
     }
 
     // if have error
-    if (errors > 0) {
-    } else {
+    if (errors === 0) {
       sessionStorage.setItem("add1", address1Element.value.replace("#", ""));
       sessionStorage.setItem("add2", address2Element.value.replace("#", ""));
       sessionStorage.setItem("city", cityElement.value);
       sessionStorage.setItem("state", stateElement.value);
       sessionStorage.setItem("postal", postalCodeElement.value);
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (validation()) {
+      // Make API request to store the address data in the backend
+      try {
+        const response = await axios.post("http://localhost:5000/api/address", {
+          user_id: parseInt(sessionStorage.getItem("user_id")), // Assuming the user_id is stored as an integer
+          address_num: 1, // Assuming it's the first address
+          address_1: sessionStorage.getItem("add1"),
+          address_2: sessionStorage.getItem("add2"),
+          city: sessionStorage.getItem("city"),
+          state: sessionStorage.getItem("state"),
+          postal_code: sessionStorage.getItem("postal"),
+          is_billing_address: true, // You can change this based on your requirements
+        });
+
+        if (response.status === 201) {
+          // Address was successfully added to the database
+          // Redirect to the next page in the sign-up process (clothing preference)
+          window.location.href = "/signup/clothing-preference";
+        } else {
+          // Handle other response statuses or show an error message
+          console.error("Failed to insert address");
+        }
+      } catch (error) {
+        console.error(error);
+        // Handle error, show a notification, or other error handling logic
+      }
     }
   };
 
@@ -149,7 +182,7 @@ const AddressPage = () => {
       </div>
 
       <div className="flex flex-cols justify-center">
-        <Link href="/signup/personal-particulars" className="m-4">
+        <Link href="/signup/personal-particulars">
           <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black bg-black text-white">
             <div className="uppercase flex items-center justify-center">
               Back
@@ -164,7 +197,7 @@ const AddressPage = () => {
           <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
             <div
               className="uppercase flex items-center justify-center"
-              onClick={validation}
+              onClick={handleSubmit} 
             >
               Continue
             </div>
