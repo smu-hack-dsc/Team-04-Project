@@ -165,7 +165,7 @@ const AddressPage = () => {
       
       // Store the token in sessionStorage
       sessionStorage.setItem("userId", userid)
-      sessionStorage.setItem("userToken", token);
+      sessionStorage.setItem("token", token);
 
       toast.success("You have successfully registered!");
 
