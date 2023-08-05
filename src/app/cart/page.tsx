@@ -15,6 +15,11 @@ export default function Page() {
     const fetchDataFromBackend = async () => {
       const userId = sessionStorage.getItem("userId");
       console.log(userId);
+
+      if (userId == '0') {
+        setNumOfItems(0);
+      }
+
       try {
         const response = await axios.get('http://localhost:5000/api/cart/' + userId);
         setNumOfItems(response.data.length);
@@ -56,7 +61,9 @@ export default function Page() {
   const [total, setTotal] = useState(getTotal());
 
   useEffect(() => {
-    setTotal(getTotal());
+    const currTotal = getTotal()
+    setTotal(currTotal);
+    sessionStorage.setItem("totalAmount", currTotal.toString());
   }, [productArr])
 
   return (
@@ -123,7 +130,7 @@ export default function Page() {
           </div>
 
           <div className={
-            numOfItems == 0 ? "flex flex-col" : "hidden"
+            numOfItems == 0 ? "flex flex-col mt-5" : "hidden"
           }>
             Your rental cart is currently empty.
 

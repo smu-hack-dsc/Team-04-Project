@@ -1,5 +1,5 @@
 "use client"; 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { CheckCircleFill } from "react-bootstrap-icons";
 import Link from "next/link";
 import Image from "next/image";
@@ -17,6 +17,28 @@ const Page = () => {
   const handleBlur = () => {
     setCreditCardOpen(false);
   };
+
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    setTotal(parseFloat(sessionStorage.getItem("totalAmount")));
+    // addPayPalScript();
+  },[])
+
+  // const [ scriptLoaded, setScriptLoaded] = useState(false);
+
+  // const addPayPalScript = () => {
+  //   if (window.paypal){
+  //     setScriptLoaded(true);
+  //     return;
+  //   }
+  //   const script = document.createElement("script");
+  //   script.src = "https://www.paypal.com/sdk/js?client-id=AUbBvUZDNLffGkj4N5yzi_QsBLX4BQQphla6ARYajWu3YatOpmCD-BQYopSVeegfIpdzhOQC6zGwSz9L"
+  //   script.type = "text/javascript";
+  //   script.async = true;
+  //   script.onload = () => setScriptLoaded(true);
+  //   document.body.appendChild(script);
+  // }
   
   return (
     <div className="py-16 px-8">
@@ -106,7 +128,7 @@ const Page = () => {
             <div className="text-sm">
               <div className="flex flex-cols justify-between mb-5">
                 <div>Subtotal</div>
-                <div>0.00 SGD</div>
+                <div>{total} SGD</div>
               </div>
               <div className="flex flex-cols justify-between mb-5 ">
                 <div>Discount</div>
@@ -115,7 +137,7 @@ const Page = () => {
               <hr className="my-7"/>
               <div className="flex flex-cols justify-between my-5 ">
                 <div className="uppercase">Total</div>
-                <div>0.00 SGD</div>
+                <div>{total} SGD</div>
               </div>
             </div>
           </div>

@@ -412,12 +412,6 @@ const AddressPage = () => {
             </div>
           </button>
         </div>
-
-        <Link href="/" className="m-4 flex items-center">
-          <p className="uppercase underline text-xs inline-block align-middle">
-            Skip
-          </p>
-        </Link>
       </div>
     </div>
   );

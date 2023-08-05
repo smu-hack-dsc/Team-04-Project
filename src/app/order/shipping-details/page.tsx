@@ -167,7 +167,7 @@ const ShippingDetailsPage = () => {
                   name="firstName"
                   className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent focus:outline-none"
                 />
-                <p className='text-red-500'>{firstNameValidation}</p>
+                <p className='text-red-500 text-sm'>{firstNameValidation}</p>
               </div>
 
               <div className="w-1/2 pl-2">
@@ -178,7 +178,7 @@ const ShippingDetailsPage = () => {
                   name="lastName"
                   className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent focus:outline-none"
                 />
-                <p className='text-red-500'>{lastNameValidation}</p>
+                <p className='text-red-500 text-sm'>{lastNameValidation}</p>
               </div>
               
             </div>
@@ -192,7 +192,7 @@ const ShippingDetailsPage = () => {
               name="email"
               className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent focus:outline-none"
             />
-            <p className='text-red-500'>{emailValidation}</p>
+            <p className='text-red-500 text-sm'>{emailValidation}</p>
           </div>
 
           <div className="mr-4 mt-4">
@@ -209,7 +209,7 @@ const ShippingDetailsPage = () => {
               </select>
               <input type="number" id="phoneNum" name="phoneNum" className='outline-none focus:border-grey focus:border focus:ring-0 border-1 w-full h-8 p-2 ms-2'/>
             </div>
-            <p className='text-red-500'>{phoneNumValidation}</p>
+            <p className='text-red-500 text-sm'>{phoneNumValidation}</p>
           </div>
         </div>
 
@@ -229,11 +229,11 @@ const ShippingDetailsPage = () => {
                   name="address1"
               className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent"
             />
-            <p className='text-red-500'>{address1Validation}</p>
+            <p className='text-red-500 text-sm'>{address1Validation}</p>
           </div>
 
           <div className="mr-4 mt-4">
-            <p className="text-sm text-gray-500">Address 2</p>
+            <p className="text-sm text-gray-500 text-sm">Address 2</p>
             <input
               type="text"
               className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent"
@@ -250,7 +250,7 @@ const ShippingDetailsPage = () => {
                   name="city"
                   className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent"
                 />
-                <p className='text-red-500'>{cityValidation}</p>
+                <p className='text-red-500 text-sm'>{cityValidation}</p>
               </div>
 
               <div className="w-1/2">
@@ -261,7 +261,7 @@ const ShippingDetailsPage = () => {
                   name="state"
                   className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent"
                 />
-                <p className='text-red-500'>{stateValidation}</p>
+                <p className='text-red-500 text-sm'>{stateValidation}</p>
               </div>
               
             </div>
@@ -277,7 +277,7 @@ const ShippingDetailsPage = () => {
                   name="postalCode"
                   className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent "
                 />
-                <p className='text-red-500'>{postalCodeValidation}</p>
+                <p className='text-red-500 text-sm'>{postalCodeValidation}</p>
               </div>
               
             </div>
@@ -287,7 +287,7 @@ const ShippingDetailsPage = () => {
           <div className="flex items-center mt-4">
             <input
               type="checkbox"
-              className="mr-2 h-4 w-4 transform scale-75 appearance-none border border-black checked:bg-black checked:border-black focus:ring-0"
+              className="mr-2 h-4 w-4 transform scale-75 appearance-none border border-black checked:bg-black checked:border-black focus:ring-0 text-black"
               id="sameAddressCheckbox"
             />
             <label htmlFor="sameAddressCheckbox" className="text-sm text-black focus:text-black focus: ring-0">

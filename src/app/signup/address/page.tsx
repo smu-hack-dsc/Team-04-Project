@@ -170,15 +170,6 @@ const AddressPage = () => {
             </div>
           </button>
         </div>
-
-        <div
-          href="/signup/personal-particulars"
-          className="m-4 flex items-center"
-        >
-          <p className="uppercase underline text-xs inline-block align-middle">
-            Skip
-          </p>
-        </div>
       </div>
     </div>
   );

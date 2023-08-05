@@ -92,7 +92,7 @@ const NavBar = () => {
 
             if (typeof window !== 'undefined') {
                 if(!sessionStorage.getItem('userId')){
-                    const userId = 2; //set to 0 if no user
+                    const userId = 3; //set to 0 if no user
                     sessionStorage.setItem("userId", userId.toString());
                 }
 
@@ -436,9 +436,18 @@ const NavBar = () => {
                             <Heart className="ml-7" size={15}/>
                         </Link>
                         <Link href="/cart">                            
-                            <Badge count={count} color="#000000"  size="small">
+                            <Badge count={count} color="#000000"  size="small" className={
+                                count > 0
+                                ? ""
+                                : "hidden"
+                            }>
                                 <Bag className="ml-7" size={15}/>
                             </Badge>
+                            <Bag size={15} className={
+                                count == 0
+                                ? "ml-7"
+                                : "hidden" 
+                            }/>
                         </Link>
                         <Link href="">
                             <Person className="ml-7" size={17} onMouseOver={() => setAccOpen(true)}/>
