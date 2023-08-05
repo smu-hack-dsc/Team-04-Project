@@ -7,6 +7,7 @@ import { Heart,  Person, Bag, Search, List, X, Plus, Dash, Upload, Camera } from
 import { ClockCircleOutlined } from '@ant-design/icons';
 import { Avatar, Badge, Space } from 'antd';
 import axios from 'axios';
+import CartItem from "./CartItem";
 
 // const playfair = Playfair_Display({ subsets: ['latin'], weight :'400'})
 const customFontStyle = Playfair_Display({
@@ -82,6 +83,59 @@ const NavBar = () => {
     const accDetailsOptionsArr = ["Account Details", "My Rentals", "Logout"]
     const womenFirstCol = ["All Products", "New In", "Popular", "Tops", "Bottoms", "Dresses", "Jumpsuits & Rompers", "Outerwear"]
     const womenSecCol = ["Suits", "Accessories", "Maternity"]
+
+    
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        const initCartItemNum = async () => {
+
+            if (typeof window !== 'undefined') {
+                if(!sessionStorage.getItem('userId')){
+                    const userId = 2; //set to 0 if no user
+                    sessionStorage.setItem("userId", userId.toString());
+                }
+
+                if (!sessionStorage.getItem("cartItemNum")) {
+                    const userId = sessionStorage.getItem("userId");
+                    if (userId !== '0') {
+                        try {
+                            getCartItemNum(userId); // Await the result
+                        } catch (error) {
+                            console.error(error);
+                            const cartItemNum = 0;
+                            sessionStorage.setItem('cartItemNum', cartItemNum.toString());
+                            setCount(cartItemNum);
+                        }
+                    } else {
+                        const cartItemNum = 0;
+                        sessionStorage.setItem('cartItemNum', cartItemNum.toString());
+                        setCount(cartItemNum);
+                    }
+                } else {
+                    // Retrieve count from session storage
+                    setCount(parseInt(sessionStorage.getItem("cartItemNum")));
+                }
+            }
+        };
+
+        initCartItemNum();
+    }, []);
+
+    const getCartItemNum = async (userId) => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/cart/' + userId);
+            const cartItemNum = response.data.length;
+            sessionStorage.setItem("cartItemNum", cartItemNum.toString());
+            setCount(cartItemNum)
+            return cartItemNum; 
+        } catch (error) {
+            console.error(error);
+            return 0
+        }
+    };
+
+
 
     return (
         <nav className="fixed w-full h-16 outline-1 outline-grey outline bg-white px-3 z-50">
@@ -382,7 +436,7 @@ const NavBar = () => {
                             <Heart className="ml-7" size={15}/>
                         </Link>
                         <Link href="/cart">                            
-                            <Badge count={sessionStorage.getItem("cartItemNum")} color="#000000"  size="small">
+                            <Badge count={count} color="#000000"  size="small">
                                 <Bag className="ml-7" size={15}/>
                             </Badge>
                         </Link>
