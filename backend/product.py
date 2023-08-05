@@ -57,6 +57,9 @@ def get_filtered_products():
         price_min = float(request.args.get("price_min", 0))
         price_max = float(request.args.get("price_max", 0))
 
+        print(brands)
+        print(sizes)
+
         sql_query = 'SELECT * FROM tothecloset."product" WHERE 1=1'
         params = []
         if brands:

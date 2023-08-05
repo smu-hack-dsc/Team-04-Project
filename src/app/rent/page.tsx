@@ -19,12 +19,12 @@ const filtersOptions = [
     id: 'color',
     name: 'Color',
     options: [
-      { value: 'white', label: 'White', checked: false },
-      { value: 'beige', label: 'Beige', checked: false },
-      { value: 'blue', label: 'Blue', checked: false },
-      { value: 'brown', label: 'Brown', checked: false },
-      { value: 'green', label: 'Green', checked: false },
-      { value: 'purple', label: 'Purple', checked: false },
+      { value: 'White', label: 'White', checked: false },
+      { value: 'Beige', label: 'Beige', checked: false },
+      { value: 'Blue', label: 'Blue', checked: false },
+      { value: 'Brown', label: 'Brown', checked: false },
+      { value: 'Green', label: 'Green', checked: false },
+      { value: 'Purple', label: 'Purple', checked: false },
     ],
   },
   {
@@ -42,11 +42,25 @@ const filtersOptions = [
     id: 'size',
     name: 'Size',
     options: [
+      { value: 'XXS', label: 'XXS', checked: false },
+      { value: 'XS', label: 'XS', checked: false },
       { value: 'S', label: 'S', checked: false },
       { value: 'M', label: 'M', checked: false },
       { value: 'L', label: 'L', checked: false },
+      { value: 'XL', label: 'XL', checked: false },
+      { value: 'XXL', label: 'XXL', checked: false },
     ],
   },
+  {id: 'type',
+  name: 'Type',
+  options: [
+    { value: 'Tops', label: 'Tops', checked: false },
+    { value: 'Suits', label: 'Suits', checked: false },
+    { value: 'Outerwear', label: 'Outerwear', checked: false },
+    { value: 'Jackets & Vests', label: 'Jackets & Vests', checked: false },
+    { value: 'Accessories', label: 'Accessories', checked: false },
+    { value: 'Dresses', label: 'Dresses', checked: false },
+  ],},
   {
     id: 'price',
     name: 'Price',
@@ -78,46 +92,42 @@ const RentPage: NextPage = () => {
     setGridColumns(prevColumns => (prevColumns === 4 ? 3 : 4));
   };
 
+  const initialCheckboxState = filtersOptions.reduce((acc, option) => {
+    acc[option.id] = {
+      options: option.options.reduce((subAcc, subOption) => {
+        subAcc[subOption.value] = subOption.checked;
+        return subAcc;
+      }, {}),
+    };
+    return acc;
+  }, {});
+  
 
-  // const handleColorOptionChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
-  //   event.stopPropagation();
-  //   setFiltersDropdownOpen(false); // Close the Filters dropdown
-  //   setColorOptions((prevOptions) => {
-  //     const updatedOptions = [...prevOptions];
-  //     updatedOptions[index].checked = !updatedOptions[index].checked;
-  //     return updatedOptions;
-  //   });
-  // };
+  const [checkboxState, setCheckboxState] = useState(initialCheckboxState);
 
-  const handleOptionChange = (optionId, index, event) => {
-    event.stopPropagation();
-    setFiltersDropdownOpen(false); // Close the Filters dropdown
-  
-    // Get the appropriate filter options based on the optionId
-    const filterOptions = filtersOptions.find((option) => option.id === optionId)?.options;
-  
-    if (filterOptions) {
-      // Update the checked property of the selected option
-      const updatedOptions = filterOptions.map((option, i) => {
-        if (i === index) {
-          return { ...option, checked: !option.checked };
-        }
-        return option;
-      });
-  
-      // Find the correct filter category and update its options in the state
-      setFilterOptions((prevOptions) => {
-        const updatedFilterOptions = prevOptions.map((option) => {
-          if (option.id === optionId) {
-            return { ...option, options: updatedOptions };
-          }
-          return option;
-        });
-        return updatedFilterOptions;
-      });
-    }
+  const handleOptionChange = (optionId, subOptionValue, event) => {
+    const isChecked = event.target.checked;
+    setCheckboxState((prevState) => ({
+      ...prevState,
+      [optionId]: {
+        options: {
+          ...prevState[optionId].options,
+          [subOptionValue]: isChecked,
+        },
+      },
+    }));
+    fetchFilteredProducts({
+      ...checkboxState,
+      [optionId]: {
+        ...checkboxState[optionId],
+        options: {
+          ...checkboxState[optionId].options,
+          [subOptionValue]: isChecked,
+        },
+      },
+    });
   };
-  
+
 
   let cols, gap, mdColumns;
 
@@ -138,7 +148,7 @@ const RentPage: NextPage = () => {
 
   useEffect(() => {
     fetchProductsFromBackend();
-    fetchFilteredProducts();
+    fetchFilteredProducts(checkboxState);
   }, []);
 
   const fetchProductsFromBackend = async () => {
@@ -149,40 +159,44 @@ const RentPage: NextPage = () => {
         const productId = item["product_id"]
         const productBrand = item["brand"]
         setProductArr((prevProductArr => [...prevProductArr, productId]));
-        console.log("ARR " + productBrand)
-        console.log(productId);
+        // console.log("ARR " + productBrand)
+        // console.log(productId);
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
-  const fetchFilteredProducts = () => {
+  const fetchFilteredProducts = (checkboxState) => {
+    const selectedColors = Object.keys(checkboxState.color.options).filter((color) => checkboxState.color.options[color]);
+    const selectedBrands = Object.keys(checkboxState.brand.options).filter((brand) => checkboxState.brand.options[brand]);
+    const selectedSizes = Object.keys(checkboxState.size.options).filter((size) => checkboxState.size.options[size]);
+    const selectedTypes = Object.keys(checkboxState.type.options).filter((type) => checkboxState.type.options[type]);
     axios
       .get('http://localhost:5000/api/product/filter', {
         // Add any query parameters if required
         params: {
-          brand: 'Gucci',
-          // size: 'S',
-          // color: 'Beige',
-          // type: 'Jackets & Vests',
+          brand: selectedBrands,
+          size: selectedSizes,
+          color: selectedColors,
+          type: selectedTypes,
           price_min: 300,
           price_max: 6000,
         },
       })
       .then((response) => {
-        console.log('Response: ' + JSON.stringify(response.data));
+        // console.log('Response: ' + JSON.stringify(response.data));
         for (const item of response.data.products) {
           const productId = item.product_id;
-          setFilteredProductsArr((prevFilteredProducts) => [...prevFilteredProducts, productId]);
-          console.log('FILTER ' + productId);
+          setFilteredProductsArr(response.data.products.map((item) => item.product_id));
+          // console.log('FILTER ' + productId);
         }
       })
       .catch((error) => {
         console.error('Error fetching products:', error);
       });
   };
-  
+
   return (
     <section>
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:pt-20 sm:pb-10 lg:max-w-7xl lg:px-8">
@@ -289,8 +303,8 @@ const RentPage: NextPage = () => {
                                           <input
                                             type="checkbox"
                                             className="mr-2"
-                                            checked={subOption.checked}
-                                            onChange={(event) => handleOptionChange(option.id,index, event)}
+                                            checked={checkboxState[option.id]?.options[subOption.value] || false}
+                                            onChange={(event) => handleOptionChange(option.id, subOption.value, event)}
                                           />
                                           {subOption.label}
                                         </label>
@@ -352,14 +366,13 @@ const RentPage: NextPage = () => {
 
         <div>
           <div className={gridClass}>
-            {productArr.map((item, index) => (
+            {/* {productArr.map((item, index) => (
               <BrowsingCard key={index} productId={productArr[index]} />
-            ))}
+            ))} */}
           </div>
           <div className={gridClass}>
-            <h1>FILTERED</h1>
-            {filteredProducts.map((item,index)=>(
-              <BrowsingCard key={index} productId={filteredProducts[index]}/>
+            {filteredProducts.map((item, index) => (
+              <BrowsingCard key={index} productId={filteredProducts[index]} />
             ))}
           </div>
         </div>
