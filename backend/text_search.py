@@ -7,7 +7,7 @@ def getCategories(apiKey, input):
     # prompt = "Given the prompt \"" + input + "\" please give me the categories that are relevant to it from this list. " \
     #     "[Black, White, Red, Blue, Orange, Yellow, Green, Blue, Indigo, Top, Bottom, Full Body, Shirt, T-Shirt, Pants, Long Pant, Long Sleeved Shirt, Dress]" \
     #     "Please respond only with the categories without any other words"
-    prompt = "Given the prompt \"" + input + "\" please give me the color, clothing type and brands that are in the prompt. Only give the categories if the word is fully in the prompt. There can be more than one of each category. Please respond only with the categories without any other words" 
+    prompt = "Given the prompt \"" + input + "\" please give me the color, clothing type and brands that are in the prompt. Only give the categories if the word is fully in the prompt. There can be more than one of each category. Please respond only with the categories without any other words. If any categories are empty, respond with N/A" 
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         temperature = 0.2,
