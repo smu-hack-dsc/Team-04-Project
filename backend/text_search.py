@@ -15,4 +15,12 @@ def getCategories(apiKey, input):
         ]
     )
 
-    return completion.choices[0].message.content.split(", ")
+    unprocessedArr = completion.choices[0].message.content.split(", ")
+    color = []
+    type = []
+    for categories in unprocessedArr:
+        if categories in ["Black", "White", "Red", "Blue", "Orange", "Yellow", "Green", "Blue", "Indigo"]:
+            color.append(categories)
+        elif categories in ["Top", "Bottom", "Full Body", "Shirt", "T-Shirt", "Pants", "Long Pant", "Long Sleeved Shirt", "Dress"]:
+            type.append(categories)
+    return [color, type]
