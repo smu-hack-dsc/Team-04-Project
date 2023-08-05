@@ -7,20 +7,19 @@ def get_user(user_id):
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute('SELECT * FROM tothecloset."address"' "WHERE user_id = %s", (user_id))
-
+                cursor.execute('SELECT * FROM tothecloset."user" WHERE user_id = %s', (user_id,))
                 row = cursor.fetchall()
 
                 if len(row) == 0:
-                    return jsonify("No user found: " + user_id), 404
+                    return jsonify({"error": "No user found for user_id: " + str(user_id)}), 404
 
                 user = {
-                    "user_id": row[0],
-                    "first_name": row[1],
-                    "last_name": row[2],
-                    "email": row[3],
-                    "phone_num": row[4],
-                    "password": row[5],
+                    "user_id": row[0][0],
+                    "first_name": row[0][1],
+                    "last_name": row[0][2],
+                    "email": row[0][3],
+                    "phone_num": row[0][4],
+                    "password": row[0][5],
                 }
 
         return jsonify(user), 200

@@ -92,13 +92,19 @@ const PersonalParticularsPage = () => {
       errors += 1;
     }
 
-    // if have error
-    if (errors == 0) {
+    // If there are no errors, proceed to the next step
+    if (errors === 0) {
+      // Store data in sessionStorage
       sessionStorage.setItem("firstName", firstNameElement.value);
       sessionStorage.setItem("lastName", lastNameElement.value);
       sessionStorage.setItem("email", emailElement.value);
       sessionStorage.setItem("phoneNum", phoneNumElement.value);
       sessionStorage.setItem("password", passwordElement.value);
+
+      // Redirect to the next step (/signup/address) on the client side
+      if (typeof window !== 'undefined') {
+        window.location.href = "/signup/address";
+      }
     }
   };
 
