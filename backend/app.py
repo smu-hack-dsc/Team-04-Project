@@ -37,7 +37,7 @@ from transaction import *
 from user import *
 from wishlist import *
 from size_recommender import *
-from text_search import *
+# from text_search import *
 # from image_search import *
 from db_config import *
 

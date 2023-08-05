@@ -19,6 +19,7 @@ import { ClockCircleOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Space } from "antd";
 import axios from "axios";
 import CartItem from "./CartItem";
+import jwt from 'jsonwebtoken';
 
 // const playfair = Playfair_Display({ subsets: ['latin'], weight :'400'})
 const customFontStyle = Playfair_Display({
@@ -26,6 +27,44 @@ const customFontStyle = Playfair_Display({
   weight: ["400"], // Replace 'weight' with 'weights'
 });
 const NavBar = () => {
+
+    const [userToken, setUserToken] = useState("");
+
+    useEffect(() => {
+    // Check if the user token exists in session storage
+    const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+
+    // Update the state with the user token
+    setUserToken(token);
+  }, []);
+
+  // Function to decode the JWT
+  const decodeToken = (token) => {
+    try {
+      // Access the secret key from the environment variables
+      const secretKey = process.env.SECRET_KEY;
+      if (!secretKey) {
+        console.error("Secret key not found in environment variables.");
+        return null;
+      }
+
+      // Decode the token using the secret key
+      const decodedToken = jwt.verify(token, secretKey);
+      return decodedToken;
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return null;
+    }
+  };
+
+  // Function to handle logout
+  const handleLogout = () => {
+    // Remove the user token from the session storage
+    sessionStorage.removeItem("token");
+    // Reload the page to update the Navbar
+    window.location.reload();
+  };
+  
   // hamburger menu
   const [menuOpen, setMenuOpen] = useState(false);
   const handleNav = () => {
