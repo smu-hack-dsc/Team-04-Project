@@ -42,12 +42,12 @@ def create_clothing_preference():
                 weight = request.args.get("weight")
                 print(weight)
                 top_fit = request.args.get("top_fit")
-                bottom_fit = request.args.get("bottom_fit")
+                bottoms_fit = request.args.get("bottoms_fit")
                 shoulder_width = request.args.get("shoulder_width")
                 hip = request.args.get("hip")
                 waist = request.args.get("waist")
 
-                cursor.execute('INSERT INTO tothecloset."clothing_preference" ' "(user_id, height, weight, top_fit, bottoms_fit, shoulder_width, hip, waist) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING user_id", (user_id, height, weight, top_fit, bottom_fit, shoulder_width, hip, waist))
+                cursor.execute('INSERT INTO tothecloset."clothing_preference" ' "(user_id, height, weight, top_fit, bottoms_fit, shoulder_width, hip, waist) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING user_id", (user_id, height, weight, top_fit, bottoms_fit, shoulder_width, hip, waist))
 
                 user_id = cursor.fetchone()[0]
 

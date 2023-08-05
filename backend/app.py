@@ -359,6 +359,15 @@ def get_user_api(user_id):
 def create_user_api():
     return create_user()
 
+# get user from email
+@app.route("/api/user/email/<email>", methods=["GET"])
+def get_user_from_email_api(email):
+    return get_user_from_email(email)
+
+# check user details for login
+@app.route("/api/user/login", methods=["POST"])
+def check_login_api():
+    return check_login()
 
 
 ########## DB: wishlist

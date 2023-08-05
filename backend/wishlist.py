@@ -3,6 +3,7 @@ import os
 import psycopg2
 from db_config import get_db_connection
 
+
 def get_wishlist_from_user_id(user_id):
     try:
         with get_db_connection() as connection:
