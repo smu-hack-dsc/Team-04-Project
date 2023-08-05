@@ -164,6 +164,7 @@ const AddressPage = () => {
       const token = clothing.data.token;
       
       // Store the token in sessionStorage
+      sessionStorage.setItem("userId", userid)
       sessionStorage.setItem("userToken", token);
 
       toast.success("You have successfully registered!");
