@@ -51,38 +51,6 @@ const returnUrl = returnpic.src;
 const Landing: React.FC = () => {
 
 
-  //initialising session storage whenever the landing page is first loaded
-  useEffect(() => {
-    // Check if session storage is available (for CSR)
-    if (typeof window !== 'undefined') {
-      // Set data in session storage
-      if (!sessionStorage.getItem('userId')) {
-        const userId = 3; // CHANGE THIS FOR NOW
-        sessionStorage.setItem('userId', userId.toString()); // userId=0 if user is not logged in
-      }
-
-      if (!sessionStorage.getItem("cartItemNum")) {
-        const userId = sessionStorage.getItem("userId");
-        if (userId != '0') {
-          getCartItemNum(userId);
-        } else {
-          const cartItemNum = 0
-          sessionStorage.setItem('cartItemNum', cartItemNum.toString());
-        }
-      }
-    }
-  }, [])
-
-  const getCartItemNum = async (userId) => {
-    try {
-        const response = await axios.get('http://localhost:5000/api/cart/' + userId);
-        const cartItemNum = response.data.length
-        sessionStorage.setItem("cartItemNum", cartItemNum.toString())
-    } catch (error) {
-        console.error(error);
-    }
-  };
-
   const slides = [
     {
       url: isSmallScreen() ? imageSmallUrl : imageUrl,
