@@ -80,7 +80,7 @@ export default function Page() {
         </div>
         <div className='p-2 flex'>
           <div className="flex items-center pe-2">
-            <input type="checkbox" id="rememberPw" name="rememberPw" value="" className="focus:border-grey focus:border-1 focus:ring-0"/>
+            <input type="checkbox" id="rememberPw" name="rememberPw" value="" className="focus:border-grey focus:border-1 focus:ring-0 text-black"/>
           </div>
           <p className="text-xs">Remember Me</p>
         </div>

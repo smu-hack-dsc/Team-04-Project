@@ -1,9 +1,12 @@
 import openai
 import re
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
 
-def getCategories(apiKey, input):
-    openai.api_key = apiKey
+def getCategories(input):
+    openai.api_key = os.getenv("OPENAI_API_KEY")
     # prompt = "Given the prompt \"" + input + "\" please give me the categories that are relevant to it from this list. " \
     #     "[Black, White, Red, Blue, Orange, Yellow, Green, Blue, Indigo, Top, Bottom, Full Body, Shirt, T-Shirt, Pants, Long Pant, Long Sleeved Shirt, Dress]" \
     #     "Please respond only with the categories without any other words"
