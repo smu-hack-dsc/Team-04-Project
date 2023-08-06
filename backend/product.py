@@ -115,7 +115,7 @@ def create_product():
                 category = request.args.get("category")
                 gender = request.args.get("gender")
 
-                cursor.execute('INSERT INTO tothecloset."address" ' "(brand, size, colour, price, type, image_url, date_added, product_name, category, gender) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING product_id", (brand, size, colour, price, type, image_url, date_added, product_name, category, gender))
+                cursor.execute('INSERT INTO tothecloset."product" ' "(brand, size, colour, price, type, image_url, date_added, product_name, category, gender) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING product_id", (brand, size, colour, price, type, image_url, date_added, product_name, category, gender))
 
                 new_product_id = cursor.fetchone()[0]
 

@@ -11,6 +11,7 @@ import psycopg2
 from db_config import get_db_connection
 from os.path import isfile, join, isdir
 from os import listdir
+from flask import jsonify, request
 
 model_url = "https://tfhub.dev/tensorflow/efficientnet/lite0/feature-vector/2"
 
@@ -23,7 +24,7 @@ load_dotenv()
 
 def initialise_pinecone():
     api_key = os.getenv("PINECONE_API_KEY")
-    environment = os.get("PINECONE_ENV")
+    environment = os.getenv("PINECONE_ENV")
     return pinecone.init(api_key=api_key, environment=environment)
 
 
@@ -43,14 +44,13 @@ def extract(file):
     return flattened_feature
 
 
-def insert_pinecone(indexName, file, key):
-    initialise_pinecone()
+def insert_pinecone(file, key):
+    res = initialise_pinecone()
     vectorList = extract(file)
-    index= pinecone.Index(indexName)
+    index = pinecone.Index("clothes")
     index.upsert([
         (key, vectorList)
     ])
-
 
 def insert_pinecone_with_filter(indexName, file, key, filter):
     initialise_pinecone()
@@ -61,11 +61,11 @@ def insert_pinecone_with_filter(indexName, file, key, filter):
     ])
 
 
-def query(indexName, file, maxReturn):
+def query(file):
     initialise_pinecone()
     vectorToCompare = extract(file)
-    index= pinecone.Index(indexName)
-    return index.query(vector = vectorToCompare, top_k = maxReturn)
+    index= pinecone.Index("clothes")
+    return index.query(vector = vectorToCompare, top_k = 10)
 
 
 def query_with_filter(indexName, file, maxReturn, filterJson):
@@ -88,8 +88,9 @@ def create_product_postgresql(product_dict):
                 product_name = product_dict["product_name"]
                 category = product_dict["category"]
                 gender = product_dict["gender"]
+                
 
-                cursor.execute('INSERT INTO tothecloset."address" ' "(brand, size, colour, price, type, image_url, date_added, product_name, category, gender) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING product_id", (brand, size, colour, price, type, image_url, date_added, product_name, category, gender))
+                cursor.execute('INSERT INTO tothecloset."product" ' "(brand, size, colour, price, type, image_url, date_added, product_name, category, gender) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING product_id", (brand, size, colour, price, type, image_url, date_added, product_name, category, gender))
 
                 new_product_id = cursor.fetchone()[0]
 
@@ -118,21 +119,24 @@ def process_json_and_image(subdirectory_path):
             json_data = json.load(json_file)
             
             product_id = create_product_postgresql(json_data)
-            print(product_id)
+            product_id = str(product_id)
             
             if (product_id !=0):
                 # Find the image file (webp, jpg, png) in the subdirectory
                 image_file = next((f for f in files if f.endswith('.webp') or f.endswith('.jpg') or f.endswith('.png')), None)
-                print(image_file)
                 
                 if image_file:
                     image_path = join(subdirectory_path, image_file)
-                    # Perform your actions with the image file
-            
-            
+                    insert_pinecone(image_path, product_id);
+                    return 1
+            else:
+                return 0
                 
 
-def bulk_insertion(directory_path):
+def bulk_insertion():
+    
+    directory_path = request.args.get("parent_folder_path")
+    
     # Get a list of subdirectories (folders) in the specified directory
     subdirectories = [f for f in listdir(directory_path) if isdir(join(directory_path, f)) and f.isdigit()]
 
@@ -142,8 +146,12 @@ def bulk_insertion(directory_path):
     # Process each subdirectory (folder)
     for subdirectory in sorted_subdirectories:
         subdirectory_path = join(directory_path, subdirectory)
-        process_json_and_image(subdirectory_path)
+        response = process_json_and_image(subdirectory_path)
+        if response == 0:
+            return jsonify({"error": "Failed to insert products"}), 500
+        
+    return jsonify({"message": "Inserted products successfully"}), 200
 
-# Call the bulk_insertion function with the directory path
-bulk_insertion("C:\\Users\\ASUS\\Documents\\School\\Others\\.Hack\\HEAP 2023\\SampleInsertionFolder")
+
+# bulk_insertion("C:\\Users\\ASUS\\Documents\\School\\Others\\.Hack\\HEAP 2023\\SampleInsertionFolder")
 
