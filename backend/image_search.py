@@ -12,6 +12,7 @@ from db_config import get_db_connection
 from os.path import isfile, join, isdir
 from os import listdir
 from flask import jsonify, request
+import uuid
 
 model_url = "https://tfhub.dev/tensorflow/efficientnet/lite0/feature-vector/2"
 
@@ -65,7 +66,7 @@ def query(file):
     initialise_pinecone()
     vectorToCompare = extract(file)
     index= pinecone.Index("clothes")
-    return index.query(vector = vectorToCompare, top_k = 10)
+    return index.query(vector = vectorToCompare, top_k = 5)
 
 
 def query_with_filter(indexName, file, maxReturn, filterJson):
@@ -152,6 +153,48 @@ def bulk_insertion():
         
     return jsonify({"message": "Inserted products successfully"}), 200
 
+# C:\\Users\\ASUS\\Documents\\School\\Others\\.Hack\\HEAP 2023\\SampleInsertionFolder
 
-# bulk_insertion("C:\\Users\\ASUS\\Documents\\School\\Others\\.Hack\\HEAP 2023\\SampleInsertionFolder")
+def generate_random_filename(original_filename):
+    # Generate a random UUID and use it as the filename's prefix
+    random_prefix = str(uuid.uuid4())
+    _, file_extension = os.path.splitext(original_filename)
+    random_filename = random_prefix + file_extension
+    return random_filename
+
+def delete_file(file_path):
+    try:
+        os.remove(file_path)
+        print(f"File '{file_path}' has been deleted successfully.")
+    except OSError as e:
+        print(f"Error deleting file '{file_path}': {e}")
+
+def image_query():
+    try:
+        uploaded_file = request.files['file']
+
+        if uploaded_file:
+            # Specify the path to save the uploaded file
+            random_filename = generate_random_filename(uploaded_file.filename)
+            file_path = f'./TempImageFiles/{random_filename}'
+            uploaded_file.save(file_path)
+            
+            # send query to pinecone
+            response = query(file_path)
+            matches = response["matches"]
+            
+            # get list of ids
+            id_list = []
+            for match in matches:
+                id_list.append(match["id"])
+
+            return jsonify(id_list), 200
+        else:
+            return jsonify({"message": "No image file uploaded"}), 400
+        
+    except Exception as e:
+        return jsonify({"message": str(e)}), 500
+    
+    finally:
+        delete_file(file_path)
 

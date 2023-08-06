@@ -418,9 +418,9 @@ def text_search_api(prompt):
 def bulk_insertion_api():
     return bulk_insertion()
 
-@app.route("/api/image_search/query/<image>", methods = ["POST"])
-def query_api(image):
-    return query(image)
+@app.route("/api/image_search/query", methods = ["POST"])
+def query_api():
+    return image_query()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
