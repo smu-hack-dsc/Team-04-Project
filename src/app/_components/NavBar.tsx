@@ -29,14 +29,65 @@ const customFontStyle = Playfair_Display({
 const NavBar = () => {
 
     const [userToken, setUserToken] = useState("");
+    const [count, setCount] = useState(0);
 
     useEffect(() => {
     // Check if the user token exists in session storage
     const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+    console.log(token);
 
     // Update the state with the user token
     setUserToken(token);
-  }, []);
+
+    //to update badge on cart icon
+    const initCartItemNum = async () => {
+
+        if (typeof window !== 'undefined') {
+            if(!sessionStorage.getItem('userId')){
+                const userId = 0; //set to 0 if no user
+                sessionStorage.setItem("userId", userId.toString());
+            }
+
+            if (!sessionStorage.getItem("cartItemNum")) {
+                const userId = sessionStorage.getItem("userId");
+                if (userId !== "0") {
+                    try {
+                    getCartItemNum(userId); // Await the result
+                    } catch (error) {
+                    console.error(error);
+                    const cartItemNum = 0;
+                    sessionStorage.setItem("cartItemNum", cartItemNum.toString());
+                    setCount(cartItemNum);
+                    }
+                } else {
+                    const cartItemNum = 0;
+                    sessionStorage.setItem("cartItemNum", cartItemNum.toString());
+                    setCount(cartItemNum);
+                }
+                } else {
+                // Retrieve count from session storage
+                setCount(parseInt(sessionStorage.getItem("cartItemNum")));
+                }
+            }
+        };
+
+        initCartItemNum();  
+    }, []);
+
+    const getCartItemNum = async (userId) => {
+        try {
+            const response = await axios.get(
+                "http://localhost:5000/api/cart/" + userId
+            );
+            const cartItemNum = response.data.length;
+            sessionStorage.setItem("cartItemNum", cartItemNum.toString());
+            setCount(cartItemNum);
+            return cartItemNum;
+        } catch (error) {
+            console.error(error);
+            return 0;
+        }
+    };
 
   // Function to decode the JWT
   const decodeToken = (token) => {
@@ -214,57 +265,6 @@ const NavBar = () => {
   ];
   const womenSecCol = ["Suits", "Accessories", "Maternity"];
 
-  const [count, setCount] = useState(0);
-
-    useEffect(() => {
-        const initCartItemNum = async () => {
-
-            if (typeof window !== 'undefined') {
-                if(!sessionStorage.getItem('userId')){
-                    const userId = 0; //set to 0 if no user
-                    sessionStorage.setItem("userId", userId.toString());
-                }
-
-        if (!sessionStorage.getItem("cartItemNum")) {
-          const userId = sessionStorage.getItem("userId");
-          if (userId !== "0") {
-            try {
-              getCartItemNum(userId); // Await the result
-            } catch (error) {
-              console.error(error);
-              const cartItemNum = 0;
-              sessionStorage.setItem("cartItemNum", cartItemNum.toString());
-              setCount(cartItemNum);
-            }
-          } else {
-            const cartItemNum = 0;
-            sessionStorage.setItem("cartItemNum", cartItemNum.toString());
-            setCount(cartItemNum);
-          }
-        } else {
-          // Retrieve count from session storage
-          setCount(parseInt(sessionStorage.getItem("cartItemNum")));
-        }
-      }
-    };
-
-    initCartItemNum();
-  }, []);
-
-  const getCartItemNum = async (userId) => {
-    try {
-      const response = await axios.get(
-        "http://localhost:5000/api/cart/" + userId
-      );
-      const cartItemNum = response.data.length;
-      sessionStorage.setItem("cartItemNum", cartItemNum.toString());
-      setCount(cartItemNum);
-      return cartItemNum;
-    } catch (error) {
-      console.error(error);
-      return 0;
-    }
-  };
 
   return (
     <nav className="fixed w-full h-16 outline-1 outline-grey outline bg-white px-3 z-50">
@@ -509,7 +509,11 @@ const NavBar = () => {
                                         Cart
                                 </li>
                             </Link>
-                            <div className="flex justify-between">
+                            <div className={
+                                userToken != null
+                                ? "flex justify-between"
+                                : "hidden"
+                            }>
                                 <Link href="">
                                     <li onClick={() => setMenuOpen(false)}
                                         className="py-2 cursor-pointer">
@@ -543,6 +547,12 @@ const NavBar = () => {
                                         </Link>
                                     ))}
                             </ul>
+                            <Link href="/login">
+                                <li onClick={() => setMenuOpen(false)}
+                                    className="py-2 cursor-pointer">
+                                        Login
+                                </li>
+                            </Link>
                             <Link href="">
                                 <li onClick={() => setMenuOpen(false)}
                                     className="py-2 cursor-pointer">
@@ -598,8 +608,19 @@ const NavBar = () => {
                                 <Bag className="ml-7" size={15}/>
                             </Badge>
                         </Link>
-                        <Link href="">
+                        <Link href="" className={
+                            userToken != null
+                            ? ""
+                            : "hidden"
+                        }>
                             <Person className="ml-7" size={17} onMouseOver={() => setAccOpen(true)}/>
+                        </Link>
+                        <Link href="/login" className={
+                            userToken == null
+                            ? "ml-7"
+                            : "hidden"
+                        }>
+                            Log In
                         </Link>
                     </ul>
                 </div>
