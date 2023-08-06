@@ -6,6 +6,7 @@ import { ChevronDownIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons
 import type { NextPage } from "next";
 import axios from 'axios'
 import { genPreviewOperationsStyle } from "antd/es/image/style";
+import debounce from 'lodash/debounce';
 
 const sortOptions = [
   { name: 'Popularity', href: '#', current: true },
@@ -16,12 +17,12 @@ const sortOptions = [
 
 const filtersOptions = [
   {
-    id: 'color',
-    name: 'Color',
+    id: 'colour',
+    name: 'Colour',
     options: [
       { value: 'White', label: 'White', checked: false },
       { value: 'Beige', label: 'Beige', checked: false },
-      { value: 'Blue', label: 'Blue', checked: false },
+      { value: 'Black', label: 'Black', checked: false },
       { value: 'Brown', label: 'Brown', checked: false },
       { value: 'Green', label: 'Green', checked: false },
       { value: 'Purple', label: 'Purple', checked: false },
@@ -51,22 +52,33 @@ const filtersOptions = [
       { value: 'XXL', label: 'XXL', checked: false },
     ],
   },
-  {id: 'type',
-  name: 'Type',
-  options: [
-    { value: 'Tops', label: 'Tops', checked: false },
-    { value: 'Suits', label: 'Suits', checked: false },
-    { value: 'Outerwear', label: 'Outerwear', checked: false },
-    { value: 'Jackets & Vests', label: 'Jackets & Vests', checked: false },
-    { value: 'Accessories', label: 'Accessories', checked: false },
-    { value: 'Dresses', label: 'Dresses', checked: false },
-  ],},
+  {
+    id: 'type',
+    name: 'Type',
+    options: [
+      { value: 'Tops', label: 'Tops', checked: false },
+      { value: 'Suits', label: 'Suits', checked: false },
+      { value: 'Outerwear', label: 'Outerwear', checked: false },
+      { value: 'Jackets & Vests', label: 'Jackets & Vests', checked: false },
+      { value: 'Accessories', label: 'Accessories', checked: false },
+      { value: 'Dresses', label: 'Dresses', checked: false },
+    ],
+  },
+  {
+    id: 'gender',
+    name: 'Gender',
+    options: [
+      { value: 'male', label: 'Male', checked: false },
+      { value: 'female', label: 'Female', checked: false },
+    ],
+  },
   {
     id: 'price',
     name: 'Price',
     options: [
     ],
   },
+
 ];
 
 type FilterOption = {
@@ -86,10 +98,25 @@ function classNames(...classes: string[]) {
 const RentPage: NextPage = () => {
   const [filtersDropdownOpen, setFiltersDropdownOpen] = useState(false);
   const [filterOptions, setFilterOptions] = useState<FilterOption[]>(filtersOptions);
-  const [colorOptions, setColorOptions] = useState(filtersOptions.find(option => option.id === 'color')?.options || []);
+  const [colourOptions, setcolourOptions] = useState(filtersOptions.find(option => option.id === 'colour')?.options || []);
   const [gridColumns, setGridColumns] = useState(4);
   const toggleGridColumns = () => {
     setGridColumns(prevColumns => (prevColumns === 4 ? 3 : 4));
+
+    const debouncedFetchFilteredProducts = debounce(fetchFilteredProducts, 500);
+
+    const handlePriceInputChange = (e, field) => {
+      const value = parseFloat(e.target.value);
+      if (!isNaN(value)) {
+        if (field === 'min') {
+          setPriceMin(value);
+        } else if (field === 'max') {
+          setPriceMax(value);
+        }
+        // Call the debounced function instead of fetchFilteredProducts directly
+        debouncedFetchFilteredProducts(checkboxState);
+      }
+    }
   };
 
   const initialCheckboxState = filtersOptions.reduce((acc, option) => {
@@ -101,12 +128,18 @@ const RentPage: NextPage = () => {
     };
     return acc;
   }, {});
-  
+
 
   const [checkboxState, setCheckboxState] = useState(initialCheckboxState);
+  const performFilterRequest = () => {
+    // Your fetchFilteredProducts function here
+    fetchFilteredProducts(checkboxState);
+  };
+  const debouncedPerformFilterRequest = debounce(performFilterRequest, 500); // 500 milliseconds debounce delay (adjust as needed)
 
   const handleOptionChange = (optionId, subOptionValue, event) => {
     const isChecked = event.target.checked;
+    event.stopPropagation()
     setCheckboxState((prevState) => ({
       ...prevState,
       [optionId]: {
@@ -143,57 +176,61 @@ const RentPage: NextPage = () => {
 
   const gridClass = `grid grid-cols-${cols} gap-3 md:grid-cols-${mdColumns}`;
 
-  const [productArr, setProductArr] = useState([]);
   const [filteredProducts, setFilteredProductsArr] = useState([]);
+  const [priceMin, setPriceMin] = useState(0);
+  const [priceMax, setPriceMax] = useState(Number.MAX_SAFE_INTEGER);
+  const [selectedSortOption, setSelectedSortOption] = useState(sortOptions[0]); // Initialize with the default sort option
 
   useEffect(() => {
-    fetchProductsFromBackend();
     fetchFilteredProducts(checkboxState);
-  }, []);
-
-  const fetchProductsFromBackend = async () => {
-    try {
-      const response = await axios.get('http://localhost:5000/api/product');
-      //get product details
-      for (const item of response.data) {
-        const productId = item["product_id"]
-        const productBrand = item["brand"]
-        setProductArr((prevProductArr => [...prevProductArr, productId]));
-        // console.log("ARR " + productBrand)
-        // console.log(productId);
-      }
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+  }, [selectedSortOption]);
 
   const fetchFilteredProducts = (checkboxState) => {
-    const selectedColors = Object.keys(checkboxState.color.options).filter((color) => checkboxState.color.options[color]);
+    const selectedColours = Object.keys(checkboxState.colour.options).filter((colour) => checkboxState.colour.options[colour]);
     const selectedBrands = Object.keys(checkboxState.brand.options).filter((brand) => checkboxState.brand.options[brand]);
     const selectedSizes = Object.keys(checkboxState.size.options).filter((size) => checkboxState.size.options[size]);
     const selectedTypes = Object.keys(checkboxState.type.options).filter((type) => checkboxState.type.options[type]);
+    const selectedGender = Object.keys(checkboxState.gender.options).filter((gender) => checkboxState.gender.options[gender]);
     axios
       .get('http://localhost:5000/api/product/filter', {
-        // Add any query parameters if required
         params: {
           brand: selectedBrands,
           size: selectedSizes,
-          color: selectedColors,
+          colour: selectedColours,
           type: selectedTypes,
-          price_min: 300,
-          price_max: 6000,
+          gender: selectedGender,
+          price_min: priceMin,
+          price_max: priceMax,
         },
       })
       .then((response) => {
-        // console.log('Response: ' + JSON.stringify(response.data));
-        for (const item of response.data.products) {
-          const productId = item.product_id;
-          setFilteredProductsArr(response.data.products.map((item) => item.product_id));
-          // console.log('FILTER ' + productId);
+        if (response.data.products && response.data.products.length > 0) {
+          const filteredProductIds = response.data.products.map((item) => item.product_id);
+
+          // Sort the products based on the selected sort option
+          const sortedFilteredProductIds = filteredProductIds.slice();
+          if (selectedSortOption.name === 'Price: Low to High') {
+            sortedFilteredProductIds.sort((a, b) => {
+              const productA = response.data.products.find((item) => item.product_id === a);
+              const productB = response.data.products.find((item) => item.product_id === b);
+              return productA.price - productB.price;
+            });
+          } else if (selectedSortOption.name === 'Price: High to Low') {
+            sortedFilteredProductIds.sort((a, b) => {
+              const productA = response.data.products.find((item) => item.product_id === a);
+              const productB = response.data.products.find((item) => item.product_id === b);
+              return productB.price - productA.price;
+            });
+          }
+
+          setFilteredProductsArr(sortedFilteredProductIds);
+        } else {
+          setFilteredProductsArr([]); // Empty array if there is no data
         }
       })
       .catch((error) => {
         console.error('Error fetching products:', error);
+        setFilteredProductsArr([]); // Empty array if there is an error
       });
   };
 
@@ -231,7 +268,10 @@ const RentPage: NextPage = () => {
                               active ? 'bg-gray-100' : '',
                               'block px-4 py-2 text-sm'
                             )}
-
+                            onClick={() => {
+                              setSelectedSortOption(option);
+                              fetchFilteredProducts(checkboxState); // Refetch filtered products with new sorting
+                            }}
                           >
                             {option.name}
                           </a>
@@ -272,7 +312,7 @@ const RentPage: NextPage = () => {
                                   <Disclosure.Button
                                     onClick={event => {
                                       event.stopPropagation();
-                                      setFiltersDropdownOpen(false);
+                                      
                                     }}
                                     className={classNames(
                                       'flex items-center justify-between w-full text-gray-500',
@@ -313,7 +353,7 @@ const RentPage: NextPage = () => {
                                         <>
                                           <div className="border-gray-200 items-center py-2">
                                             <div className="flex px-4 gap-2">
-                                              <label htmlFor="FilterPriceFrom" className="flex items-center gap-2">
+                                              <label htmlFor="FilterPriceFrom" className="flex items-center gap-2" onClick={(e) => e.stopPropagation()} >
                                                 <span className="text-sm text-gray-600">$</span>
 
                                                 <input
@@ -321,10 +361,15 @@ const RentPage: NextPage = () => {
                                                   id="FilterPriceFrom"
                                                   placeholder="From"
                                                   className="w-full border-gray-200 shadow-sm sm:text-sm"
+                                                  value={priceMin}
+                                                  onChange={(e) => {
+                                                    setPriceMin(parseInt(e.target.value));
+                                                    debouncedPerformFilterRequest(); // Call the debounced function after setting the state
+                                                  }}
                                                 />
                                               </label>
 
-                                              <label htmlFor="FilterPriceTo" className="flex items-center gap-2">
+                                              <label htmlFor="FilterPriceTo" className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                                                 <span className="text-sm text-gray-600">$</span>
 
                                                 <input
@@ -332,6 +377,12 @@ const RentPage: NextPage = () => {
                                                   id="FilterPriceTo"
                                                   placeholder="To"
                                                   className="w-full border-gray-200 shadow-sm sm:text-sm"
+                                                  value={priceMax}
+                                                  onChange={(e) => {
+                                                    setPriceMax(parseInt(e.target.value));
+                                                    debouncedPerformFilterRequest(); // Call the debounced function after setting the state
+                                                  }}
+                                                  
                                                 />
                                               </label>
                                             </div>
@@ -363,18 +414,10 @@ const RentPage: NextPage = () => {
             </button>
           </div>
         </div>
-
-        <div>
-          <div className={gridClass}>
-            {/* {productArr.map((item, index) => (
-              <BrowsingCard key={index} productId={productArr[index]} />
-            ))} */}
-          </div>
-          <div className={gridClass}>
-            {filteredProducts.map((item, index) => (
-              <BrowsingCard key={index} productId={filteredProducts[index]} />
-            ))}
-          </div>
+        <div className={gridClass}>
+          {filteredProducts.map((item, index) => (
+            <BrowsingCard key={index} productId={filteredProducts[index]} />
+          ))}
         </div>
       </div>
     </section>

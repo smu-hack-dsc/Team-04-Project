@@ -34,11 +34,11 @@ Make informed clothing sizing decisions using our size recommender feature:
 
 ## Technologies Used
 
-- Frontend: Next.js (React framework) with Tailwind CSS styling, deployed on Vercel
-- Backend: Python (Flask framework) deployed on AWS Elastic Container Registry and Elastic Container Service
-- Database: Postgresql database deployed on AWS Relational Database Service
-- Images: AWS S3 Cloud Storage
-- AI: TensorFlow, Pinecone Vector Database, OpenAI Chat API GPT 3.5
+- **Frontend**: Next.js (React framework) with Tailwind CSS styling, deployed on Vercel
+- **Backend**: Python (Flask framework) deployed on AWS Elastic Container Registry and Elastic Container Service
+- **Database**: Postgresql database deployed on AWS Relational Database Service
+- **Images**: AWS S3 Cloud Storage
+- **AI**: TensorFlow, Pinecone Vector Database, OpenAI Chat API GPT 3.5
 
 ## Getting Started
 
@@ -59,7 +59,7 @@ npm install
 npm run dev
 ```
 
-### Next.js Frontend
+### Python Backend
 
 #### Access Python backend folder
 ```
