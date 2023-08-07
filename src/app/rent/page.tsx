@@ -9,6 +9,7 @@ import { genPreviewOperationsStyle } from "antd/es/image/style";
 import debounce from 'lodash/debounce';
 
 
+
 const sortOptions = [
   { name: 'Popularity', href: '#', current: true },
   { name: 'Latest Arrival', href: '#', current: false },
@@ -201,6 +202,8 @@ const RentPage: NextPage = () => {
   const [selectedSortOption, setSelectedSortOption] = useState(sortOptions[0]); // Initialize with the default sort option
 
   useEffect(() => {
+    // const selectedGender = typeof gender === 'string' ? gender : '';
+    // const selectedType = typeof type === 'string' ? type : '';
     fetchFilteredProducts(checkboxState);
   }, [selectedSortOption]);
 

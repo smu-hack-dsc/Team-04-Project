@@ -143,7 +143,7 @@ const Page = () => {
               console.log("payment response:", responseData);
               toast.success("Payment successful!")
               if (typeof window !== "undefined") {
-                window.location.href = "/";
+                window.location.href = "/order/confirmation";
               }
             } else {
               // Handle error response from the server
@@ -336,8 +336,7 @@ const Page = () => {
                 </div>
               )}
 
-
-              <div className="flex flex-row justify-between mt-5">
+              {/* <div className="flex flex-row justify-between mt-5">
                 <div>
                 <input
                   type="radio"
@@ -393,8 +392,8 @@ const Page = () => {
                 </div>
                 <div className="flex">
                   <PaymentLogo imageUrl="/images/StripeLogo.jpg" bgColour="#6772e5"/>
-                </div>
-              </div>
+                </div> */}
+              {/* </div> */}
             </div>
           </div>
         </div>
