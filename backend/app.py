@@ -37,6 +37,8 @@ from transaction import *
 from user import *
 from wishlist import *
 from size_recommender import *
+from text_search import *
+from image_search import *
 # from text_search import *
 # from image_search import *
 from db_config import *
@@ -415,6 +417,16 @@ def size_chart_api(brand, category):
 @app.route("/api/text_search/<prompt>", methods = ["GET"])
 def text_search_api(prompt):
     return getCategories(openaiApi, prompt)
+
+
+########## image search
+@app.route("/api/image_search/bulk_insertion", methods = ["POST"])
+def bulk_insertion_api():
+    return bulk_insertion()
+
+@app.route("/api/image_search/query", methods = ["POST"])
+def query_api():
+    return image_query()
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

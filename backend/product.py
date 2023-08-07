@@ -13,7 +13,7 @@ def get_products():
                 if len(rows) == 0:
                     return jsonify("No products found"), 404
 
-                products = [{"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "sizing_chart": row[9], "category": row[10]} for row in rows]
+                products = [{"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "category": row[9], "gender": row[10]} for row in rows]
 
         return jsonify(products), 200
 
@@ -31,7 +31,7 @@ def get_product(product_id):
                 if len(row) == 0:
                     return jsonify("No product found: " + product_id), 404
                 print(row)
-                product = {"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "sizing_chart": row[9], "category": row[10]}
+                product = {"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "category": row[9], "gender": row[10]}
 
         return jsonify(product), 200
 
@@ -54,6 +54,7 @@ def get_filtered_products():
         sizes = request.args.getlist("size")
         colours = request.args.getlist("colour")
         types = request.args.getlist("type")
+        gender = request.args.getlist('gender')
         price_min = float(request.args.get("price_min", 0))
         price_max = float(request.args.get("price_max", 0))
 
@@ -74,6 +75,9 @@ def get_filtered_products():
         if types:
             sql_query += " AND type IN %s"
             params.append(tuple(types))
+        if gender:
+            sql_query += " AND gender IN %s"
+            params.append(tuple(gender))
 
         sql_query += " AND price BETWEEN %s AND %s"
         params.append(price_min)
@@ -88,7 +92,7 @@ def get_filtered_products():
                 if len(rows) == 0:
                     return jsonify({"message": "No products found with the specified filters"}), 404
 
-                products = [{"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "sizing_chart": row[9], "category": row[10]} for row in rows]
+                products = [{"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "category": row[9], "gender": row[10]} for row in rows]
 
         return jsonify({"products": products}), 200
 
@@ -108,10 +112,10 @@ def create_product():
                 image_url = request.args.get("image_url")
                 date_added = request.args.get("date_added")
                 product_name = request.args.get("product_name")
-                sizing_chart = request.args.get("sizing_chart")
                 category = request.args.get("category")
+                gender = request.args.get("gender")
 
-                cursor.execute('INSERT INTO tothecloset."address" ' "(brand, size, colour, price, type, image_url, date_added, product_name, sizing_chart, category) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING product_id", (brand, size, colour, price, type, image_url, date_added, product_name, sizing_chart, category))
+                cursor.execute('INSERT INTO tothecloset."product" ' "(brand, size, colour, price, type, image_url, date_added, product_name, category, gender) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING product_id", (brand, size, colour, price, type, image_url, date_added, product_name, category, gender))
 
                 new_product_id = cursor.fetchone()[0]
 
@@ -138,10 +142,10 @@ def update_product(product_id):
                 image_url = request.args.get("image_url")
                 date_added = request.args.get("date_added")
                 product_name = request.args.get("product_name")
-                sizing_chart = request.args.get("sizing_chart")
                 category = request.args.get("category")
+                gender = request.args.get("gender")
 
-                rows_affected = cursor.execute('UPDATE tothecloset."address" SET brand = %s, size = %s, colour = %s, price = %s, type = %s, image_url = %s" "date_added = %s, product_name = %s, sizing_chart = %s, category =  %s WHERE product_id = %s', (brand, size, colour, price, type, image_url, date_added, product_name, sizing_chart, category, product_id))
+                rows_affected = cursor.execute('UPDATE tothecloset."address" SET brand = %s, size = %s, colour = %s, price = %s, type = %s, image_url = %s" "date_added = %s, product_name = %s, category = %s, gender =  %s WHERE product_id = %s', (brand, size, colour, price, type, image_url, date_added, product_name, category, gender, product_id))
 
                 if rows_affected == 0 or rows_affected == None:
                     return jsonify({"error": "Product not found"}), 404
@@ -181,7 +185,7 @@ def get_product_by_type(type):
                 if len(rows) == 0:
                     return jsonify("No product found under type: " + type), 404
 
-                products = [{"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8]} for row in rows]
+                products = [{"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "category": row[9], "gender": row[10]} for row in rows]
         return jsonify(products), 200
 
     except (Exception, psycopg2.Error) as error:

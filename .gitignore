@@ -1,3 +1,6 @@
+# image search
+/backend/TempImageFiles
+
 # dependencies
 node_modules
 /.pnp
