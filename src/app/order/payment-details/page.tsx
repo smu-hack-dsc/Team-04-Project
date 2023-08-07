@@ -143,7 +143,7 @@ const Page = () => {
               console.log("payment response:", responseData);
               toast.success("Payment successful!")
               if (typeof window !== "undefined") {
-                window.location.href = "/";
+                window.location.href = "/order/confirmation";
               }
             } else {
               // Handle error response from the server
