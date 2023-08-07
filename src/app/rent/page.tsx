@@ -9,7 +9,6 @@ import { genPreviewOperationsStyle } from "antd/es/image/style";
 import debounce from 'lodash/debounce';
 
 
-
 const sortOptions = [
   { name: 'Popularity', href: '#', current: true },
   { name: 'Latest Arrival', href: '#', current: false },
@@ -100,21 +99,26 @@ function classNames(...classes: string[]) {
 const RentPage: NextPage = () => {
 
   useEffect(() => {
-
     const productIds = sessionStorage.getItem("productList");
-    const storedProductIdsArray = productIds.split(',').map(Number);
-    console.log(productIds);
-
-    const apiUrl = `http://localhost:5000/api/product/by_ids?product_id=${storedProductIdsArray.join('&product_id=')}`;
-
-    axios.get(apiUrl)
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching products:', error);
-      });
+  
+    if (productIds) {
+      const storedProductIdsArray = productIds.split(',').map(Number);
+      console.log(productIds);
+  
+      const apiUrl = `http://localhost:5000/api/product/by_ids?product_id=${storedProductIdsArray.join('&product_id=')}`;
+  
+      axios.get(apiUrl)
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching products:', error);
+        });
+    } else {
+      console.log("No productIds found in sessionStorage.");
+    }
   }, []);
+  
 
   const [filtersDropdownOpen, setFiltersDropdownOpen] = useState(false);
   const [filterOptions, setFilterOptions] = useState<FilterOption[]>(filtersOptions);
