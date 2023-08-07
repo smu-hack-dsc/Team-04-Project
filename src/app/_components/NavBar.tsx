@@ -537,7 +537,7 @@ const NavBar = () => {
                                                     <Link href="/rent" key={index}>
                                                         <li onClick={() => {
                                                             setMenuOpen(false);
-                                                            sessionStorage.setItem("selectedCollection", item);
+                                                            sessionStorage.setItem("selectedCollections", item);
                                                         }}
                                                             className="py-2 cursor-pointer">
                                                                 {item}
