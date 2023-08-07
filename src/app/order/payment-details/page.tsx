@@ -12,42 +12,37 @@ declare global {
   }
 }
 
-const Page = () => {
-  dotenv.config();
-  console.log("SECRET_KEY:", process.env.SECRET_KEY);
-  console.log(process.env);
+const Page = () => {  
+  // console.log("SECRET_KEY:", process.env.SECRET_KEY);
+  // console.log(process.env);
   const SECRET_KEY = "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
   const [userToken, setUserToken] = useState("");
 
-    useEffect(() => {
+  useEffect(() => {
     // Check if the user token exists in session storage
     const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
 
     // Update the state with the user token
     setUserToken(token);
+    console.log("user token:", userToken)
   }, []);
 
-  // Function to decode the JWT
   const decodeToken = (token) => {
     try {
-      // Access the secret key from the environment variables
+      // Access the secret key from the environment variables or hardcoded value
+      const secretKey = SECRET_KEY || "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
+      console.log("secret_key", secretKey);
 
-      const secretKey = SECRET_KEY
-      console.log("secret_key",SECRET_KEY)
-      if (!secretKey) {
-        console.error("Secret key not found in environment variables.");
-        return null;
-      }
-
-      // Decode the token using the secret key
+      // Decode the token using the provided secret key
       const decodedToken = jwt.verify(token, secretKey);
-      console.log("userinfo:", decodedToken)
+      console.log("userinfo:", decodedToken);
       return decodedToken;
     } catch (error) {
       console.error("Error decoding token:", error);
       return null;
     }
   };
+
 
   const [cardholderName, setCardholderName] = useState("");
   const [paymentType, setPaymentType] = useState("creditCard"); // Default to credit card payment
