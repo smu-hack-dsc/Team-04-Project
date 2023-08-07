@@ -41,7 +41,6 @@ const NavBar = () => {
     setUserToken(token);
 
     
-
     //to update badge on cart icon
     const initCartItemNum = async () => {
 
@@ -96,6 +95,7 @@ const NavBar = () => {
     const [selectedType, setSelectedType] = useState(null);
     const [setSelectedOccasion] = useState(null);
     const [setSelectedCollection] = useState(null);
+    const [products, setProducts] = useState([]);
     
 
   // Function to decode the JWT
@@ -142,6 +142,33 @@ const NavBar = () => {
     }
   };
 
+  const handleRentOptionClick = (gender, type) => {
+    // Save the selected gender and type in sessionStorage
+    sessionStorage.setItem("selectedGender", gender); //these r redeclared 
+    sessionStorage.setItem("selectedType", type);
+
+    // Fetch relevant product IDs based on gender and type
+    axios
+    .get('http://localhost:5000/api/product/filter', {
+      params: {
+        type: selectedType,
+        gender: selectedGender,
+
+      },
+    })
+      .then((response) => {
+        // Save the product IDs in sessionStorage
+        console.log("handleclick response:", response.data)
+        const productIds = response.data.map((product) => product.id);
+        sessionStorage.setItem("productIds", JSON.stringify(productIds));
+
+        // Navigate to the RentPage
+        window.location.href = "/rent";
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+      });
+  };
 
   // Function to handle logout
   const handleLogout = () => {
@@ -420,6 +447,7 @@ const NavBar = () => {
                                                             setSelectedType(item); // Set the selected type
                                                             sessionStorage.setItem("selectedGender", "male"); // Store selected gender in session storage
                                                             sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                                                            handleRentOptionClick("male", item);
                                                         }} className="py-2 cursor-pointer">
                                                             {item}
                                                         </li>
@@ -455,6 +483,7 @@ const NavBar = () => {
                                                         setSelectedType(item); // Set the selected type
                                                         sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
                                                         sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                                                        handleRentOptionClick("male", item);
                                                     }} className="py-2 cursor-pointer">
                                                         {item}
                                                     </li>
@@ -696,6 +725,7 @@ const NavBar = () => {
                                 setSelectedType(item); // Set the selected type
                                 sessionStorage.setItem("selectedGender", "male"); // Store selected gender in session storage
                                 sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                                handleRentOptionClick("male", item);
                             }} className="py-1 cursor-pointer">
                                 {item}
                             </p>
@@ -765,5 +795,6 @@ const NavBar = () => {
     )
     
 }
+
 
 export default NavBar
