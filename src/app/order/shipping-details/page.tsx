@@ -39,6 +39,34 @@ const ShippingDetailsPage = () => {
   var [cityValidation, setCityValidation] = useState("");
   var [stateValidation, setStateValidation] = useState("");
   var [postalCodeValidation, setPostalCodeValidation] = useState("");
+  const [user, setUser] = useState({});
+  const [address, setAddress] = useState({});
+
+  useEffect(() => {
+    getUser()
+    getAddress()
+  }, [])
+
+  const getUser = async () => {
+    try{
+      const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") : null;
+      const response = await axios.get("http://localhost:5000/api/user/" + userId);
+      // console.log(response.data);
+      setUser(response.data)
+    } catch(error){
+      console.log(error);
+    }
+  }
+  const getAddress = async () => {
+    try{
+      const userId = typeof window !== "undefined" ? sessionStorage.getItem("userId") : null;
+      const response = await axios.get("http://localhost:5000/api/address/" + userId);
+      // console.log(response.data[0]);
+      setAddress(response.data[0])
+    } catch(error){
+      console.log(error);
+    }
+  }
 
   const validation = () => {
     var emptyFieldError = "ⓘ Field cannot be empty."
@@ -99,33 +127,13 @@ const ShippingDetailsPage = () => {
 
     // if have error
     if (errors == 0){
-      handleSubmit(firstNameElement.value, lastNameElement.value, emailElement.value, phoneNumElement.value, address1Element.value, cityElement.value, stateElement.value, postalCodeElement.value);
-      // window.location.href = "/signup/address"
+      window.location.href = "/order/payment-details"
       return true
     } else {
       return false
     }
   }
 
-  const handleSubmit = async (firstName, lastName, email, phoneNum, address1, city, state, postalCode) => {
-    const formData = new FormData();
-    formData.append("first_name", firstName);
-    formData.append("last_name", lastName);
-    formData.append("email", email);
-    formData.append("phone_num", phoneNum);
-    formData.append("address1", address1);
-    formData.append("city", city);
-    formData.append("state", state);
-    formData.append("postalCode", postalCode);
-
-
-    try {
-      const response = await axios.post("http://localhost:5000/api/user");
-      console.log(response)
-    } catch (error){
-      console.error(error)
-    }
-  }
 
   return (
     <div className="py-16">
@@ -165,7 +173,8 @@ const ShippingDetailsPage = () => {
                   type="text"
                   id="firstName"
                   name="firstName"
-                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent focus:outline-none"
+                  value={user["first_name"]}
+                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent text-sm focus:outline-none "
                 />
                 <p className='text-red-500 text-sm'>{firstNameValidation}</p>
               </div>
@@ -176,7 +185,8 @@ const ShippingDetailsPage = () => {
                   type="text"
                   id="lastName"
                   name="lastName"
-                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent focus:outline-none"
+                  value={user["last_name"]}
+                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent text-sm focus:outline-none"
                 />
                 <p className='text-red-500 text-sm'>{lastNameValidation}</p>
               </div>
@@ -190,7 +200,8 @@ const ShippingDetailsPage = () => {
               type="text"
               id="email"
               name="email"
-              className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent focus:outline-none"
+              value={user["email"]}
+              className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent text-sm focus:outline-none"
             />
             <p className='text-red-500 text-sm'>{emailValidation}</p>
           </div>
@@ -207,7 +218,12 @@ const ShippingDetailsPage = () => {
                   <option key={index} value={countryCode} className='text-sm'>{countryCode}</option>
                 ))}
               </select>
-              <input type="number" id="phoneNum" name="phoneNum" className='outline-none focus:border-grey focus:border focus:ring-0 border-1 w-full h-8 p-2 ms-2'/>
+              <input 
+                type="number" 
+                id="phoneNum" 
+                name="phoneNum" 
+                value={user["phone_num"]}
+                className='outline-none focus:border-grey focus:border focus:ring-0 border-1 w-full h-8 text-sm p-2 ms-2'/>
             </div>
             <p className='text-red-500 text-sm'>{phoneNumValidation}</p>
           </div>
@@ -226,8 +242,9 @@ const ShippingDetailsPage = () => {
             <input
               type="text"
               id="address1"
-                  name="address1"
-              className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent"
+              name="address1"
+              value={address["address_1"]}
+              className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent text-sm"
             />
             <p className='text-red-500 text-sm'>{address1Validation}</p>
           </div>
@@ -236,7 +253,8 @@ const ShippingDetailsPage = () => {
             <p className="text-sm text-gray-500 text-sm">Address 2</p>
             <input
               type="text"
-              className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent"
+              value={address["address_2"]}
+              className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent text-sm"
             />
           </div>
 
@@ -248,7 +266,8 @@ const ShippingDetailsPage = () => {
                   type="text"
                   id="city"
                   name="city"
-                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent"
+                  value={address["city"]}
+                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent text-sm"
                 />
                 <p className='text-red-500 text-sm'>{cityValidation}</p>
               </div>
@@ -259,7 +278,8 @@ const ShippingDetailsPage = () => {
                   type="text"
                   id="state"
                   name="state"
-                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent"
+                  value={address["state"]}
+                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent text-sm"
                 />
                 <p className='text-red-500 text-sm'>{stateValidation}</p>
               </div>
@@ -275,7 +295,8 @@ const ShippingDetailsPage = () => {
                   type="text"
                   id="postalCode"
                   name="postalCode"
-                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent "
+                  value={address["postal_code"]}
+                  className="focus:border-grey focus:border focus:ring-0 p-2 w-full h-8 bg-transparent text-sm"
                 />
                 <p className='text-red-500 text-sm'>{postalCodeValidation}</p>
               </div>
