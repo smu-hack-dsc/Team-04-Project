@@ -97,6 +97,24 @@ function classNames(...classes: string[]) {
 }
 
 const RentPage: NextPage = () => {
+
+  useEffect(() => {
+
+    const productIds = sessionStorage.getItem("productList");
+    const storedProductIdsArray = productIds.split(',').map(Number);
+    console.log(productIds);
+
+    const apiUrl = `http://localhost:5000/api/product/by_ids?product_id=${storedProductIdsArray.join('&product_id=')}`;
+
+    axios.get(apiUrl)
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching products:', error);
+      });
+  }, []);
+
   const [filtersDropdownOpen, setFiltersDropdownOpen] = useState(false);
   const [filterOptions, setFilterOptions] = useState<FilterOption[]>(filtersOptions);
   const [colourOptions, setcolourOptions] = useState(filtersOptions.find(option => option.id === 'colour')?.options || []);
@@ -239,7 +257,7 @@ const RentPage: NextPage = () => {
     <section>
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:pt-20 sm:pb-10 lg:max-w-7xl lg:px-8">
         <div className="flex items-baseline justify-between pb-8">
-          <h1 className="text-2xl uppercase tracking-[2.4px] mt-5">All Products</h1>
+          <h1 className="text-2xl uppercase tracking-[2.4px] mt-5">Products</h1>
           <div className="flex items-center">
             <Menu as="div" className="relative inline-block text-left">
               <div>

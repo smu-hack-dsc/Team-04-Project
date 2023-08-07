@@ -20,7 +20,6 @@ import { Avatar, Badge, Space } from "antd";
 import axios from "axios";
 import CartItem from "./CartItem";
 import jwt from 'jsonwebtoken';
-
 // const playfair = Playfair_Display({ subsets: ['latin'], weight :'400'})
 const customFontStyle = Playfair_Display({
   subsets: ["latin"],
@@ -114,6 +113,32 @@ const NavBar = () => {
       return null;
     }
   };
+
+  const handleFileChange = async (event) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        try {
+            const response = await axios.post('http://localhost:5000/api/image_search/query', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            
+            console.log('File upload response:', response.data);
+            sessionStorage.setItem("productList", response.data);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+        }
+        finally {
+            window.location.href = "/rent";
+        }
+    }
+  };
+
 
   // Function to handle logout
   const handleLogout = () => {
@@ -299,16 +324,17 @@ const NavBar = () => {
                   type="text"
                   name="search"
                   placeholder="Search ..."
-                  className="text-xs focus:border-grey focus:border focus:ring-0  w-[70px]"
+                  className="text-xs outline-0 border-0 ring-0 focus:border-0 focus:outline-0 focus:ring-0 w-[70px]"
                 />
                 <label className="flex items-center">
                   <Upload size={15} className="mx-2 hidden sm:inline" />
                   <Camera size={16} className="mx-2 inline sm:hidden" />
                   <input
                     type="file"
-                    accept="image/*"
+                    accept=".jpg, .jpeg, .png, .webp"
                     name="search"
                     className="hidden"
+                    onChange={handleFileChange}
                   />
                 </label>
               </li>
@@ -606,10 +632,10 @@ const NavBar = () => {
                             : "hidden"
                         }>
                             {/* <Search size={15} className="ml-2 mr-3"/> */}
-                            <input type="text" name="search" placeholder="Search ..." className="text-xs focus:outline-none border-none"/>
+                            <input type="text" name="search" placeholder="Search ..." className="text-xs outline-none border-none"/>
                             <label className="flex items-center">
                                 <Upload size={15} className="mx-2"/>
-                                <input type="file" name="search" className="hidden"/>
+                                <input type="file" name="search" className="hidden" accept=".jpg, .jpeg, .png, .webp" onChange={handleFileChange}/>
                             </label>
                         </div>
                         <Link href="/wishlist">
@@ -629,7 +655,7 @@ const NavBar = () => {
                         </Link>
                         <Link href="/login" className={
                             userToken == null
-                            ? "ml-7"
+                            ? "ml-7 text-sm"
                             : "hidden"
                         }>
                             Log In
