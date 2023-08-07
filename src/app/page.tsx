@@ -2,21 +2,6 @@
 import ReactTypingEffect from 'react-typing-effect';
 import { render } from "react-dom";
 import { ParallaxProvider } from 'react-scroll-parallax';
-import landing from "./_images/landing.jpg";
-import landingSmall from "./_images/landingSmall.jpg";
-import landing1 from "./_images/landing1.jpg";
-import landing1Small from "./_images/landing1Small.jpg";
-import landing2 from "./_images/landing2.jpg";
-import landing2Small from "./_images/landing2Small.jpg";
-import landing3 from "./_images/landing3.jpg";
-import landing3Small from "./_images/landing3Small.jpg";
-import landing4 from "./_images/landing4.jpg";
-import landing4Small from "./_images/landing4Small.jpg";
-import landing5 from "./_images/landing5.jpg";
-import landing5Small from "./_images/landing5Small.jpg";
-import rent from "./_images/rent.png";
-import wear from "./_images/wear.png";
-import returnpic from "./_images/return.png";
 import React, { useState, useEffect } from 'react';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { RxDotFilled } from 'react-icons/rx';
@@ -33,21 +18,21 @@ const isSmallScreen = () => {
 
 }
 
-const imageUrl = landing.src;
-const imageSmallUrl = landingSmall.src;
-const image1Url = landing1.src;
-const image1SmallUrl = landing1Small.src;
-const image2Url = landing2.src;
-const image2SmallUrl = landing2Small.src;
-const image3Url = landing3.src;
-const image3SmallUrl = landing3Small.src;
-const image4Url = landing4.src;
-const image4SmallUrl = landing4Small.src;
-const image5Url = landing5.src;
-const image5SmallUrl = landing5Small.src;
-const rentUrl = rent.src;
-const wearUrl = wear.src;
-const returnUrl = returnpic.src;
+const imageUrl = 'https://totheclosett.s3.ap-southeast-1.amazonaws.com/landing.jpg';
+const imageSmallUrl = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/landingSmall.jpg";
+const image1Url = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/landing1.jpg";
+const image1SmallUrl = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/landing1Small.jpg";
+const image2Url = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/landing2.jpg";
+const image2SmallUrl = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/landing2Small.jpg";
+const image3Url = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/landing3.jpg";
+const image3SmallUrl = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/landing3Small.jpg";
+const image4Url = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/landing4.jpg";
+const image4SmallUrl = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/landing4Small.jpg";
+const image5Url = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/landing5.jpg";
+const image5SmallUrl = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/landing5Small.jpg";
+const rentUrl = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/rent.png";
+const wearUrl = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/wear.png";
+const returnUrl = "https://totheclosett.s3.ap-southeast-1.amazonaws.com/return.png";
 const Landing: React.FC = () => {
 
 
@@ -129,7 +114,7 @@ const Landing: React.FC = () => {
             <div className="absolute bottom-0 left-0 right-0 flex justify-center mb-24">
               <button className="box-border py-3 px-8  w-150px tracking-[1.5px] flex  bg-white text-black">
                 <div className="uppercase flex items-center justify-center">
-                  View Summer 2023 Collection
+                  View Womens
                 </div>
               </button>
             </div>
@@ -142,7 +127,7 @@ const Landing: React.FC = () => {
             <div className="absolute bottom-0 left-0 ml-40 flex justify-center mb-40">
               <button className="box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-none bg-white text-black">
                 <div className="uppercase flex items-center justify-center">
-                  View Trend 1
+                  View suits
                 </div>
               </button>
             </div>
@@ -155,7 +140,7 @@ const Landing: React.FC = () => {
             <div className="absolute bottom-0 right-0 mr-40 flex justify-center mb-40">
               <button className="rotate-0 box-border py-3 px-8 border-[1px] w-150px tracking-[1.5px] flex border-none bg-white text-black">
                 <div className="uppercase flex items-center justify-center">
-                  View Trend 2
+                  View outerwear
                 </div>
               </button>
             </div>
