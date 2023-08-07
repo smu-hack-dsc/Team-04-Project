@@ -238,7 +238,7 @@ const RentPage: NextPage = () => {
     <section>
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:pt-20 sm:pb-10 lg:max-w-7xl lg:px-8">
         <div className="flex items-baseline justify-between pb-8">
-          <h1 className="text-2xl uppercase tracking-[2.4px] mt-5">All Products</h1>
+          <h1 className="text-2xl uppercase tracking-[2.4px] mt-5">Products</h1>
           <div className="flex items-center">
             <Menu as="div" className="relative inline-block text-left">
               <div>

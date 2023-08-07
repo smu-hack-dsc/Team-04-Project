@@ -4,16 +4,16 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Playfair_Display } from "next/font/google";
 import {
-  Heart,
-  Person,
-  Bag,
-  Search,
-  List,
-  X,
-  Plus,
-  Dash,
-  Upload,
-  Camera,
+    Heart,
+    Person,
+    Bag,
+    Search,
+    List,
+    X,
+    Plus,
+    Dash,
+    Upload,
+    Camera,
 } from "react-bootstrap-icons";
 import { ClockCircleOutlined } from "@ant-design/icons";
 import { Avatar, Badge, Space } from "antd";
@@ -23,8 +23,8 @@ import jwt from 'jsonwebtoken';
 
 // const playfair = Playfair_Display({ subsets: ['latin'], weight :'400'})
 const customFontStyle = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400"], // Replace 'weight' with 'weights'
+    subsets: ["latin"],
+    weight: ["400"], // Replace 'weight' with 'weights'
 });
 
 
@@ -34,48 +34,48 @@ const NavBar = () => {
     const [count, setCount] = useState(0);
 
     useEffect(() => {
-    // Check if the user token exists in session storage
-    const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
-    console.log(token);
+        // Check if the user token exists in session storage
+        const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+        console.log(token);
 
-    // Update the state with the user token
-    setUserToken(token);
+        // Update the state with the user token
+        setUserToken(token);
 
-    
 
-    //to update badge on cart icon
-    const initCartItemNum = async () => {
 
-        if (typeof window !== 'undefined') {
-            if(!sessionStorage.getItem('userId')){
-                const userId = 0; //set to 0 if no user
-                sessionStorage.setItem("userId", userId.toString());
-            }
+        //to update badge on cart icon
+        const initCartItemNum = async () => {
 
-            if (!sessionStorage.getItem("cartItemNum")) {
-                const userId = sessionStorage.getItem("userId");
-                if (userId !== "0") {
-                    try {
-                    getCartItemNum(userId); // Await the result
-                    } catch (error) {
-                    console.error(error);
-                    const cartItemNum = 0;
-                    sessionStorage.setItem("cartItemNum", cartItemNum.toString());
-                    setCount(cartItemNum);
+            if (typeof window !== 'undefined') {
+                if (!sessionStorage.getItem('userId')) {
+                    const userId = 0; //set to 0 if no user
+                    sessionStorage.setItem("userId", userId.toString());
+                }
+
+                if (!sessionStorage.getItem("cartItemNum")) {
+                    const userId = sessionStorage.getItem("userId");
+                    if (userId !== "0") {
+                        try {
+                            getCartItemNum(userId); // Await the result
+                        } catch (error) {
+                            console.error(error);
+                            const cartItemNum = 0;
+                            sessionStorage.setItem("cartItemNum", cartItemNum.toString());
+                            setCount(cartItemNum);
+                        }
+                    } else {
+                        const cartItemNum = 0;
+                        sessionStorage.setItem("cartItemNum", cartItemNum.toString());
+                        setCount(cartItemNum);
                     }
                 } else {
-                    const cartItemNum = 0;
-                    sessionStorage.setItem("cartItemNum", cartItemNum.toString());
-                    setCount(cartItemNum);
-                }
-                } else {
-                // Retrieve count from session storage
-                setCount(parseInt(sessionStorage.getItem("cartItemNum")));
+                    // Retrieve count from session storage
+                    setCount(parseInt(sessionStorage.getItem("cartItemNum")));
                 }
             }
         };
 
-        initCartItemNum();  
+        initCartItemNum();
     }, []);
 
     const getCartItemNum = async (userId) => {
@@ -96,479 +96,506 @@ const NavBar = () => {
     const [selectedGender, setSelectedGender] = useState(null);
     const [selectedType, setSelectedType] = useState(null);
 
-  // Function to decode the JWT
-  const decodeToken = (token) => {
-    try {
-      // Access the secret key from the environment variables
-      const secretKey = process.env.SECRET_KEY;
-      if (!secretKey) {
-        console.error("Secret key not found in environment variables.");
-        return null;
-      }
+    // Function to decode the JWT
+    const decodeToken = (token) => {
+        try {
+            // Access the secret key from the environment variables
+            const secretKey = process.env.SECRET_KEY;
+            if (!secretKey) {
+                console.error("Secret key not found in environment variables.");
+                return null;
+            }
 
-      // Decode the token using the secret key
-      const decodedToken = jwt.verify(token, secretKey);
-      return decodedToken;
-    } catch (error) {
-      console.error("Error decoding token:", error);
-      return null;
-    }
-  };
+            // Decode the token using the secret key
+            const decodedToken = jwt.verify(token, secretKey);
+            return decodedToken;
+        } catch (error) {
+            console.error("Error decoding token:", error);
+            return null;
+        }
+    };
 
-  // Function to handle logout
-  const handleLogout = () => {
-    // Remove the user token from the session storage
-    sessionStorage.removeItem("token");
-    // Reload the page to update the Navbar
-    window.location.reload();
-  };
-  
-  // hamburger menu
-  const [menuOpen, setMenuOpen] = useState(false);
-  const handleNav = () => {
-    setMenuOpen(!menuOpen);
-  };
+    // Function to handle logout
+    const handleLogout = () => {
+        // Remove the user token from the session storage
+        sessionStorage.removeItem("token");
+        // Reload the page to update the Navbar
+        window.location.reload();
+    };
 
-  // rent apparel in hamburger menu
-  const [rentOptionOpen, setRentOptionOpen] = useState(false);
-  const handleRentOption = () => {
-    setRentOptionOpen(!rentOptionOpen);
-  };
+    // hamburger menu
+    const [menuOpen, setMenuOpen] = useState(false);
+    const handleNav = () => {
+        setMenuOpen(!menuOpen);
+    };
 
-  // Men option in hamburger menu
-  const [menOptionOpen, setMenOptionOpen] = useState(false);
-  const handleMenOption = () => {
-    setMenOptionOpen(!menOptionOpen);
-  };
+    // rent apparel in hamburger menu
+    const [rentOptionOpen, setRentOptionOpen] = useState(false);
+    const handleRentOption = () => {
+        setRentOptionOpen(!rentOptionOpen);
+    };
 
-  // women option in hamburger menu
-  const [womenOptionOpen, setWomenOptionOpen] = useState(false);
-  const handleWomenOption = () => {
-    setWomenOptionOpen(!womenOptionOpen);
-  };
+    // Men option in hamburger menu
+    const [menOptionOpen, setMenOptionOpen] = useState(false);
+    const handleMenOption = () => {
+        setMenOptionOpen(!menOptionOpen);
+    };
 
-  // occasions option in hamburger menu
-  const [occasionsOptionOpen, setOccasionsOptionOpen] = useState(false);
-  const handleOccasionsOption = () => {
-    setOccasionsOptionOpen(!occasionsOptionOpen);
-  };
+    // women option in hamburger menu
+    const [womenOptionOpen, setWomenOptionOpen] = useState(false);
+    const handleWomenOption = () => {
+        setWomenOptionOpen(!womenOptionOpen);
+    };
 
-  // collections option in hamburger menu
-  const [collectionsOptionOpen, setCollectionsOptionOpen] = useState(false);
-  const handleCollectionsOption = () => {
-    setCollectionsOptionOpen(!collectionsOptionOpen);
-  };
+    // occasions option in hamburger menu
+    const [occasionsOptionOpen, setOccasionsOptionOpen] = useState(false);
+    const handleOccasionsOption = () => {
+        setOccasionsOptionOpen(!occasionsOptionOpen);
+    };
 
-  // account details in hamburger menu
-  const [accDetailsOpen, setAccDetailsOpen] = useState(false);
-  const handleAccDetails = () => {
-    setAccDetailsOpen(!accDetailsOpen);
-  };
+    // collections option in hamburger menu
+    const [collectionsOptionOpen, setCollectionsOptionOpen] = useState(false);
+    const handleCollectionsOption = () => {
+        setCollectionsOptionOpen(!collectionsOptionOpen);
+    };
 
-  // rent dropdown
-  const [rentDropdownOpen, setRentDropdownOpen] = useState(false);
-  const handleRentDropdown = () => {
-    setRentDropdownOpen(!rentDropdownOpen);
-  };
+    // account details in hamburger menu
+    const [accDetailsOpen, setAccDetailsOpen] = useState(false);
+    const handleAccDetails = () => {
+        setAccDetailsOpen(!accDetailsOpen);
+    };
 
-  // search
-  const [searchOpen, setSearchOpen] = useState(false);
-  const handleSearch = () => {
-    setSearchOpen(!searchOpen);
-  };
-
-  // account
-  const [accOpen, setAccOpen] = useState(false);
-  const handleAcc = () => {
-    setAccOpen(!accOpen);
-  };
-
-  const handleSubmitSearch = async (event) => {
-    if (event.key === "Enter") {
-      const searchText = document.getElementById(
-        "searchText"
-      ) as HTMLInputElement;
-      const searchFile = document.getElementById(
-        "searchFile"
-      ) as HTMLInputElement;
-
-      console.log(searchText);
-
-      searchText
-        ? handleSearchText(searchText.value)
-        : handleSearchFile(searchFile.value);
-    }
-  };
-
-  const handleSearchText = async (searchText) => {
-    const texturl =
-      'http://127.0.0.1:5000/api/text_search/"' + searchText + '"';
-    const categoryArr = await axios.get(texturl);
-    const colorArr = categoryArr.data[0];
-    const typeArr = categoryArr.data[1];
-    const brandArr = categoryArr.data[2];
-
-    const filterProductUrl =
-      "http://127.0.0.1:5000/api/product/filter?brand=" +
-      brandArr +
-      "&colour=" +
-      colorArr +
-      "&type=" +
-      typeArr + "&size=M&price_min=0&price_max=999999"
-
-    const filteredProduct = await axios.get(filterProductUrl)
-  };
-
-  const handleSearchFile = async (searchFile) => {};
-
-  const menOptionsArr = [
-    "All Products",
-    "New In",
-    "Popular",
-    "Tops",
-    "Bottoms",
-    "Suits",
-    "Jackets & Vests",
-    "Accessories",
-  ];
-  const womenOptionsArr = [
-    "All Products",
-    "New In",
-    "Popular",
-    "Tops",
-    "Bottoms",
-    "Dresses",
-    "Jumpsuits & Rompers",
-    "Outerwear",
-    "Suits",
-    "Accessories",
-    "Maternity",
-  ];
-  const occasionsOptionsArr = [
-    "Black Tie",
-    "Casual",
-    "Cocktail",
-    "Date Night",
-    "Prom",
-    "Wedding",
-    "Work Function",
-  ];
-  const collectionsOptionsArr = [
-    "Autumn 2022",
-    "Winter 2022",
-    "Spring 2023",
-    "Summer 2023",
-  ];
-  const accDetailsOptionsArr = ["Account Details", "My Rentals", "Logout"];
-  const womenFirstCol = [
-    "All Products",
-    "New In",
-    "Popular",
-    "Tops",
-    "Bottoms",
-    "Dresses",
-    "Jumpsuits & Rompers",
-    "Outerwear",
-  ];
-  const womenSecCol = ["Suits", "Accessories", "Maternity"];
+    // rent dropdown
+    const [rentDropdownOpen, setRentDropdownOpen] = useState(false);
+    const handleRentDropdown = () => {
+        setRentDropdownOpen(!rentDropdownOpen);
+    };
 
 
-  return (
-    <nav className="fixed w-full h-16 outline-1 outline-grey outline bg-white px-3 z-50">
-      <div className="flex flex-wrap justify-between items-center h-full w-full px-5 2xl:px-16">
-        <div onClick={handleNav} className="lg:hidden cursor-pointer">
-          <List size={20} />
-        </div>
-        <div
-          className={
-            menuOpen
-              ? "fixed left-0 top-0 w-[50%] lg:hidden h-screen bg-[#ffffff] p-7 ease-in duration-500 scroll-smooth overflow-y-auto z-10"
-              : "fixed left-[-100%] top-0 p-8 ease-in duration-500"
+
+    // account
+    const [accOpen, setAccOpen] = useState(false);
+    const handleAcc = () => {
+        setAccOpen(!accOpen);
+    };
+
+    // search
+    const [searchOpen, setSearchOpen] = useState(false);
+    const handleSearch = () => {
+        setSearchOpen(!searchOpen);
+    };
+
+    const [searchQuery, setSearchQuery] = useState("");
+    const [searchText, setSearchText] = useState("");
+    const handleSearchInputChange = (e) => {
+        setSearchQuery(e.target.value);
+        console.log("INPUT" + e.target.value);
+    };
+
+    // useEffect (()=>{
+    //   fetchSearchQueries(searchQuery);
+    // })
+
+    // const fetchSearchQueries = async (searchQuery) => {
+    //   try {
+    //     const response = await axios.get('http://localhost:5000/api/text_search/' + searchQuery)
+    //     console.log("OPENAI " + response.data)
+    //     setSearchText(response.data)
+    //   } catch (error) {
+    //     console.error('Error fetching data:', error);
+    //   }
+
+    // }
+    const handleSubmitSearch = async () => {
+        console.log("SEARCH QUERY  " + searchQuery);
+        try {
+          const response = await axios.get('http://localhost:5000/api/text_search/' + searchQuery);
+          
+          // Check if the response data is not empty or null
+          if (response.data) {
+            const jsonData = response.data;
+            setSearchText(jsonData);
+            handleSearchText(jsonData); // Now you can pass jsonData to the function
+            console.log("OPENAI " + jsonData);
+          } else {
+            console.error('Empty or invalid JSON response.');
           }
-        >
-          <div className="flex w-full items-center justify-end">
-            <div onClick={handleNav} className="cursor-pointer">
-              <X size={22} />
-            </div>
-          </div>
-          <div className="flex-col ">
-            <ul>
-              <li className="flex justify-between outline outline-1 rounded-lg py-1 px-2 mb-4 mt-6 w-full">
-                {/* <Search size={14} className="ml-2 mr-3 self-center"/> */}
-                <input
-                  type="text"
-                  name="search"
-                  placeholder="Search ..."
-                  className="text-xs focus:border-grey focus:border focus:ring-0  w-[70px]"
-                />
-                <label className="flex items-center">
-                  <Upload size={15} className="mx-2 hidden sm:inline" />
-                  <Camera size={16} className="mx-2 inline sm:hidden" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    name="search"
-                    className="hidden"
-                  />
-                </label>
-              </li>
-              <Link href="/">
-                <li
-                  onClick={() => setMenuOpen(false)}
-                  className="py-2 cursor-pointer"
-                >
-                  Home
-                </li>
-              </Link>
-              <Link href="">
-                <li
-                  onClick={() => setMenuOpen(false)}
-                  className="py-2 cursor-pointer"
-                >
-                  About
-                </li>
-              </Link>
-              <div className="flex justify-between">
-                <Link href="/rent">
-                  <li className="py-2">
-                    <span
-                      onClick={() => setMenuOpen(false)}
-                      className="cursor-pointer"
-                    >
-                      Rent
-                    </span>
-                  </li>
-                </Link>
-                <div className="flex items-center">
-                  <Plus
-                    size={17}
-                    onClick={handleRentOption}
-                    className={
-                      rentOptionOpen
-                        ? "hidden cursor-pointer"
-                        : "cursor-pointer"
-                    }
-                  />
-                  <Dash
-                    size={16}
-                    onClick={handleRentOption}
-                    className={
-                      rentOptionOpen
-                        ? "cursor-pointer"
-                        : "hidden cursor-pointer"
-                    }
-                  />
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+      
+      
+
+      const handleSearchText = async (searchText) => {
+        try {
+          // Assuming response.data is already in the format "Red,Dress,Gucci"
+          const colors = searchText[0];
+          const types = searchText[1];
+          const brands = searchText[2];
+    
+      
+          console.log("Colors:", colors);
+          console.log("Clothing Types:", types);
+          console.log("Brands:", brands);
+        } catch (error) {
+          console.error('Error parsing data:', error);
+        }
+      };
+
+    const handleSearchFile = async (searchFile) => { };
+
+    const menOptionsArr = [
+        "All Products",
+        "New In",
+        "Popular",
+        "Tops",
+        "Bottoms",
+        "Suits",
+        "Jackets & Vests",
+        "Accessories",
+    ];
+    const womenOptionsArr = [
+        "All Products",
+        "New In",
+        "Popular",
+        "Tops",
+        "Bottoms",
+        "Dresses",
+        "Jumpsuits & Rompers",
+        "Outerwear",
+        "Suits",
+        "Accessories",
+        "Maternity",
+    ];
+    const occasionsOptionsArr = [
+        "Black Tie",
+        "Casual",
+        "Cocktail",
+        "Date Night",
+        "Prom",
+        "Wedding",
+        "Work Function",
+    ];
+    const collectionsOptionsArr = [
+        "Autumn 2022",
+        "Winter 2022",
+        "Spring 2023",
+        "Summer 2023",
+    ];
+    const accDetailsOptionsArr = ["Account Details", "My Rentals", "Logout"];
+    const womenFirstCol = [
+        "All Products",
+        "New In",
+        "Popular",
+        "Tops",
+        "Bottoms",
+        "Dresses",
+        "Jumpsuits & Rompers",
+        "Outerwear",
+    ];
+    const womenSecCol = ["Suits", "Accessories", "Maternity"];
+
+
+    return (
+        <nav className="fixed w-full h-16 outline-1 outline-grey outline bg-white px-3 z-50">
+            <div className="flex flex-wrap justify-between items-center h-full w-full px-5 2xl:px-16">
+                <div onClick={handleNav} className="lg:hidden cursor-pointer">
+                    <List size={20} />
                 </div>
-              </div>
+                <div
+                    className={
+                        menuOpen
+                            ? "fixed left-0 top-0 w-[50%] lg:hidden h-screen bg-[#ffffff] p-7 ease-in duration-500 scroll-smooth overflow-y-auto z-10"
+                            : "fixed left-[-100%] top-0 p-8 ease-in duration-500"
+                    }
+                >
+                    <div className="flex w-full items-center justify-end">
+                        <div onClick={handleNav} className="cursor-pointer">
+                            <X size={22} />
+                        </div>
+                    </div>
+                    <div className="flex-col ">
+                        <ul>
+                            <li className="flex justify-between outline outline-1 rounded-lg py-1 px-2 mb-4 mt-6 w-full">
+                                {/* <Search size={14} className="ml-2 mr-3 self-center"/> */}
+                                <input
+                                    type="text"
+                                    name="search"
+                                    placeholder="Search ..."
+                                    className="text-xs focus:border-grey focus:border focus:ring-0 border-none"
+                                    value={searchQuery}
+                                    onChange={handleSearchInputChange}
+                                    onKeyDown={(e) => e.key === "Enter" && handleSubmitSearch()}
+                                />
+                                <label className="flex items-center">
+                                    <Upload size={15} className="mx-2 hidden sm:inline" />
+                                    <Camera size={16} className="mx-2 inline sm:hidden" />
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        name="search"
+                                        className="hidden"
+                                    />
+                                </label>
+                            </li>
+                            <Link href="/">
+                                <li
+                                    onClick={() => setMenuOpen(false)}
+                                    className="py-2 cursor-pointer"
+                                >
+                                    Home
+                                </li>
+                            </Link>
+                            <Link href="">
+                                <li
+                                    onClick={() => setMenuOpen(false)}
+                                    className="py-2 cursor-pointer"
+                                >
+                                    About
+                                </li>
+                            </Link>
+                            <div className="flex justify-between">
+                                <Link href="/rent">
+                                    <li className="py-2">
+                                        <span
+                                            onClick={() => setMenuOpen(false)}
+                                            className="cursor-pointer"
+                                        >
+                                            Rent
+                                        </span>
+                                    </li>
+                                </Link>
+                                <div className="flex items-center">
+                                    <Plus
+                                        size={17}
+                                        onClick={handleRentOption}
+                                        className={
+                                            rentOptionOpen
+                                                ? "hidden cursor-pointer"
+                                                : "cursor-pointer"
+                                        }
+                                    />
+                                    <Dash
+                                        size={16}
+                                        onClick={handleRentOption}
+                                        className={
+                                            rentOptionOpen
+                                                ? "cursor-pointer"
+                                                : "hidden cursor-pointer"
+                                        }
+                                    />
+                                </div>
+                            </div>
 
                             {/* rent option opened */}
                             <ul className={
-                                            rentOptionOpen
-                                            ? "block pl-5"
-                                            : "hidden"
-                                        }>
-                                            <div className="flex justify-between">
-                                                <Link href="">
-                                                    <li className="py-2">
-                                                        <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Men</span>
-                                                    </li>
-                                                </Link>
-                                                <div className="flex items-center">
-                                                    <Plus size={16} onClick={handleMenOption} className={
-                                                        menOptionOpen
-                                                        ? "hidden cursor-pointer"
-                                                        : "cursor-pointer"
-                                                    }/>
-                                                    <Dash size={16} onClick={handleMenOption} className={
-                                                        menOptionOpen
-                                                        ? "cursor-pointer"
-                                                        : "hidden cursor-pointer"
-                                                    }/>
-                                                </div> 
-                                            </div>
-                                            <ul className={
+                                rentOptionOpen
+                                    ? "block pl-5"
+                                    : "hidden"
+                            }>
+                                <div className="flex justify-between">
+                                    <Link href="">
+                                        <li className="py-2">
+                                            <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Men</span>
+                                        </li>
+                                    </Link>
+                                    <div className="flex items-center">
+                                        <Plus size={16} onClick={handleMenOption} className={
                                             menOptionOpen
-                                            ? "block pl-5"
-                                            : "hidden"
-                                            }>
-                                                {menOptionsArr.map((item, index) => (
-                                                    <Link href="">
-                                                        <li onClick={() => {
-                                                            setMenuOpen(false);
-                                                            setSelectedGender("male"); // Set the selected gender (assuming this is for men)
-                                                            setSelectedType(item); // Set the selected type
-                                                            sessionStorage.setItem("selectedGender", "male"); // Store selected gender in session storage
-                                                            sessionStorage.setItem("selectedType", item); // Store selected type in session storage
-                                                        }} className="py-2 cursor-pointer">
-                                                            {item}
-                                                        </li>
-                                                    </Link>
-                                                ))}
-                                                
-                                            </ul>
-                                            <div className="flex justify-between">
-                                                <Link href="">
-                                                    <li className="py-2">
-                                                        <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Women</span>
-                                                    </li>
-                                                </Link>
-                                                <div className="flex items-center">
-                                                <Plus size={16} onClick={handleWomenOption} className={
-                                                        womenOptionOpen
-                                                        ? "hidden cursor-pointer"
-                                                        : "cursor-pointer"
-                                                    }/>
-                                                <Dash size={16} onClick={handleWomenOption} className={
-                                                    womenOptionOpen
-                                                    ? "cursor-pointer"
-                                                    : "hidden cursor-pointer"
-                                                }/>
-                                                </div> 
-                                            </div>
-                                            <ul className={womenOptionOpen ? "block pl-5" : "hidden"}>
-                                                {womenOptionsArr.map((item, index) => (
-                                                    <Link href="">
-                                                    <li onClick={() => {
-                                                        setMenuOpen(false);
-                                                        setSelectedGender("female"); // Set the selected gender (assuming this is for men)
-                                                        setSelectedType(item); // Set the selected type
-                                                        sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
-                                                        sessionStorage.setItem("selectedType", item); // Store selected type in session storage
-                                                    }} className="py-2 cursor-pointer">
-                                                        {item}
-                                                    </li>
-                                                </Link>
-                                                ))}
-                                            </ul>
-                                            <div className="flex justify-between">
-                                                <Link href="">
-                                                    <li className="py-2">
-                                                        <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Occasions</span>
-                                                    </li>
-                                                </Link>
-                                                <div className="flex items-center">
-                                                <Plus size={16} onClick={handleOccasionsOption} className={
-                                                        occasionsOptionOpen
-                                                        ? "hidden cursor-pointer"
-                                                        : "cursor-pointer"
-                                                    }/>
-                                                    <Dash size={16} onClick={handleOccasionsOption} className={
-                                                        occasionsOptionOpen
-                                                        ? "cursor-pointer"
-                                                        : "hidden cursor-pointer"
-                                                    }/>
-                                                </div> 
-                                            </div>
-                                            <ul className={
+                                                ? "hidden cursor-pointer"
+                                                : "cursor-pointer"
+                                        } />
+                                        <Dash size={16} onClick={handleMenOption} className={
+                                            menOptionOpen
+                                                ? "cursor-pointer"
+                                                : "hidden cursor-pointer"
+                                        } />
+                                    </div>
+                                </div>
+                                <ul className={
+                                    menOptionOpen
+                                        ? "block pl-5"
+                                        : "hidden"
+                                }>
+                                    {menOptionsArr.map((item, index) => (
+                                        <Link href="">
+                                            <li onClick={() => {
+                                                setMenuOpen(false);
+                                                setSelectedGender("male"); // Set the selected gender (assuming this is for men)
+                                                setSelectedType(item); // Set the selected type
+                                                sessionStorage.setItem("selectedGender", "male"); // Store selected gender in session storage
+                                                sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                                            }} className="py-2 cursor-pointer">
+                                                {item}
+                                            </li>
+                                        </Link>
+                                    ))}
+
+                                </ul>
+                                <div className="flex justify-between">
+                                    <Link href="">
+                                        <li className="py-2">
+                                            <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Women</span>
+                                        </li>
+                                    </Link>
+                                    <div className="flex items-center">
+                                        <Plus size={16} onClick={handleWomenOption} className={
+                                            womenOptionOpen
+                                                ? "hidden cursor-pointer"
+                                                : "cursor-pointer"
+                                        } />
+                                        <Dash size={16} onClick={handleWomenOption} className={
+                                            womenOptionOpen
+                                                ? "cursor-pointer"
+                                                : "hidden cursor-pointer"
+                                        } />
+                                    </div>
+                                </div>
+                                <ul className={womenOptionOpen ? "block pl-5" : "hidden"}>
+                                    {womenOptionsArr.map((item, index) => (
+                                        <Link href="">
+                                            <li onClick={() => {
+                                                setMenuOpen(false);
+                                                setSelectedGender("female"); // Set the selected gender (assuming this is for men)
+                                                setSelectedType(item); // Set the selected type
+                                                sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
+                                                sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                                            }} className="py-2 cursor-pointer">
+                                                {item}
+                                            </li>
+                                        </Link>
+                                    ))}
+                                </ul>
+                                <div className="flex justify-between">
+                                    <Link href="">
+                                        <li className="py-2">
+                                            <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Occasions</span>
+                                        </li>
+                                    </Link>
+                                    <div className="flex items-center">
+                                        <Plus size={16} onClick={handleOccasionsOption} className={
                                             occasionsOptionOpen
-                                            ? "block pl-5"
-                                            : "hidden"
-                                            }>
-                                                {occasionsOptionsArr.map((item, index) => (
-                                                    <Link href="" key={index}>
-                                                        <li onClick={() => setMenuOpen(false)}
-                                                            className="py-2 cursor-pointer">
-                                                                {item}
-                                                        </li>
-                                                    </Link>
-                                                ))}
-                                                
-                                            </ul>
-                                            <div className="flex justify-between">
-                                                <Link href="">
-                                                    <li className="py-2">
-                                                        <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Collections</span>
-                                                    </li>
-                                                </Link>
-                                                <div className="flex items-center">
-                                                <Plus size={16} onClick={handleCollectionsOption} className={
-                                                        collectionsOptionOpen
-                                                        ? "hidden cursor-pointer"
-                                                        : "cursor-pointer"
-                                                    }/>
-                                                    <Dash size={16} onClick={handleCollectionsOption} className={
-                                                        collectionsOptionOpen
-                                                        ? "cursor-pointer"
-                                                        : "hidden cursor-pointer"
-                                                    }/>
-                                                </div> 
-                                            </div>
-                                            <ul className={
+                                                ? "hidden cursor-pointer"
+                                                : "cursor-pointer"
+                                        } />
+                                        <Dash size={16} onClick={handleOccasionsOption} className={
+                                            occasionsOptionOpen
+                                                ? "cursor-pointer"
+                                                : "hidden cursor-pointer"
+                                        } />
+                                    </div>
+                                </div>
+                                <ul className={
+                                    occasionsOptionOpen
+                                        ? "block pl-5"
+                                        : "hidden"
+                                }>
+                                    {occasionsOptionsArr.map((item, index) => (
+                                        <Link href="" key={index}>
+                                            <li onClick={() => setMenuOpen(false)}
+                                                className="py-2 cursor-pointer">
+                                                {item}
+                                            </li>
+                                        </Link>
+                                    ))}
+
+                                </ul>
+                                <div className="flex justify-between">
+                                    <Link href="">
+                                        <li className="py-2">
+                                            <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Collections</span>
+                                        </li>
+                                    </Link>
+                                    <div className="flex items-center">
+                                        <Plus size={16} onClick={handleCollectionsOption} className={
                                             collectionsOptionOpen
-                                            ? "block pl-5"
-                                            : "hidden"
-                                            }>
-                                                {collectionsOptionsArr.map((item, index) => (
-                                                    <Link href="" key={index}>
-                                                        <li onClick={() => setMenuOpen(false)}
-                                                            className="py-2 cursor-pointer">
-                                                                {item}
-                                                        </li>
-                                                    </Link>
-                                                ))}
-                                                
-                                            </ul>
-                                        </ul>
+                                                ? "hidden cursor-pointer"
+                                                : "cursor-pointer"
+                                        } />
+                                        <Dash size={16} onClick={handleCollectionsOption} className={
+                                            collectionsOptionOpen
+                                                ? "cursor-pointer"
+                                                : "hidden cursor-pointer"
+                                        } />
+                                    </div>
+                                </div>
+                                <ul className={
+                                    collectionsOptionOpen
+                                        ? "block pl-5"
+                                        : "hidden"
+                                }>
+                                    {collectionsOptionsArr.map((item, index) => (
+                                        <Link href="" key={index}>
+                                            <li onClick={() => setMenuOpen(false)}
+                                                className="py-2 cursor-pointer">
+                                                {item}
+                                            </li>
+                                        </Link>
+                                    ))}
+
+                                </ul>
+                            </ul>
                             <Link href="/wishlist">
                                 <li onClick={() => setMenuOpen(false)}
                                     className="py-2 cursor-pointer">
-                                        Wishlist
+                                    Wishlist
                                 </li>
                             </Link>
                             <Link href="/cart">
                                 <li onClick={() => setMenuOpen(false)}
                                     className="py-2 cursor-pointer">
-                                        Cart
+                                    Cart
                                 </li>
                             </Link>
                             <div className={
                                 userToken != null
-                                ? "flex justify-between"
-                                : "hidden"
+                                    ? "flex justify-between"
+                                    : "hidden"
                             }>
                                 <Link href="">
                                     <li onClick={() => setMenuOpen(false)}
                                         className="py-2 cursor-pointer">
-                                            Account
+                                        Account
                                     </li>
                                 </Link>
                                 <div className="flex items-center">
                                     <Plus size={16} onClick={handleAccDetails} className={
                                         accDetailsOpen
-                                        ? "hidden cursor-pointer"
-                                        : "cursor-pointer"
-                                    }/>
+                                            ? "hidden cursor-pointer"
+                                            : "cursor-pointer"
+                                    } />
                                     <Dash size={16} onClick={handleAccDetails} className={
                                         accDetailsOpen
-                                        ? "cursor-pointer"
-                                        : "hidden cursor-pointer"
-                                    }/>
-                                </div> 
+                                            ? "cursor-pointer"
+                                            : "hidden cursor-pointer"
+                                    } />
+                                </div>
                             </div>
                             <ul className={
                                 accDetailsOpen
-                                ? "block pl-5"
-                                : "hidden"
-                                }>
-                                    {accDetailsOptionsArr.map((item, index) => (
-                                        <Link href="" key={index}>
-                                            <li onClick={() => setMenuOpen(false)}
-                                                className="py-2 cursor-pointer">
-                                                    {item}
-                                            </li>
-                                        </Link>
-                                    ))}
+                                    ? "block pl-5"
+                                    : "hidden"
+                            }>
+                                {accDetailsOptionsArr.map((item, index) => (
+                                    <Link href="" key={index}>
+                                        <li onClick={() => setMenuOpen(false)}
+                                            className="py-2 cursor-pointer">
+                                            {item}
+                                        </li>
+                                    </Link>
+                                ))}
                             </ul>
                             <Link href="/login">
                                 <li onClick={() => setMenuOpen(false)}
                                     className="py-2 cursor-pointer">
-                                        Login
+                                    Login
                                 </li>
                             </Link>
                             <Link href="">
                                 <li onClick={() => setMenuOpen(false)}
                                     className="py-2 cursor-pointer">
-                                        Help
+                                    Help
                                 </li>
                             </Link>
                         </ul>
@@ -592,45 +619,53 @@ const NavBar = () => {
                 </Link>
                 <div className="lg:w-1/3">
                     <ul className="hidden lg:flex justify-end items-center">
-                        <Search 
-                        size={15} 
-                        onMouseOver={() => setSearchOpen(true)}
-                        className={
-                            searchOpen
-                            ? "hidden"
-                            : ""
-                        }/>
+                        <Search
+                            size={15}
+                            onMouseOver={() => setSearchOpen(true)}
+                            className={
+                                searchOpen
+                                    ? "hidden"
+                                    : ""
+                            } />
                         <div onMouseLeave={() => setSearchOpen(false)} className={
                             searchOpen
-                            ? "flex justify-between outline outline-1 rounded-lg py-1 px-2 w-52"
-                            : "hidden"
+                                ? "flex justify-between outline outline-1 rounded-lg py-1 px-2 w-52"
+                                : "hidden"
                         }>
                             {/* <Search size={15} className="ml-2 mr-3"/> */}
-                            <input type="text" name="search" placeholder="Search ..." className="text-xs focus:outline-none border-none"/>
+                            <input
+                                type="text"
+                                name="search"
+                                placeholder="Search ..."
+                                className="text-xs focus:border-grey focus:border focus:ring-0 border-none"
+                                value={searchQuery}
+                                onChange={handleSearchInputChange}
+                                onKeyDown={(e) => e.key === "Enter" && handleSubmitSearch()}
+                            />
                             <label className="flex items-center">
-                                <Upload size={15} className="mx-2"/>
-                                <input type="file" name="search" className="hidden"/>
+                                <Upload size={15} className="mx-2" />
+                                <input type="file" name="search" className="hidden" />
                             </label>
                         </div>
                         <Link href="/wishlist">
-                            <Heart className="ml-7" size={15}/>
+                            <Heart className="ml-7" size={15} />
                         </Link>
-                        <Link href="/cart">                            
-                            <Badge count={count} color="#000000"  size="small">
-                                <Bag className="ml-7" size={15}/>
+                        <Link href="/cart">
+                            <Badge count={count} color="#000000" size="small">
+                                <Bag className="ml-7" size={15} />
                             </Badge>
                         </Link>
                         <Link href="" className={
                             userToken != null
-                            ? ""
-                            : "hidden"
+                                ? ""
+                                : "hidden"
                         }>
-                            <Person className="ml-7" size={17} onMouseOver={() => setAccOpen(true)}/>
+                            <Person className="ml-7" size={17} onMouseOver={() => setAccOpen(true)} />
                         </Link>
                         <Link href="/login" className={
                             userToken == null
-                            ? "ml-7"
-                            : "hidden"
+                                ? "ml-7"
+                                : "hidden"
                         }>
                             Log In
                         </Link>
@@ -639,8 +674,8 @@ const NavBar = () => {
             </div>
             <div onMouseLeave={() => setRentDropdownOpen(false)} className={
                 rentDropdownOpen
-                ? "fixed grid grid-cols-5 w-full right-0 left-0 top-19 h-25 lg-hidden border-t border-b border-grey bg-[#ffffff] px-10 py-7 ease-in duration-500"
-                : "hidden"
+                    ? "fixed grid grid-cols-5 w-full right-0 left-0 top-19 h-25 lg-hidden border-t border-b border-grey bg-[#ffffff] px-10 py-7 ease-in duration-500"
+                    : "hidden"
             }>
                 <div>
                     <p className="text-darkgrey py-2">MEN</p>
@@ -670,7 +705,7 @@ const NavBar = () => {
                             <p className="py-1">{item}</p>
                         </Link>
                     ))} */}
-                        {womenOptionsArr.map((item, index) => (
+                    {womenOptionsArr.map((item, index) => (
                         <Link href="" key={index}>
                             <p onClick={() => {
                                 setMenuOpen(false);
@@ -709,20 +744,20 @@ const NavBar = () => {
                     ))}
                 </div>
             </div>
-            <div  onMouseLeave={() => setAccOpen(false)} className={
+            <div onMouseLeave={() => setAccOpen(false)} className={
                 accOpen
-                ? "fixed right-0 top-19 h-25 lg-hidden border-t border-b border-s border-grey bg-[#ffffff] px-10 py-4 ease-in duration-500"
-                : "hidden"
+                    ? "fixed right-0 top-19 h-25 lg-hidden border-t border-b border-s border-grey bg-[#ffffff] px-10 py-4 ease-in duration-500"
+                    : "hidden"
             }>
                 {accDetailsOptionsArr.map((item, index) => (
-                        <Link href="" key={index}>
-                            <p className="py-1">{item}</p>
-                        </Link>
-                    ))}
+                    <Link href="" key={index}>
+                        <p className="py-1">{item}</p>
+                    </Link>
+                ))}
             </div>
         </nav>
     )
-    
+
 }
 
 export default NavBar
