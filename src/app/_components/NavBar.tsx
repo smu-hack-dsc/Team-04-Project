@@ -94,6 +94,9 @@ const NavBar = () => {
 
     const [selectedGender, setSelectedGender] = useState(null);
     const [selectedType, setSelectedType] = useState(null);
+    const [setSelectedOccasion] = useState(null);
+    const [setSelectedCollection] = useState(null);
+    
 
   // Function to decode the JWT
   const decodeToken = (token) => {
@@ -248,8 +251,6 @@ const NavBar = () => {
 
   const menOptionsArr = [
     "All Products",
-    "New In",
-    "Popular",
     "Tops",
     "Bottoms",
     "Suits",
@@ -258,8 +259,6 @@ const NavBar = () => {
   ];
   const womenOptionsArr = [
     "All Products",
-    "New In",
-    "Popular",
     "Tops",
     "Bottoms",
     "Dresses",
@@ -287,16 +286,12 @@ const NavBar = () => {
   const accDetailsOptionsArr = ["Account Details", "My Rentals", "Logout"];
   const womenFirstCol = [
     "All Products",
-    "New In",
-    "Popular",
     "Tops",
     "Bottoms",
     "Dresses",
     "Jumpsuits & Rompers",
     "Outerwear",
   ];
-  const womenSecCol = ["Suits", "Accessories", "Maternity"];
-
 
   return (
     <nav className="fixed w-full h-16 outline-1 outline-grey outline bg-white px-3 z-50">
@@ -418,7 +413,7 @@ const NavBar = () => {
                                             : "hidden"
                                             }>
                                                 {menOptionsArr.map((item, index) => (
-                                                    <Link href="">
+                                                    <Link href={"/rent"}>
                                                         <li onClick={() => {
                                                             setMenuOpen(false);
                                                             setSelectedGender("male"); // Set the selected gender (assuming this is for men)
@@ -453,7 +448,7 @@ const NavBar = () => {
                                             </div>
                                             <ul className={womenOptionOpen ? "block pl-5" : "hidden"}>
                                                 {womenOptionsArr.map((item, index) => (
-                                                    <Link href="">
+                                                    <Link href={"/rent"}>
                                                     <li onClick={() => {
                                                         setMenuOpen(false);
                                                         setSelectedGender("female"); // Set the selected gender (assuming this is for men)
@@ -491,14 +486,28 @@ const NavBar = () => {
                                             : "hidden"
                                             }>
                                                 {occasionsOptionsArr.map((item, index) => (
-                                                    <Link href="" key={index}>
-                                                        <li onClick={() => setMenuOpen(false)}
+                                                    <Link href="/rent" key={index}>
+                                                        <li onClick={() => {
+                                                            setMenuOpen(false);
+                                                            sessionStorage.setItem("selectedOccasion", item);
+                                                        }}
                                                             className="py-2 cursor-pointer">
                                                                 {item}
                                                         </li>
                                                     </Link>
                                                 ))}
-                                                
+                                                                                            {/* {womenOptionsArr.map((item, index) => (
+                                                    <Link href={"/rent"}>
+                                                    <li onClick={() => {
+                                                        setMenuOpen(false);
+                                                        setSelectedGender("female"); // Set the selected gender (assuming this is for men)
+                                                        setSelectedType(item); // Set the selected type
+                                                        sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
+                                                        sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                                                    }} className="py-2 cursor-pointer">
+                                                        {item}
+                                                    </li>
+                                                </Link> */}
                                             </ul>
                                             <div className="flex justify-between">
                                                 <Link href="">
@@ -525,13 +534,17 @@ const NavBar = () => {
                                             : "hidden"
                                             }>
                                                 {collectionsOptionsArr.map((item, index) => (
-                                                    <Link href="" key={index}>
-                                                        <li onClick={() => setMenuOpen(false)}
+                                                    <Link href="/rent" key={index}>
+                                                        <li onClick={() => {
+                                                            setMenuOpen(false);
+                                                            sessionStorage.setItem("selectedCollection", item);
+                                                        }}
                                                             className="py-2 cursor-pointer">
                                                                 {item}
                                                         </li>
                                                     </Link>
                                                 ))}
+                                                
                                                 
                                             </ul>
                                         </ul>
@@ -676,7 +689,7 @@ const NavBar = () => {
                         </Link>
                     ))} */}
                     {menOptionsArr.map((item, index) => (
-                        <Link href="/rent" key={index}>
+                        <Link href={"/rent"} key={index}>
                             <p onClick={() => {
                                 setMenuOpen(false);
                                 setSelectedGender("male"); // Set the selected gender (assuming this is for women)
@@ -691,46 +704,48 @@ const NavBar = () => {
                 </div>
                 <div>
                     <p className="text-darkgrey py-2">WOMEN</p>
-                    {/* {womenFirstCol.map((item, index) => (
-                        <Link href="" key={index}>
-                            <p className="py-1">{item}</p>
-                        </Link>
-                    ))} */}
-                        {womenOptionsArr.map((item, index) => (
-                        <Link href="" key={index}>
-                            <p onClick={() => {
-                                setMenuOpen(false);
-                                setSelectedGender("female"); // Set the selected gender (assuming this is for women)
-                                setSelectedType(item); // Set the selected type
-                                sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
-                                sessionStorage.setItem("selectedType", item); // Store selected type in session storage
-                            }} className="py-1 cursor-pointer">
-                                {item}
-                            </p>
-                        </Link>
-                    ))}
-                </div>
-                <div>
-                    <p className="text-white py-2">WHITE TEXT</p>
-                    {womenSecCol.map((item, index) => (
-                        <Link href="" key={index}>
-                            <p className="py-1">{item}</p>
-                        </Link>
+                    {womenOptionsArr.map((item, index) => (
+                    <Link href={"/rent"} key={index}>
+                        <p
+                        onClick={() => {
+                            setMenuOpen(false);
+                            setSelectedGender("female"); // Set the selected gender (assuming this is for women)
+                            setSelectedType(item); // Set the selected type
+                            sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
+                            sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                        }}
+                        className="py-1 cursor-pointer"
+                        >
+                        {item}
+                        </p>
+                    </Link>
                     ))}
                 </div>
                 <div>
                     <p className="text-darkgrey py-2">OCCASIONS</p>
                     {occasionsOptionsArr.map((item, index) => (
-                        <Link href="" key={index}>
-                            <p className="py-1">{item}</p>
+                        <Link href="/rent" key={index}>
+                            <p onClick={() => {
+                                setMenuOpen(false);
+                                sessionStorage.setItem("selectedOccasion", item);
+                            }}
+                                className="py-1 cursor-pointer">
+                                    {item}
+                            </p>
                         </Link>
                     ))}
                 </div>
                 <div>
                     <p className="text-darkgrey py-2">COLLECTIONS</p>
                     {collectionsOptionsArr.map((item, index) => (
-                        <Link href="" key={index}>
-                            <p className="py-1">{item}</p>
+                        <Link href="/rent" key={index}>
+                            <p onClick={() => {
+                                setMenuOpen(false);
+                                sessionStorage.setItem("selectedCollection", item);
+                            }}
+                                className="py-1 cursor-pointer">
+                                    {item}
+                            </p>
                         </Link>
                     ))}
                 </div>
