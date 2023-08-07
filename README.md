@@ -68,12 +68,5 @@ cd backend
 
 #### Run backend server using Docker
 ```
-docker build -t tothecloset .
+docker compose up
 ```
-
-#### Run backend server using Docker
-```
-docker run tothecloset
-```
-
-
