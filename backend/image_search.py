@@ -197,4 +197,3 @@ def image_query():
     
     finally:
         delete_file(file_path)
-

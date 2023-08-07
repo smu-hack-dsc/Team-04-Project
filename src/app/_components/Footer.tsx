@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Facebook, Instagram, Pinterest, Youtube } from "react-bootstrap-icons"
 import { BsCCircle } from "react-icons/bs";
