@@ -53,14 +53,14 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
   return (
     <div className="mb-10 "> {/* Always show the card */}
       <a href="/product">
-        <div className="w-full bg-gray-200 group-hover:opacity-75">
+        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
           {product.image_url.length > 0 && (
-            <img src={product.image_url[0]} className="w-full h-auto md:w-full h-[21rem] object-center" alt="" onClick={navigateToProductPage} />
+            <img src={product.image_url[0]} className="w-full h-auto md:w-full h-[21rem]w-full object-cover object-center lg:h-full lg:w-full" alt="" onClick={navigateToProductPage} />
           )}
         </div>
       </a>
       <div className="mt-4 flex justify-between">
-        <div>
+        <div className="h-[10rem]">
           <h3 className="mb-1 font-semibold uppercase">
             <a href="#">
               <span aria-hidden="true" className="" />
