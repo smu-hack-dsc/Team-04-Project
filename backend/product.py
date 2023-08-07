@@ -50,11 +50,11 @@ def get_product(product_id):
 # case sensitive, look at db
 def get_filtered_products():
     try:
-        brands = request.args.getlist("brand")
-        sizes = request.args.getlist("size")
-        colours = request.args.getlist("colour")
-        types = request.args.getlist("type")
-        gender = request.args.getlist('gender')
+        brands = request.args.getlist("brand[]")
+        sizes = request.args.getlist("size[]")
+        colours = request.args.getlist("colour[]")
+        types = request.args.getlist("type[]")
+        gender = request.args.getlist('gender[]')
         price_min = float(request.args.get("price_min", 0))
         price_max = float(request.args.get("price_max", 0))
 

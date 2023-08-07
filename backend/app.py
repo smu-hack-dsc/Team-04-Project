@@ -18,7 +18,6 @@ def get_db_connection():
     db_name = os.getenv("DB_NAME")
     db_user = os.getenv("DB_USER")
     db_password = os.getenv("DB_PASSWORD")
-
     return psycopg2.connect(host=db_host, port=db_port, dbname=db_name, user=db_user, password=db_password)
 
 openaiApi = os.getenv("OPENAI_API_KEY")
@@ -37,8 +36,6 @@ from transaction import *
 from user import *
 from wishlist import *
 from size_recommender import *
-from text_search import *
-from image_search import *
 # from text_search import *
 # from image_search import *
 from db_config import *
@@ -50,7 +47,6 @@ CORS(app)
 @app.route("/api/check_connection")
 def check_connection_api():
     return check_connection()
-
 
 ########## DB: address
 
@@ -186,12 +182,19 @@ def delete_delivery_api(delivery_id):
 
 ########## DB: payment
 
+# paypal function
+@app.route("/api/paypal_payment", methods=["POST"])
+def create_order_api():
+    return create_order()
+
+@app.route("/capture_payment/<string:order_id>", methods=["POST"])
+def capture_paypal_payment_api():
+    return capture_paypal_payment()
 
 # get all payments
 @app.route("/api/payment", methods=["GET"])
 def get_payments_api():
     return get_payments()
-
 
 
 # get all payment under user id

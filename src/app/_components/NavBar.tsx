@@ -25,6 +25,8 @@ const customFontStyle = Playfair_Display({
   subsets: ["latin"],
   weight: ["400"], // Replace 'weight' with 'weights'
 });
+
+
 const NavBar = () => {
 
     const [userToken, setUserToken] = useState("");
@@ -37,6 +39,8 @@ const NavBar = () => {
 
     // Update the state with the user token
     setUserToken(token);
+
+    
 
     //to update badge on cart icon
     const initCartItemNum = async () => {
@@ -87,6 +91,9 @@ const NavBar = () => {
             return 0;
         }
     };
+
+    const [selectedGender, setSelectedGender] = useState(null);
+    const [selectedType, setSelectedType] = useState(null);
 
   // Function to decode the JWT
   const decodeToken = (token) => {
@@ -411,10 +418,15 @@ const NavBar = () => {
                                             : "hidden"
                                             }>
                                                 {menOptionsArr.map((item, index) => (
-                                                    <Link href="" key={index}>
-                                                        <li onClick={() => setMenuOpen(false)}
-                                                            className="py-2 cursor-pointer">
-                                                                {item}
+                                                    <Link href="">
+                                                        <li onClick={() => {
+                                                            setMenuOpen(false);
+                                                            setSelectedGender("male"); // Set the selected gender (assuming this is for men)
+                                                            setSelectedType(item); // Set the selected type
+                                                            sessionStorage.setItem("selectedGender", "male"); // Store selected gender in session storage
+                                                            sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                                                        }} className="py-2 cursor-pointer">
+                                                            {item}
                                                         </li>
                                                     </Link>
                                                 ))}
@@ -439,20 +451,20 @@ const NavBar = () => {
                                                 }/>
                                                 </div> 
                                             </div>
-                                            <ul className={
-                                            womenOptionOpen
-                                            ? "block pl-5"
-                                            : "hidden"
-                                            }>
+                                            <ul className={womenOptionOpen ? "block pl-5" : "hidden"}>
                                                 {womenOptionsArr.map((item, index) => (
-                                                    <Link href="" key={index}>
-                                                        <li onClick={() => setMenuOpen(false)}
-                                                            className="py-2 cursor-pointer">
-                                                                {item}
-                                                        </li>
-                                                    </Link>
+                                                    <Link href="">
+                                                    <li onClick={() => {
+                                                        setMenuOpen(false);
+                                                        setSelectedGender("female"); // Set the selected gender (assuming this is for men)
+                                                        setSelectedType(item); // Set the selected type
+                                                        sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
+                                                        sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                                                    }} className="py-2 cursor-pointer">
+                                                        {item}
+                                                    </li>
+                                                </Link>
                                                 ))}
-                                                
                                             </ul>
                                             <div className="flex justify-between">
                                                 <Link href="">
@@ -658,17 +670,43 @@ const NavBar = () => {
             }>
                 <div>
                     <p className="text-darkgrey py-2">MEN</p>
-                    {menOptionsArr.map((item, index) => (
+                    {/* {menOptionsArr.map((item, index) => (
                         <Link href="" key={index}>
                             <p className="py-1">{item}</p>
+                        </Link>
+                    ))} */}
+                    {menOptionsArr.map((item, index) => (
+                        <Link href="/rent" key={index}>
+                            <p onClick={() => {
+                                setMenuOpen(false);
+                                setSelectedGender("male"); // Set the selected gender (assuming this is for women)
+                                setSelectedType(item); // Set the selected type
+                                sessionStorage.setItem("selectedGender", "male"); // Store selected gender in session storage
+                                sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                            }} className="py-1 cursor-pointer">
+                                {item}
+                            </p>
                         </Link>
                     ))}
                 </div>
                 <div>
                     <p className="text-darkgrey py-2">WOMEN</p>
-                    {womenFirstCol.map((item, index) => (
+                    {/* {womenFirstCol.map((item, index) => (
                         <Link href="" key={index}>
                             <p className="py-1">{item}</p>
+                        </Link>
+                    ))} */}
+                        {womenOptionsArr.map((item, index) => (
+                        <Link href="" key={index}>
+                            <p onClick={() => {
+                                setMenuOpen(false);
+                                setSelectedGender("female"); // Set the selected gender (assuming this is for women)
+                                setSelectedType(item); // Set the selected type
+                                sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
+                                sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                            }} className="py-1 cursor-pointer">
+                                {item}
+                            </p>
                         </Link>
                     ))}
                 </div>

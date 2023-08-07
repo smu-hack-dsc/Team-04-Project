@@ -48,7 +48,7 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
       <div className="w-full bg-gray-200 group-hover:opacity-75">
         {/* Use the first image from the imageUrls array */}
         {product.image_url.length > 0 && (
-          <img src={product.image_url[0]} className=" w-full h-auto md:w-full h-[20rem] object-center" alt="" />
+          <img src={product.image_url[0]} className=" w-full h-auto md:w-full h-[21rem] object-center" alt="" />
         )}
       </div>
       <div className="mt-4 flex justify-between">
