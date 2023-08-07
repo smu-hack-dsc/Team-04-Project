@@ -49,7 +49,6 @@ CORS(app)
 def check_connection_api():
     return check_connection()
 
-
 ########## DB: address
 
 
@@ -184,12 +183,19 @@ def delete_delivery_api(delivery_id):
 
 ########## DB: payment
 
+# paypal function
+@app.route("/api/paypal_payment", methods=["POST"])
+def create_order_api():
+    return create_order()
+
+@app.route("/capture_payment/<string:order_id>", methods=["POST"])
+def capture_paypal_payment_api():
+    return capture_paypal_payment()
 
 # get all payments
 @app.route("/api/payment", methods=["GET"])
 def get_payments_api():
     return get_payments()
-
 
 
 # get all payment under user id

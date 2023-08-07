@@ -62,9 +62,17 @@ def create_user():
 
                     # Generate a JWT token
                     secret_key = os.getenv("SECRET_KEY")
-                    payload = {"user_id": user_id}
+                    print("secretkey:",secret_key)
+                    payload = {
+                        "user_id": user_id,
+                        "first_name": first_name,
+                        "last_name": last_name,
+                        "email": email,
+                        "phone_num": phone_num
+                    }
+                    print("payload",payload)
                     token = jwt.encode(payload, secret_key, algorithm="HS256")
-
+                    print("token:",token)
                     return jsonify({"message": "User inserted successfully", "user_id": user_id, "token": token}), 201
                 else:
                     return jsonify({"error": "Failed to insert user"}), 500
@@ -113,12 +121,13 @@ def check_login():
             return jsonify({'error': 'Invalid email or password'}), 401
         # If the password matches, generate an authentication token (e.g., JWT)
         secret_key = os.getenv("SECRET_KEY")
-        payload = {"user_id": user_details["user_id"]}
-        token = jwt.encode(payload, secret_key, algorithm="HS256")
-
-        # If the password matches, you can generate an authentication token (e.g., JWT)
-        secret_key = os.getenv("SECRET_KEY")
-        payload = {"user_id": user_details["user_id"]}
+        payload = {
+            "user_id": user_details["user_id"],
+            "email": user_details["email"],
+            "first_name": user_details["first_name"],
+            "last_name": user_details["last_name"],
+            # Add more fields as needed
+        }
         token = jwt.encode(payload, secret_key, algorithm="HS256")
 
         return jsonify({'message': 'Login successful', 'token': token}), 200

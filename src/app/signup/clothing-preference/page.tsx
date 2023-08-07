@@ -117,9 +117,11 @@ const AddressPage = () => {
         "&password=" +
         sessionStorage.getItem("password");
 
-      const particulars = await axios.post(particularsurl);
-      console.log("Particulars " + particulars);
-      const userid = particulars.data.user_id;
+        const response = await axios.post(particularsurl);
+        const particulars = response.data;
+        console.log("Particulars", particulars);
+        const userid = particulars.user_id;
+        const token = particulars.token;
 
       const addressurl =
         "http://localhost:5000/api/address?user_id=" +
@@ -161,7 +163,6 @@ const AddressPage = () => {
 
       const clothing = await axios.post(clothingurl);
       console.log("Clothing " + clothing);
-      const token = clothing.data.token;
       
       // Store the token in sessionStorage
       sessionStorage.setItem("userId", userid)
