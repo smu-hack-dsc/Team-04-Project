@@ -124,7 +124,7 @@ def process_json_and_image(subdirectory_path):
             
             if (product_id !=0):
                 # Find the image file (webp, jpg, png) in the subdirectory
-                image_file = next((f for f in files if f.endswith('.webp') or f.endswith('.jpg') or f.endswith('.png')), None)
+                image_file = next((f for f in files if f.endswith('.webp') or f.endswith('.jpg') or f.endswith('.png') or f.endswith('.jpeg')), None)
                 
                 if image_file:
                     image_path = join(subdirectory_path, image_file)
@@ -186,7 +186,7 @@ def image_query():
             # get list of ids
             id_list = []
             for match in matches:
-                id_list.append(match["id"])
+                id_list.append(int(match["id"]))
 
             return jsonify(id_list), 200
         else:
@@ -197,4 +197,6 @@ def image_query():
     
     finally:
         delete_file(file_path)
+    
+
 

@@ -223,3 +223,44 @@ def sort_products_by_price():
 
     except (Exception, psycopg2.Error) as error:
         return jsonify({"error": str(error)}), 500
+    
+    
+def get_products_by_ids():
+    try:
+        product_id_list = request.args.getlist('product_id')
+        
+        products = []
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                # Convert string product IDs to integers
+                product_ids = [int(pid) for pid in product_id_list]
+
+                # Construct the SQL query with a dynamic list of product IDs
+                placeholders = ','.join(['%s'] * len(product_ids))
+                query = f'SELECT * FROM tothecloset."product" WHERE product_id IN ({placeholders}) ORDER BY array_position(ARRAY{product_ids}, product_id)'
+
+                cursor.execute(query, product_ids)
+
+                rows = cursor.fetchall()
+
+                for row in rows:
+                    product = {
+                        "product_id": row[0],
+                        "brand": row[1],
+                        "size": row[2],
+                        "colour": row[3],
+                        "price": row[4],
+                        "type": row[5],
+                        "image_url": row[6],
+                        "date_added": row[7],
+                        "product_name": row[8],
+                        "category": row[9],
+                        "gender": row[10]
+                    }
+                    products.append(product)
+
+        return jsonify(products), 200
+
+    except (Exception, psycopg2.Error) as error:
+        return jsonify({"error": str(error)}), 500
+

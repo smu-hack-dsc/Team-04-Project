@@ -280,6 +280,11 @@ def get_product_by_type_api(type):
 def sort_products_by_price_api():
     return sort_products_by_price()
 
+# get products from list of ids
+@app.route("/api/product/by_ids", methods=["GET"])
+def get_products_by_ids_api():
+    get_products_by_ids()
+
 ########## DB: product_availability
 
 

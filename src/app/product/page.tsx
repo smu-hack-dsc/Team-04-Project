@@ -58,6 +58,7 @@ const ProductPage: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
+  const [recommendedSize, setRecommendedSize] = useState("")
 
 
 
@@ -97,6 +98,8 @@ const ProductPage: React.FC = () => {
     .catch((error) => {
       console.error('Error fetching product availability:', error);
     });
+
+    
   }, []);
 
   const isDateBooked = (date: Date): boolean => {
@@ -115,6 +118,24 @@ const ProductPage: React.FC = () => {
       const images = Object.values(product.image_url);
       setSelectedImage(images[0]);
     }
+
+    //size recommender 
+    if(product){
+      const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+      const userId = sessionStorage.getItem("userId");
+      if (token == null){
+        setRecommendedSize("Log in to find out")
+      } else {
+        axios.get("http://localhost:5000/api/size_recommender/" + userId + "/" + product["brand"] + "/" + product["category"])
+        .then((response) => {
+          setRecommendedSize(response.data["size_recommendation"])
+        })
+        .catch((error) => {
+          console.error('Error fetching product:', error);
+          setLoading(false); // Set loading to false in case of an error
+        });
+      }
+    }
   }, [product]);
 
   useEffect(() => {
@@ -131,6 +152,10 @@ const ProductPage: React.FC = () => {
   if (loading) {
     return <Skeleton active />;
   }
+
+  
+
+  
   return (
 
 <section className="py-12 sm:py-16"> 
@@ -171,9 +196,9 @@ const ProductPage: React.FC = () => {
 
     <div className="lg:col-span-2 lg:row-span-2 lg:row-end-2">
       <h1 className="sm: text-2xl text-gray-900 sm:text-3xl uppercase">{product?.product_name}</h1>
-
+      <div className='text-lg text-darkgrey'>{product?.brand}</div>
       <div className="my-2 flex items-center">
-        <p className="text-xl font-medium text-gray-500">{product?.price} SGD</p>
+        <p className="text-lg font-medium text-gray-500">{product?.price} SGD</p>
       </div>
 
       <hr className="mt-3"></hr>
@@ -224,9 +249,17 @@ const ProductPage: React.FC = () => {
           )}
       </div>
 
-      <h2 className="mt-4 text-base text-gray-900">Size:</h2>
-      <span className="">Recommended Size:</span>
-
+      <div className='flex justify-between mt-4'>
+      <h2 className="text-base text-gray-900">Size:</h2>
+      <span>
+        <button
+          className="underline cursor-pointer"
+          onClick={toggleSizeChart}
+        >
+          Size Chart
+        </button>
+      </span>
+      </div>
       <div className="mt-3 flex select-none flex-wrap items-center gap-1 justify-between">
       {Array.isArray(sizes)
     ? sizes.map((sizeName, index) => (
@@ -255,15 +288,9 @@ const ProductPage: React.FC = () => {
       </button>
     )
   }
-  <span>
-  <button
-          className="underline cursor-pointer"
-          onClick={toggleSizeChart}
-        >
-          Size Chart
-        </button>
-  </span>
+
       </div>
+      <div className="my-3 text-sm">Your Recommended Size: <span className="italic">{recommendedSize} </span></div>
       <Dialog open={isSizeChartOpen} onClose={toggleSizeChart}>
         <div className="fixed inset-0 z-10 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen">
@@ -278,7 +305,7 @@ const ProductPage: React.FC = () => {
                 )}
               </div>
               <div className="mt-4 text-right">
-                <button className="text-blue-600 underline" onClick={toggleSizeChart}>
+                <button className="text-black underline" onClick={toggleSizeChart}>
                   Close
                 </button>
               </div>
@@ -305,19 +332,19 @@ const ProductPage: React.FC = () => {
       </div>
 
       <h2 className="mt-4 text-base text-gray-900">Delivery:</h2>
-      <div className="mt-3 flex flex-wrap items-center gap-1">
-      <DatePicker
-          className="border-black border-[1px]"
-          selected={selectedDate ? moment(selectedDate) : null}
-          onChange={handleDateChange}
-          disabledDate={(current) => {
-            // Disable dates where product is alr booked
-            return (
-              current &&
-              (current < moment() || isDateBooked(current.toDate())) // Convert Dayjs to Date
-            );
-          }}
-        />
+      <div className="mt-3 flex  items-center gap-1 border border-1 border-black w-[150px]">
+        <DatePicker
+            selected={selectedDate ? moment(selectedDate) : null}
+            bordered={false}
+            onChange={handleDateChange}
+            disabledDate={(current) => {
+              // Disable dates where product is alr booked
+              return (
+                current &&
+                (current < moment() || isDateBooked(current.toDate())) // Convert Dayjs to Date
+              );
+            }}
+          />
       </div>
 
       <h2 className="mt-4 text-base text-gray-900">Return Date:</h2>
@@ -350,31 +377,6 @@ const ProductPage: React.FC = () => {
     </div>
   </div>
 </div>
-
-<hr></hr>
-<div className="flex justify-center mt-4">
-  <div className="text-center text-xl">Complete your look</div>
-</div>
-
-  <div className="mx-auto py-8 max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-      <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-        {/* Render the Skeleton when loading is true */}
-        {loading ? (
-          <>
-            <Skeleton active />
-            <Skeleton active />
-            <Skeleton active />
-          </>
-        ) : (
-          // Render the actual cards when loading is false
-          Array.from({ length: similarItemCount }).map((_, index) => (
-            <div key={index} className="">
-              {product && <BrowsingCard productId={product.product_id} />}
-            </div>
-          ))
-        )}
-      </div>
-    </div>
 </section>
   );
 };
