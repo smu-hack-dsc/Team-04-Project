@@ -336,8 +336,7 @@ const Page = () => {
                 </div>
               )}
 
-
-              <div className="flex flex-row justify-between mt-5">
+              {/* <div className="flex flex-row justify-between mt-5">
                 <div>
                 <input
                   type="radio"
@@ -393,8 +392,8 @@ const Page = () => {
                 </div>
                 <div className="flex">
                   <PaymentLogo imageUrl="/images/StripeLogo.jpg" bgColour="#6772e5"/>
-                </div>
-              </div>
+                </div> */}
+              {/* </div> */}
             </div>
           </div>
         </div>
