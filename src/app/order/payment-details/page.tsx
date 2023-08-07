@@ -29,13 +29,18 @@ const Page = () => {
 
   const decodeToken = (token) => {
     try {
+      if (!token) {
+        console.error("Token is undefined or null.");
+        return null;
+      }
+  
       // Access the secret key from the environment variables or hardcoded value
       const secretKey = SECRET_KEY || "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
       console.log("secret_key", secretKey);
-
+  
       // Decode the token using the provided secret key
       const decodedToken = jwt.verify(token, secretKey);
-      console.log("userinfo:", decodedToken);
+      console.log("userinfo:", decodedToken.user_id);
       return decodedToken;
     } catch (error) {
       console.error("Error decoding token:", error);
@@ -112,8 +117,8 @@ const Page = () => {
     if (errors === 0) {
       if (paymentType === "creditCard") {
           const paymentData = {
-            user_id: 1, // Replace with the actual user ID or get it from somewhere else
-            cardholder_name: cardholderName, // Replace with the actual cardholder name
+            user_id: decodedToken.user_id, 
+            cardholder_name: cardholderName, 
             card_number: cardNumberElement.value.trim(),
             cvc: cvcElement.value.trim(),
             expiry_year: expiryElement.value.trim().split("/")[1], // Extract the year from the expiry date

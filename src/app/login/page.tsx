@@ -35,7 +35,7 @@ export default function Page() {
         // Login successful, you can save the authentication token or perform other actions here
         console.log(response.data.message);
         const token = response.data.token;
-        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("token", token.toString());
         window.location.href = "/";
       } else if (response.status === 401) {
         // Login failed, display the error message
