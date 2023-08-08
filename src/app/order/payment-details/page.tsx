@@ -6,6 +6,7 @@ import Image from "next/image";
 import PaymentLogo from "@/app/_components/PaymentLogo";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import axios from 'axios';
 import { toast, Toaster } from "react-hot-toast";
 declare global {
   interface Window {
@@ -139,20 +140,93 @@ const Page = () => {
 
         try {
           const response = await fetch("http://localhost:5000/api/payment", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(paymentData), // Serialize paymentData as JSON
+            // ... (your existing fetch configuration)
           });
-
+    
           if (response.ok) {
             // Payment was successful
             const responseData = await response.json();
             console.log("payment response:", responseData);
-            toast.success("Payment successful!");
-            if (typeof window !== "undefined") {
-              window.location.href = "/order/confirmation";
+
+            // Create transaction data
+            const transactionData = {
+              user_id: decodedToken.user_id,
+              transaction_date: new Date().toISOString(),
+              payment_method: "Credit Card",
+              payment_amount: total,
+              payment_id: responseData.payment_id, // Replace with the actual field name in the response
+            };
+
+            try {
+              const transactionResponse = await axios.post(
+                "http://localhost:5000/api/transaction",
+                transactionData
+              );
+
+              if (transactionResponse.status === 201) {
+                const transactionId = transactionResponse['transactonId']
+                console.log("Transaction created:", transactionResponse.data);
+
+                const createDelivery = async (userId) => {
+                  const deliveryData = {
+                    address_id: 35, // Replace with the actual address ID
+                    delivery_date: new Date().toISOString(),
+                    delivery_status: 'pending', // Replace with the desired status
+                    user_id: userId,
+                  };
+                
+                  try {
+                    const response = await axios.post('http://localhost:5000/api/delivery', deliveryData);
+                    if (response.status === 201) {
+                      const { message, delivery_id } = response.data;
+                      console.log(message);
+                      console.log('New delivery ID:', delivery_id);
+                      // Create rental data
+                  const rentalData = {
+                    user_id: decodedToken.user_id,
+                    product_id: sessionStorage.getItem("productId"),
+                    rental_start: sessionStorage.getItem("rental_start"),
+                    rental_period: sessionStorage.getItem("rental_period"),
+                    rental_end: sessionStorage.getItem("rental_end"),
+                    delivery_id: delivery_id,
+                    transaction_id: transactionId,
+                  };
+
+                  try {
+                    const rentalResponse = await axios.post(
+                      "http://localhost:5000/api/rental",
+                      rentalData
+                    );
+
+                    if (rentalResponse.status === 201) {
+                      console.log("Rental created:", rentalResponse.data);
+                      // Redirect to the confirmation page
+                      if (typeof window !== "undefined") {
+                        toast.success("Payment, Transaction, and Rental successful!");
+                        window.location.href = "/order/confirmation";
+                      }
+                    } else {
+                      console.error("Failed to create rental:", rentalResponse.data);
+                      toast.error("Payment and Transaction successful, but rental creation failed.");
+                    }
+                  } catch (error) {
+                    console.error("Error creating rental:", error);
+                    toast.error("Payment and Transaction successful, but rental creation failed.");
+                  }
+                      } else {
+                        console.error('Failed to create delivery:', response.data);
+                      }
+                    } catch (error) {
+                      console.error('Error creating delivery:', error);
+                    }
+                  };
+              } else {
+                console.error("Failed to create transaction:", transactionResponse.data);
+                toast.error("Payment successful, but transaction creation failed.");
+              }
+            } catch (error) {
+              console.error("Error creating transaction:", error);
+              toast.error("Payment successful, but transaction creation failed.");
             }
           } else {
             // Handle error response from the server
@@ -162,89 +236,13 @@ const Page = () => {
           }
         } catch (error) {
           console.error("Error:", error);
+          toast.error("An error occurred while processing your payment.");
         }
       }
-    } else if (paymentType === "payPal") {
-      setShowPayPalButton(true);
-      handlePayPalPayment();
-    } else if (paymentType === "applePay") {
-      // Process Apple Pay payment
-    } else if (paymentType === "stripe") {
-      // Process Stripe payment
-    }
+    };
   };
 
-  const [scriptLoaded, setScriptLoaded] = useState(false);
 
-  const addPayPalScript = () => {
-    if (window.paypal) {
-      setScriptLoaded(true);
-      return;
-    }
-    const script = document.createElement("script");
-    script.src =
-      "https://www.paypal.com/sdk/js?client-id=" +
-      "AU_6c8OEv9v9TJHmkowbWMJDvLJmYC7HweIkjLMSkrDgGmfEw-ihGJJfuNe9G29WpC46hi8L0kmewcrR" +
-      "&currency=SGD";
-    script.type = "text/javascript";
-    script.async = true;
-    script.onload = () => setScriptLoaded(true);
-    document.body.appendChild(script);
-  };
-
-  useEffect(() => {
-    setTotal(parseFloat(sessionStorage.getItem("totalAmount")));
-    addPayPalScript();
-  }, []);
-
-  const handlePayPalPayment = () => {
-    // Get the total amount in the smallest currency unit (e.g., cents for SGD)
-    const totalAmountInCents = Math.round(total * 100);
-
-    window.paypal
-      .Buttons({
-        createOrder: function (data, actions) {
-          return actions.order.create({
-            intent: "CAPTURE", // Specify the intent as 'CAPTURE' to capture the payment immediately
-            purchase_units: [
-              {
-                amount: {
-                  currency_code: "SGD",
-                  value: totalAmountInCents / 100, // Convert back to the original amount in SGD
-                },
-              },
-            ],
-          });
-        },
-        onApprove: function (data, actions) {
-          return actions.order.capture().then(function (details) {
-            console.log("PayPal payment successful:", details);
-            // Make the fetch call to your backend here
-            fetch("http://localhost:5000/api/paypal_payment", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(details), // Send the PayPal payment details to the backend
-            })
-              .then((response) => response.json())
-              .then((data) => {
-                // Handle the response from the backend
-                console.log(data); // Adjust the handling as needed
-                // Redirect or trigger further actions based on the response
-              })
-              .catch((error) => {
-                console.error("Error:", error);
-                // Handle any errors that occur during the fetch call
-              });
-          });
-        },
-        onError: function (err) {
-          console.error("PayPal payment error:", err);
-        },
-      })
-      .render("#paypal-button-container");
-  };
   return (
     <div className="py-16 px-8">
       <Toaster />
@@ -360,65 +358,6 @@ const Page = () => {
                   </div>
                 </div>
               )}
-
-              {/* <div className="flex flex-row justify-between mt-5">
-                <div>
-                <input
-                  type="radio"
-                  id="payPal"
-                  name="paymentType"
-                  value="payPal"
-                  className="me-3 focus:ring-0 text-black"
-                  checked={paymentType === "payPal"}
-                  onChange={handlePaymentTypeChange}
-                />
-                  <label htmlFor="payPal px-2">PayPal</label>
-                </div>
-                <div className="flex">
-                  <PaymentLogo imageUrl="/images/PaypalLogo.png" bgColour="#252525"/>
-                </div>
-              </div>
-            
-              <div className="flex flex-row justify-between mt-5">
-                <div>
-                <input
-                  type="radio"
-                  id="applePay"
-                  name="paymentType"
-                  value="applePay"
-                  className="me-3 focus:ring-0 text-black"
-                  checked={paymentType === "applePay"}
-                  onChange={handlePaymentTypeChange}
-                />
-                  <label htmlFor="applePay px-2">Apple Pay</label>
-                </div>
-                <div className="flex">
-                  <PaymentLogo imageUrl="/images/ApplePayLogo.svg" bgColour="#888888"/>
-                </div>
-              </div>
-              {paymentType === "payPal" && scriptLoaded && (
-                  <div className="my-4">
-                    <div id="paypal-button-container"></div>
-                  </div>
-                )}
-
-            <div className="flex flex-row justify-between mt-5">
-                <div>
-                <input
-                  type="radio"
-                  id="stripe"
-                  name="paymentType"
-                  value="stripe"
-                  className="me-3 focus:ring-0 text-black"
-                  checked={paymentType === "stripe"}
-                  onChange={handlePaymentTypeChange}
-                />
-                  <label htmlFor="stripe px-2">Stripe</label>
-                </div>
-                <div className="flex">
-                  <PaymentLogo imageUrl="/images/StripeLogo.jpg" bgColour="#6772e5"/>
-                </div> */}
-              {/* </div> */}
             </div>
           </div>
         </div>

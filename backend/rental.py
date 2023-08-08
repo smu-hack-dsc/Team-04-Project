@@ -26,23 +26,33 @@ def create_rental():
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                user_id = request.args.get("user_id")
-                product_id = request.args.get("product_id")
-                rental_start = request.args.get("rental_start")
-                rental_end = request.args.get("rental_end")
-                rental_period = request.args.get("rental_period")
-                transaction_id = request.args.get("transaction_id")
-                delivery_id = request.args.get("delivery_id")
-                return_id = request.args.get("return_id")
-                is_ongoing = request.args.get("is_ongoing")
+                user_id = request.json.get("user_id")
+                product_id = request.json.get("product_id")
+                rental_start = request.json.get("rental_start")
+                rental_end = request.json.get("rental_end")
+                rental_period = request.json.get("rental_period")
+                transaction_id = request.json.get("transaction_id")
+                delivery_id = request.json.get("delivery_id")
+                return_id = request.json.get("return_id")
+                is_ongoing = request.json.get("is_ongoing")
 
-                cursor.execute('INSERT INTO tothecloset."address" ' "(user_id, product_id, rental_start, rental_end, rental_period, transaction_id, delivery_id, return_id, is_ongoing) " "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING rental_id", (user_id, product_id, rental_start, rental_end, rental_period, transaction_id, delivery_id, return_id, is_ongoing))
+                cursor.execute(
+                    'INSERT INTO tothecloset."rental" '
+                    "(user_id, product_id, rental_start, rental_end, "
+                    "rental_period, transaction_id, delivery_id, return_id, is_ongoing) "
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING rental_id",
+                    (user_id, product_id, rental_start, rental_end, rental_period,
+                     transaction_id, delivery_id, return_id, is_ongoing)
+                )
 
                 new_rental_id = cursor.fetchone()[0]
 
                 if new_rental_id is not None:
                     connection.commit()
-                    return jsonify({"message": "Rental inserted successfully", "rental_id": new_rental_id}), 201
+                    return jsonify({
+                        "message": "Rental inserted successfully",
+                        "rental_id": new_rental_id
+                    }), 201
                 else:
                     return jsonify({"error": "Failed to insert rental"}), 500
 
