@@ -1,10 +1,8 @@
-
 import { CheckCircleFill } from "react-bootstrap-icons";
 
 const Page = () => {
   return (
     <div className="py-16">
-
       Progress bar
       <div className="flex flex-rows justify-center my-10 mx-6 text-xs sm:text-base">
         <div>Shipping</div>
@@ -25,13 +23,15 @@ const Page = () => {
 
         <div className="text-midgrey">Payment</div>
       </div>
-
       <div className="mx-40 mt-8 flex">
-
         {/* Delivery & Return */}
         <div className="w-1/2 pr-2 pt-4">
-        <div className="flex items-center">
-            <img src="/images/3-circle.svg" alt="Icon 3" className="h-6 w-6 mr-2" />
+          <div className="flex items-center">
+            <img
+              src="/images/3-circle.svg"
+              alt="Icon 3"
+              className="h-6 w-6 mr-2"
+            />
             <p className="text">DELIVERY & RETURN</p>
           </div>
 
@@ -48,8 +48,7 @@ const Page = () => {
         </div>
 
         {/* Middle Container */}
-        <div className="w-1/6 pl-2 pt-4">
-        </div>
+        <div className="w-1/6 pl-2 pt-4"></div>
 
         {/* Your Order */}
         <div className="flex items-center justify-center mt-2">
@@ -81,19 +80,20 @@ const Page = () => {
             </div>
           </div>
         </div>
-      
       </div>
-  
       {/* Button */}
-      <div className="flex justify-center"> {/* Centering wrapper */}
-        <button className="my-2 mt-12 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black
-          bg-white text-black hover:bg-black hover:text-white">
+      <div className="flex justify-center">
+        {" "}
+        {/* Centering wrapper */}
+        <button
+          className="my-2 mt-12 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black
+          bg-white text-black hover:bg-black hover:text-white"
+        >
           <div className="uppercase flex items-center justify-center">
             Continue
           </div>
         </button>
       </div>
-
     </div>
   );
 };
