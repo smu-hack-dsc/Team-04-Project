@@ -1,11 +1,11 @@
-"use client"; 
-import React, {useEffect, useState} from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { CheckCircleFill } from "react-bootstrap-icons";
 import Link from "next/link";
 import Image from "next/image";
 import PaymentLogo from "@/app/_components/PaymentLogo";
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 import { toast, Toaster } from "react-hot-toast";
 declare global {
   interface Window {
@@ -13,19 +13,21 @@ declare global {
   }
 }
 
-const Page = () => {  
+const Page = () => {
   // console.log("SECRET_KEY:", process.env.SECRET_KEY);
   // console.log(process.env);
-  const SECRET_KEY = "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
+  const SECRET_KEY =
+    "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
   const [userToken, setUserToken] = useState("");
 
   useEffect(() => {
     // Check if the user token exists in session storage
-    const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+    const token =
+      typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
 
     // Update the state with the user token
     setUserToken(token);
-    console.log("user token:", userToken)
+    console.log("user token:", userToken);
   }, []);
 
   const decodeToken = (token) => {
@@ -34,11 +36,13 @@ const Page = () => {
         console.error("Token is undefined or null.");
         return null;
       }
-  
+
       // Access the secret key from the environment variables or hardcoded value
-      const secretKey = SECRET_KEY || "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
+      const secretKey =
+        SECRET_KEY ||
+        "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
       console.log("secret_key", secretKey);
-  
+
       // Decode the token using the provided secret key
       const decodedToken = jwt.verify(token, secretKey);
       console.log("userinfo:", decodedToken.user_id);
@@ -48,7 +52,6 @@ const Page = () => {
       return null;
     }
   };
-
 
   const [cardholderName, setCardholderName] = useState("");
   const [paymentType, setPaymentType] = useState("creditCard"); // Default to credit card payment
@@ -71,10 +74,16 @@ const Page = () => {
 
   const handlePayment = async (e) => {
     e.preventDefault(); // Prevent form submission
-    const cardNumberElement = document.getElementsByName("cardNumber")[0] as HTMLInputElement;
-    const expiryElement = document.getElementsByName("expiry")[0] as HTMLInputElement;
+    const cardNumberElement = document.getElementsByName(
+      "cardNumber"
+    )[0] as HTMLInputElement;
+    const expiryElement = document.getElementsByName(
+      "expiry"
+    )[0] as HTMLInputElement;
     const cvcElement = document.getElementsByName("cvc")[0] as HTMLInputElement;
-    const cardholderNameElement = document.getElementsByName("cardholderName")[0] as HTMLInputElement;
+    const cardholderNameElement = document.getElementsByName(
+      "cardholderName"
+    )[0] as HTMLInputElement;
 
     var errors = 0;
     // Decode the user token to get the user ID
@@ -117,53 +126,53 @@ const Page = () => {
     // If there are no errors, proceed to the next step
     if (errors === 0) {
       if (paymentType === "creditCard") {
-          const paymentData = {
-            user_id: decodedToken.user_id, 
-            cardholder_name: cardholderName, 
-            card_number: cardNumberElement.value.trim(),
-            cvc: cvcElement.value.trim(),
-            expiry_year: expiryElement.value.trim().split("/")[1], // Extract the year from the expiry date
-            expiry_month: expiryElement.value.trim().split("/")[0], // Extract the month from the expiry date
-            is_default: true, // Replace with the actual value for is_default
-          };
-          console.log("paymentdata:", paymentData)
+        const paymentData = {
+          user_id: decodedToken.user_id,
+          cardholder_name: cardholderName,
+          card_number: cardNumberElement.value.trim(),
+          cvc: cvcElement.value.trim(),
+          expiry_year: expiryElement.value.trim().split("/")[1], // Extract the year from the expiry date
+          expiry_month: expiryElement.value.trim().split("/")[0], // Extract the month from the expiry date
+          is_default: true, // Replace with the actual value for is_default
+        };
+        console.log("paymentdata:", paymentData);
 
-          try {
-            const response = await fetch("http://localhost:5000/api/payment", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(paymentData), // Serialize paymentData as JSON
-            });
-    
-            if (response.ok) {
-              // Payment was successful
-              const responseData = await response.json();
-              console.log("payment response:", responseData);
-              toast.success("Payment successful!")
-              if (typeof window !== "undefined") {
-                window.location.href = "/order/confirmation";
-              }
-            } else {
-              // Handle error response from the server
-              const errorData = await response.json();
-              console.error("Error:", errorData);
-              toast.error("Payment unsuccessful!")
+        try {
+          const response = await fetch("http://localhost:5000/api/payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(paymentData), // Serialize paymentData as JSON
+          });
+
+          if (response.ok) {
+            // Payment was successful
+            const responseData = await response.json();
+            console.log("payment response:", responseData);
+            toast.success("Payment successful!");
+            if (typeof window !== "undefined") {
+              window.location.href = "/order/confirmation";
             }
-          } catch (error) {
-            console.error("Error:", error);
+          } else {
+            // Handle error response from the server
+            const errorData = await response.json();
+            console.error("Error:", errorData);
+            toast.error("Payment unsuccessful!");
           }
+        } catch (error) {
+          console.error("Error:", error);
         }
-      } else if (paymentType === "payPal") {
-        setShowPayPalButton(true);
-        handlePayPalPayment();
-      } else if (paymentType === "applePay") {
-        // Process Apple Pay payment
-      } else if (paymentType === "stripe") {
-        // Process Stripe payment
       }
+    } else if (paymentType === "payPal") {
+      setShowPayPalButton(true);
+      handlePayPalPayment();
+    } else if (paymentType === "applePay") {
+      // Process Apple Pay payment
+    } else if (paymentType === "stripe") {
+      // Process Stripe payment
     }
+  };
 
   const [scriptLoaded, setScriptLoaded] = useState(false);
 
@@ -173,7 +182,10 @@ const Page = () => {
       return;
     }
     const script = document.createElement("script");
-    script.src = "https://www.paypal.com/sdk/js?client-id=" + "AU_6c8OEv9v9TJHmkowbWMJDvLJmYC7HweIkjLMSkrDgGmfEw-ihGJJfuNe9G29WpC46hi8L0kmewcrR" + "&currency=SGD";
+    script.src =
+      "https://www.paypal.com/sdk/js?client-id=" +
+      "AU_6c8OEv9v9TJHmkowbWMJDvLJmYC7HweIkjLMSkrDgGmfEw-ihGJJfuNe9G29WpC46hi8L0kmewcrR" +
+      "&currency=SGD";
     script.type = "text/javascript";
     script.async = true;
     script.onload = () => setScriptLoaded(true);
@@ -183,28 +195,27 @@ const Page = () => {
   useEffect(() => {
     setTotal(parseFloat(sessionStorage.getItem("totalAmount")));
     addPayPalScript();
-  },[])
+  }, []);
 
   const handlePayPalPayment = () => {
-
     // Get the total amount in the smallest currency unit (e.g., cents for SGD)
     const totalAmountInCents = Math.round(total * 100);
 
     window.paypal
-    .Buttons({
-      createOrder: function (data, actions) {
-        return actions.order.create({
-          intent: 'CAPTURE', // Specify the intent as 'CAPTURE' to capture the payment immediately
-          purchase_units: [
-            {
-              amount: {
-                currency_code: 'SGD',
-                value: totalAmountInCents / 100, // Convert back to the original amount in SGD
+      .Buttons({
+        createOrder: function (data, actions) {
+          return actions.order.create({
+            intent: "CAPTURE", // Specify the intent as 'CAPTURE' to capture the payment immediately
+            purchase_units: [
+              {
+                amount: {
+                  currency_code: "SGD",
+                  value: totalAmountInCents / 100, // Convert back to the original amount in SGD
+                },
               },
-            },
-          ],
-        });
-      },
+            ],
+          });
+        },
         onApprove: function (data, actions) {
           return actions.order.capture().then(function (details) {
             console.log("PayPal payment successful:", details);
@@ -260,10 +271,15 @@ const Page = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-9">
         <div className="col-span-2 mb-6">
-
           <div>
             <div className="flex items-center">
-              <Image src="/images/4-circle.svg" width ={25} height={25} alt="Icon 4" className="mr-2" />
+              <Image
+                src="/images/4-circle.svg"
+                width={25}
+                height={25}
+                alt="Icon 4"
+                className="mr-2"
+              />
               <p className="uppercase">Payment Method</p>
             </div>
 
@@ -282,9 +298,18 @@ const Page = () => {
                   <label htmlFor="creditCard px-2">Credit Card</label>
                 </div>
                 <div className="flex">
-                  <PaymentLogo imageUrl="/images/MastercardLogo.svg" bgColour="#202A44" />
-                  <PaymentLogo imageUrl="/images/VisaLogo.png" bgColour="#e0e0e0" />
-                  <PaymentLogo imageUrl="/images/AmericanExpressLogo.jpg" bgColour="#016fd0" />
+                  <PaymentLogo
+                    imageUrl="/images/MastercardLogo.svg"
+                    bgColour="#202A44"
+                  />
+                  <PaymentLogo
+                    imageUrl="/images/VisaLogo.png"
+                    bgColour="#e0e0e0"
+                  />
+                  <PaymentLogo
+                    imageUrl="/images/AmericanExpressLogo.jpg"
+                    bgColour="#016fd0"
+                  />
                 </div>
               </div>
               {/* Render credit card input fields directly */}
@@ -410,7 +435,7 @@ const Page = () => {
                 <div>Discount</div>
                 <div>-0.00 SGD</div>
               </div>
-              <hr className="my-7"/>
+              <hr className="my-7" />
               <div className="flex flex-cols justify-between my-5 ">
                 <div className="uppercase">Total</div>
                 <div>{total} SGD</div>
@@ -420,8 +445,8 @@ const Page = () => {
         </div>
       </div>
 
-      <div className='flex flex-cols justify-center'>
-        <Link href="/cart" className='m-4'>
+      <div className="flex flex-cols justify-center">
+        <Link href="/cart" className="m-4">
           <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black bg-black text-white">
             <div className="uppercase flex items-center justify-center">
               Back
@@ -429,15 +454,17 @@ const Page = () => {
           </button>
         </Link>
 
-        <Link href="/order/payment-details" className='m-4'>
-          <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black" onClick={handlePayment}>
+        <Link href="/order/payment-details" className="m-4">
+          <button
+            className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black"
+            onClick={handlePayment}
+          >
             <div className="uppercase flex items-center justify-center">
               Pay Now
             </div>
           </button>
         </Link>
       </div>
-
     </div>
   );
 };

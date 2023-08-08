@@ -101,7 +101,7 @@ const PersonalParticularsPage = () => {
       sessionStorage.setItem("password", passwordElement.value);
 
       // Redirect to the next step (/signup/address) on the client side
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         window.location.href = "/signup/address";
       }
     }

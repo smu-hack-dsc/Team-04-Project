@@ -5,7 +5,6 @@ import { CheckCircleFill } from "react-bootstrap-icons";
 import axios from "axios";
 
 const AddressPage = () => {
-
   var [address1Validation, setAddress1Validation] = useState("");
   var [address2Validation, setAddress2Validation] = useState("");
   var [cityValidation, setCityValidation] = useState("");
@@ -197,7 +196,7 @@ const AddressPage = () => {
           <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
             <div
               className="uppercase flex items-center justify-center"
-              onClick={handleSubmit} 
+              onClick={handleSubmit}
             >
               Continue
             </div>
