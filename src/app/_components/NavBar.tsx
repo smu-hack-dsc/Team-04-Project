@@ -20,7 +20,6 @@ import { Avatar, Badge, Space } from "antd";
 import axios from "axios";
 import CartItem from "./CartItem";
 import jwt from 'jsonwebtoken';
-
 // const playfair = Playfair_Display({ subsets: ['latin'], weight :'400'})
 const customFontStyle = Playfair_Display({
     subsets: ["latin"],
@@ -42,39 +41,41 @@ const NavBar = () => {
         setUserToken(token);
 
 
-
         //to update badge on cart icon
         const initCartItemNum = async () => {
 
-            if (typeof window !== 'undefined') {
-                if (!sessionStorage.getItem('userId')) {
-                    const userId = 0; //set to 0 if no user
-                    sessionStorage.setItem("userId", userId.toString());
-                }
+            //to update badge on cart icon
+            const initCartItemNum = async () => {
 
-                if (!sessionStorage.getItem("cartItemNum")) {
-                    const userId = sessionStorage.getItem("userId");
-                    if (userId !== "0") {
-                        try {
-                            getCartItemNum(userId); // Await the result
-                        } catch (error) {
-                            console.error(error);
+                if (typeof window !== 'undefined') {
+                    if (!sessionStorage.getItem('userId')) {
+                        const userId = 0; //set to 0 if no user
+                        sessionStorage.setItem("userId", userId.toString());
+                    }
+
+                    if (!sessionStorage.getItem("cartItemNum")) {
+                        const userId = sessionStorage.getItem("userId");
+                        if (userId !== "0") {
+                            try {
+                                getCartItemNum(userId); // Await the result
+                            } catch (error) {
+                                console.error(error);
+                                const cartItemNum = 0;
+                                sessionStorage.setItem("cartItemNum", cartItemNum.toString());
+                                setCount(cartItemNum);
+                            }
+                        } else {
                             const cartItemNum = 0;
                             sessionStorage.setItem("cartItemNum", cartItemNum.toString());
                             setCount(cartItemNum);
                         }
                     } else {
-                        const cartItemNum = 0;
-                        sessionStorage.setItem("cartItemNum", cartItemNum.toString());
-                        setCount(cartItemNum);
+                        // Retrieve count from session storage
+                        setCount(parseInt(sessionStorage.getItem("cartItemNum")));
                     }
-                } else {
-                    // Retrieve count from session storage
-                    setCount(parseInt(sessionStorage.getItem("cartItemNum")));
                 }
-            }
-        };
-
+            };
+        }
         initCartItemNum();
     }, []);
 
@@ -95,6 +96,10 @@ const NavBar = () => {
 
     const [selectedGender, setSelectedGender] = useState(null);
     const [selectedType, setSelectedType] = useState(null);
+    const [setSelectedOccasion] = useState(null);
+    const [setSelectedCollection] = useState(null);
+    const [products, setProducts] = useState([]);
+
 
     // Function to decode the JWT
     const decodeToken = (token) => {
@@ -115,6 +120,59 @@ const NavBar = () => {
         }
     };
 
+    const handleFileChange = async (event) => {
+        const selectedFile = event.target.files?.[0];
+        if (selectedFile) {
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await axios.post('http://localhost:5000/api/image_search/query', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                console.log('File upload response:', response.data);
+                sessionStorage.setItem("productList", response.data);
+            } catch (error) {
+                console.error('Error uploading file:', error);
+            }
+            finally {
+                window.location.href = "/rent";
+            }
+        }
+    };
+
+    const handleRentOptionClick = (gender, type) => {
+        // Save the selected gender and type in sessionStorage
+        sessionStorage.setItem("selectedGender", gender); //these r redeclared 
+        sessionStorage.setItem("selectedType", type);
+
+        // Fetch relevant product IDs based on gender and type
+        axios
+            .get('http://localhost:5000/api/product/filter', {
+                params: {
+                    type: selectedType,
+                    gender: selectedGender,
+
+                },
+            })
+            .then((response) => {
+                // Save the product IDs in sessionStorage
+                console.log("handleclick response:", response.data)
+                const productIds = response.data.map((product) => product.id);
+                sessionStorage.setItem("productIds", JSON.stringify(productIds));
+
+                // Navigate to the RentPage
+                window.location.href = "/rent";
+            })
+            .catch((error) => {
+                console.error("Error fetching products:", error);
+            });
+    };
+
     // Function to handle logout
     const handleLogout = () => {
         // Remove the user token from the session storage
@@ -122,6 +180,7 @@ const NavBar = () => {
         // Reload the page to update the Navbar
         window.location.reload();
     };
+
 
     // hamburger menu
     const [menuOpen, setMenuOpen] = useState(false);
@@ -267,37 +326,11 @@ const NavBar = () => {
             });
     };
 
-    const handleFileChange = async (event) => {
-        const selectedFile = event.target.files?.[0];
-        if (selectedFile) {
-
-            const formData = new FormData();
-            formData.append('file', selectedFile);
- 
-            try {
-                const response = await axios.post('http://localhost:5000/api/image_search/query', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-
-                console.log('File upload response:', response.data);
-                sessionStorage.setItem("productList", response.data);
-            } catch (error) {
-                console.error('Error uploading file:', error);
-            }
-            finally {
-                window.location.href = "/rent";
-            }
-        }
-    };
 
     const handleSearchFile = async (searchFile) => { };
 
     const menOptionsArr = [
         "All Products",
-        "New In",
-        "Popular",
         "Tops",
         "Bottoms",
         "Suits",
@@ -306,8 +339,6 @@ const NavBar = () => {
     ];
     const womenOptionsArr = [
         "All Products",
-        "New In",
-        "Popular",
         "Tops",
         "Bottoms",
         "Dresses",
@@ -335,16 +366,12 @@ const NavBar = () => {
     const accDetailsOptionsArr = ["Account Details", "My Rentals", "Logout"];
     const womenFirstCol = [
         "All Products",
-        "New In",
-        "Popular",
         "Tops",
         "Bottoms",
         "Dresses",
         "Jumpsuits & Rompers",
         "Outerwear",
     ];
-    const womenSecCol = ["Suits", "Accessories", "Maternity"];
-
 
     return (
         <nav className="fixed w-full h-16 outline-1 outline-grey outline bg-white px-3 z-50">
@@ -364,153 +391,143 @@ const NavBar = () => {
                             <X size={22} />
                         </div>
                     </div>
-                    <div className="flex-col ">
-                        <ul>
-                            <li className="flex justify-between outline outline-1 rounded-lg py-1 px-2 mb-4 mt-6 w-full">
-                                {/* <Search size={14} className="ml-2 mr-3 self-center"/> */}
+                </div>
+                <div className="flex-col ">
+                    <ul>
+                        <li className="flex justify-between outline outline-1 rounded-lg py-1 px-2 mb-4 mt-6 w-full">
+                            {/* <Search size={14} className="ml-2 mr-3 self-center"/> */}
+                            <input
+                                type="text"
+                                name="search"
+                                placeholder="Search ..."
+                                className="text-xs focus:border-grey focus:border focus:ring-0 border-none"
+                                value={searchQuery}
+                                onChange={handleSearchInputChange}
+                                onKeyDown={(e) => e.key === "Enter" && handleSubmitSearch()}
+                            />
+                            <label className="flex items-center">
+                                <Upload size={15} className="mx-2 hidden sm:inline" />
+                                <Camera size={16} className="mx-2 inline sm:hidden" />
                                 <input
-                                    type="text"
+                                    type="file"
+                                    accept=".jpg, .jpeg, .png, .webp"
                                     name="search"
-                                    placeholder="Search ..."
-                                    className="text-xs focus:border-grey focus:border focus:ring-0 border-none"
-                                    value={searchQuery}
-                                    onChange={handleSearchInputChange}
-                                    onKeyDown={(e) => e.key === "Enter" && handleSubmitSearch()}
+                                    className="hidden"
+                                    onChange={handleFileChange}
                                 />
-                                <label className="flex items-center">
-                                    <Upload size={15} className="mx-2 hidden sm:inline" />
-                                    <Camera size={16} className="mx-2 inline sm:hidden" />
-                                    <input
-                                        type="file"
-                                        accept=".jpg, .jpeg, .png, .webp"
-                                        name="search"
-                                        className="hidden"
-                                        onChange={handleFileChange}
-                                    />
-                                </label>
+                            </label>
+                        </li>
+                        <Link href="/">
+                            <li
+                                onClick={() => setMenuOpen(false)}
+                                className="py-2 cursor-pointer"
+                            >
+                                Home
                             </li>
-                            <Link href="/">
-                                <li
-                                    onClick={() => setMenuOpen(false)}
-                                    className="py-2 cursor-pointer"
-                                >
-                                    Home
+                        </Link>
+                        <Link href="">
+                            <li
+                                onClick={() => setMenuOpen(false)}
+                                className="py-2 cursor-pointer"
+                            >
+                                About
+                            </li>
+                        </Link>
+                        <div className="flex justify-between">
+                            <Link href="/rent">
+                                <li className="py-2">
+                                    <span
+                                        onClick={() => setMenuOpen(false)}
+                                        className="cursor-pointer"
+                                    >
+                                        Rent
+                                    </span>
                                 </li>
                             </Link>
-                            <Link href="">
-                                <li
-                                    onClick={() => setMenuOpen(false)}
-                                    className="py-2 cursor-pointer"
-                                >
-                                    About
-                                </li>
-                            </Link>
+                            <div className="flex items-center">
+                                <Plus
+                                    size={17}
+                                    onClick={handleRentOption}
+                                    className={
+                                        rentOptionOpen
+                                            ? "hidden cursor-pointer"
+                                            : "cursor-pointer"
+                                    }
+                                />
+                                <Dash
+                                    size={16}
+                                    onClick={handleRentOption}
+                                    className={
+                                        rentOptionOpen
+                                            ? "cursor-pointer"
+                                            : "hidden cursor-pointer"
+                                    }
+                                />
+                            </div>
+                        </div>
+
+                        {/* rent option opened */}
+                        <ul className={
+                            rentOptionOpen
+                                ? "block pl-5"
+                                : "hidden"
+                        }>
                             <div className="flex justify-between">
-                                <Link href="/rent">
+                                <Link href="">
                                     <li className="py-2">
-                                        <span
-                                            onClick={() => setMenuOpen(false)}
-                                            className="cursor-pointer"
-                                        >
-                                            Rent
-                                        </span>
+                                        <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Men</span>
                                     </li>
                                 </Link>
                                 <div className="flex items-center">
-                                    <Plus
-                                        size={17}
-                                        onClick={handleRentOption}
-                                        className={
-                                            rentOptionOpen
-                                                ? "hidden cursor-pointer"
-                                                : "cursor-pointer"
-                                        }
-                                    />
-                                    <Dash
-                                        size={16}
-                                        onClick={handleRentOption}
-                                        className={
-                                            rentOptionOpen
-                                                ? "cursor-pointer"
-                                                : "hidden cursor-pointer"
-                                        }
-                                    />
-                                </div>
-                            </div>
-
-                            {/* rent option opened */}
-                            <ul className={
-                                rentOptionOpen
-                                    ? "block pl-5"
-                                    : "hidden"
-                            }>
-                                <div className="flex justify-between">
-                                    <Link href="">
-                                        <li className="py-2">
-                                            <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Men</span>
-                                        </li>
-                                    </Link>
-                                    <div className="flex items-center">
-                                        <Plus size={16} onClick={handleMenOption} className={
-                                            menOptionOpen
-                                                ? "hidden cursor-pointer"
-                                                : "cursor-pointer"
-                                        } />
-                                        <Dash size={16} onClick={handleMenOption} className={
-                                            menOptionOpen
-                                                ? "cursor-pointer"
-                                                : "hidden cursor-pointer"
-                                        } />
-                                    </div>
-                                </div>
-                                <ul className={
-                                    menOptionOpen
-                                        ? "block pl-5"
-                                        : "hidden"
-                                }>
+                                    <Plus size={16} onClick={handleMenOption} className={
+                                        menOptionOpen
+                                            ? "block pl-5"
+                                            : "hidden"
+                                    } />
                                     {menOptionsArr.map((item, index) => (
-                                        <Link href="">
+                                        <Link href={"/rent"}>
                                             <li onClick={() => {
                                                 setMenuOpen(false);
                                                 setSelectedGender("male"); // Set the selected gender (assuming this is for men)
                                                 setSelectedType(item); // Set the selected type
                                                 sessionStorage.setItem("selectedGender", "male"); // Store selected gender in session storage
                                                 sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                                                handleRentOptionClick("male", item);
                                             }} className="py-2 cursor-pointer">
                                                 {item}
                                             </li>
                                         </Link>
                                     ))}
-
-                                </ul>
-                                <div className="flex justify-between">
-                                    <Link href="">
-                                        <li className="py-2">
-                                            <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Women</span>
-                                        </li>
-                                    </Link>
-                                    <div className="flex items-center">
-                                        <Plus size={16} onClick={handleWomenOption} className={
-                                            womenOptionOpen
-                                                ? "hidden cursor-pointer"
-                                                : "cursor-pointer"
-                                        } />
-                                        <Dash size={16} onClick={handleWomenOption} className={
-                                            womenOptionOpen
-                                                ? "cursor-pointer"
-                                                : "hidden cursor-pointer"
-                                        } />
+                                    <div className="flex justify-between">
+                                        <Link href="">
+                                            <li className="py-2">
+                                                <span onClick={() => setMenuOpen(false)} className="cursor-pointer">Women</span>
+                                            </li>
+                                        </Link>
+                                        <div className="flex items-center">
+                                            <Plus size={16} onClick={handleWomenOption} className={
+                                                womenOptionOpen
+                                                    ? "hidden cursor-pointer"
+                                                    : "cursor-pointer"
+                                            } />
+                                            <Dash size={16} onClick={handleWomenOption} className={
+                                                womenOptionOpen
+                                                    ? "cursor-pointer"
+                                                    : "hidden cursor-pointer"
+                                            } />
+                                        </div>
                                     </div>
                                 </div>
                                 <ul className={womenOptionOpen ? "block pl-5" : "hidden"}>
                                     {womenOptionsArr.map((item, index) => (
-                                        <Link href="">
+                                        <Link href={"/rent"}>
                                             <li onClick={() => {
                                                 setMenuOpen(false);
                                                 setSelectedGender("female"); // Set the selected gender (assuming this is for men)
                                                 setSelectedType(item); // Set the selected type
                                                 sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
                                                 sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                                                handleRentOptionClick("male", item);
                                             }} className="py-2 cursor-pointer">
                                                 {item}
                                             </li>
@@ -542,14 +559,29 @@ const NavBar = () => {
                                         : "hidden"
                                 }>
                                     {occasionsOptionsArr.map((item, index) => (
-                                        <Link href="" key={index}>
-                                            <li onClick={() => setMenuOpen(false)}
+                                        <Link href="/rent" key={index}>
+                                            <li onClick={() => {
+                                                setMenuOpen(false);
+                                                sessionStorage.setItem("selectedOccasion", item);
+                                            }}
                                                 className="py-2 cursor-pointer">
                                                 {item}
                                             </li>
                                         </Link>
                                     ))}
 
+                                    {/* {womenOptionsArr.map((item, index) => (
+                                                    <Link href={"/rent"}>
+                                                    <li onClick={() => {
+                                                        setMenuOpen(false);
+                                                        setSelectedGender("female"); // Set the selected gender (assuming this is for men)
+                                                        setSelectedType(item); // Set the selected type
+                                                        sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
+                                                        sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                                                    }} className="py-2 cursor-pointer">
+                                                        {item}
+                                                    </li>
+                                                </Link> */}
                                 </ul>
                                 <div className="flex justify-between">
                                     <Link href="">
@@ -576,16 +608,20 @@ const NavBar = () => {
                                         : "hidden"
                                 }>
                                     {collectionsOptionsArr.map((item, index) => (
-                                        <Link href="" key={index}>
-                                            <li onClick={() => setMenuOpen(false)}
+                                        <Link href="/rent" key={index}>
+                                            <li onClick={() => {
+                                                setMenuOpen(false);
+                                                sessionStorage.setItem("selectedCollections", item);
+                                            }}
                                                 className="py-2 cursor-pointer">
                                                 {item}
                                             </li>
                                         </Link>
                                     ))}
 
+
                                 </ul>
-                            </ul>
+                            </div>
                             <Link href="/wishlist">
                                 <li onClick={() => setMenuOpen(false)}
                                     className="py-2 cursor-pointer">
@@ -649,7 +685,7 @@ const NavBar = () => {
                                 </li>
                             </Link>
                         </ul>
-                    </div>
+                    </ul>
                 </div>
                 <div className="lg:w-1/3">
                     <ul className="hidden lg:flex">
@@ -703,6 +739,7 @@ const NavBar = () => {
                                 />
                             </label>
                         </div>
+
                         <Link href="/wishlist">
                             <Heart className="ml-7" size={15} />
                         </Link>
@@ -720,100 +757,96 @@ const NavBar = () => {
                         </Link>
                         <Link href="/login" className={
                             userToken == null
-                                ? "ml-7"
+                                ? "ml-7 text-sm"
                                 : "hidden"
                         }>
                             Log In
                         </Link>
-                    </ul>
+                    </ul >
+                </div >
+                <div onMouseLeave={() => setRentDropdownOpen(false)} className={
+                    rentDropdownOpen
+                        ? "fixed grid grid-cols-5 w-full right-0 left-0 top-19 h-25 lg-hidden border-t border-b border-grey bg-[#ffffff] px-10 py-7 ease-in duration-500"
+                        : "hidden"
+                }>
+                    <div>
+                        <p className="text-darkgrey py-2">MEN</p>
+                        {menOptionsArr.map((item, index) => (
+                            <Link href={"/rent"} key={index}>
+                                <p onClick={() => {
+                                    setMenuOpen(false);
+                                    setSelectedGender("male"); // Set the selected gender (assuming this is for women)
+                                    setSelectedType(item); // Set the selected type
+                                    sessionStorage.setItem("selectedGender", "male"); // Store selected gender in session storage
+                                    sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                                    handleRentOptionClick("male", item);
+                                }} className="py-1 cursor-pointer">
+                                    {item}
+                                </p>
+                            </Link>
+                        ))}
+                    </div>
+                    <div>
+                        <p className="text-darkgrey py-2">WOMEN</p>
+                        {womenOptionsArr.map((item, index) => (
+                            <Link href={"/rent"} key={index}>
+                                <p
+                                    onClick={() => {
+                                        setMenuOpen(false);
+                                        setSelectedGender("female"); // Set the selected gender (assuming this is for women)
+                                        setSelectedType(item); // Set the selected type
+                                        sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
+                                        sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                                    }}
+                                    className="py-1 cursor-pointer"
+                                >
+                                    {item}
+                                </p>
+                            </Link>
+                        ))}
+                    </div>
+                    <div>
+                        <p className="text-darkgrey py-2">OCCASIONS</p>
+                        {occasionsOptionsArr.map((item, index) => (
+                            <Link href="/rent" key={index}>
+                                <p onClick={() => {
+                                    setMenuOpen(false);
+                                    sessionStorage.setItem("selectedOccasion", item);
+                                }}
+                                    className="py-1 cursor-pointer">
+                                    {item}
+                                </p>
+                            </Link>
+                        ))}
+                    </div>
+                    <div>
+                        <p className="text-darkgrey py-2">COLLECTIONS</p>
+                        {collectionsOptionsArr.map((item, index) => (
+                            <Link href="/rent" key={index}>
+                                <p onClick={() => {
+                                    setMenuOpen(false);
+                                    sessionStorage.setItem("selectedCollection", item);
+                                }}
+                                    className="py-1 cursor-pointer">
+                                    {item}
+                                </p>
+                            </Link>
+                        ))}
+                    </div>
+                </div >
+                <div onMouseLeave={() => setAccOpen(false)} className={
+                    accOpen
+                        ? "fixed right-0 top-19 h-25 lg-hidden border-t border-b border-s border-grey bg-[#ffffff] px-10 py-4 ease-in duration-500"
+                        : "hidden"
+                }>
+                    {accDetailsOptionsArr.map((item, index) => (
+                        <Link href="" key={index}>
+                            <p className="py-1">{item}</p>
+                        </Link>
+                    ))}
                 </div>
             </div>
-            <div onMouseLeave={() => setRentDropdownOpen(false)} className={
-                rentDropdownOpen
-                    ? "fixed grid grid-cols-5 w-full right-0 left-0 top-19 h-25 lg-hidden border-t border-b border-grey bg-[#ffffff] px-10 py-7 ease-in duration-500"
-                    : "hidden"
-            }>
-                <div>
-                    <p className="text-darkgrey py-2">MEN</p>
-                    {/* {menOptionsArr.map((item, index) => (
-                        <Link href="" key={index}>
-                            <p className="py-1">{item}</p>
-                        </Link>
-                    ))} */}
-                    {menOptionsArr.map((item, index) => (
-                        <Link href="/rent" key={index}>
-                            <p onClick={() => {
-                                setMenuOpen(false);
-                                setSelectedGender("male"); // Set the selected gender (assuming this is for women)
-                                setSelectedType(item); // Set the selected type
-                                sessionStorage.setItem("selectedGender", "male"); // Store selected gender in session storage
-                                sessionStorage.setItem("selectedType", item); // Store selected type in session storage
-                            }} className="py-1 cursor-pointer">
-                                {item}
-                            </p>
-                        </Link>
-                    ))}
-                </div>
-                <div>
-                    <p className="text-darkgrey py-2">WOMEN</p>
-                    {/* {womenFirstCol.map((item, index) => (
-                        <Link href="" key={index}>
-                            <p className="py-1">{item}</p>
-                        </Link>
-                    ))} */}
-                    {womenOptionsArr.map((item, index) => (
-                        <Link href="" key={index}>
-                            <p onClick={() => {
-                                setMenuOpen(false);
-                                setSelectedGender("female"); // Set the selected gender (assuming this is for women)
-                                setSelectedType(item); // Set the selected type
-                                sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
-                                sessionStorage.setItem("selectedType", item); // Store selected type in session storage
-                            }} className="py-1 cursor-pointer">
-                                {item}
-                            </p>
-                        </Link>
-                    ))}
-                </div>
-                <div>
-                    <p className="text-white py-2">WHITE TEXT</p>
-                    {womenSecCol.map((item, index) => (
-                        <Link href="" key={index}>
-                            <p className="py-1">{item}</p>
-                        </Link>
-                    ))}
-                </div>
-                <div>
-                    <p className="text-darkgrey py-2">OCCASIONS</p>
-                    {occasionsOptionsArr.map((item, index) => (
-                        <Link href="" key={index}>
-                            <p className="py-1">{item}</p>
-                        </Link>
-                    ))}
-                </div>
-                <div>
-                    <p className="text-darkgrey py-2">COLLECTIONS</p>
-                    {collectionsOptionsArr.map((item, index) => (
-                        <Link href="" key={index}>
-                            <p className="py-1">{item}</p>
-                        </Link>
-                    ))}
-                </div>
-            </div>
-            <div onMouseLeave={() => setAccOpen(false)} className={
-                accOpen
-                    ? "fixed right-0 top-19 h-25 lg-hidden border-t border-b border-s border-grey bg-[#ffffff] px-10 py-4 ease-in duration-500"
-                    : "hidden"
-            }>
-                {accDetailsOptionsArr.map((item, index) => (
-                    <Link href="" key={index}>
-                        <p className="py-1">{item}</p>
-                    </Link>
-                ))}
-            </div>
-        </nav>
+        </nav >
     )
-
 }
-
 export default NavBar

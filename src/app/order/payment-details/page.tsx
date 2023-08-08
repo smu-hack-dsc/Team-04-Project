@@ -6,6 +6,7 @@ import Image from "next/image";
 import PaymentLogo from "@/app/_components/PaymentLogo";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { toast, Toaster } from "react-hot-toast";
 declare global {
   interface Window {
     paypal: any;
@@ -140,13 +141,15 @@ const Page = () => {
               // Payment was successful
               const responseData = await response.json();
               console.log("payment response:", responseData);
-              // if (typeof window !== "undefined") {
-              //   window.location.href = "/signup/address";
-              // }
+              toast.success("Payment successful!")
+              if (typeof window !== "undefined") {
+                window.location.href = "/order/confirmation";
+              }
             } else {
               // Handle error response from the server
               const errorData = await response.json();
               console.error("Error:", errorData);
+              toast.error("Payment unsuccessful!")
             }
           } catch (error) {
             console.error("Error:", error);
@@ -232,9 +235,8 @@ const Page = () => {
       .render("#paypal-button-container");
   };
   return (
-
     <div className="py-16 px-8">
-
+      <Toaster />
       {/* Progress bar */}
       <div className="flex flex-rows justify-center my-10 mx-6 text-xs sm:text-base">
         <div>Cart</div>
@@ -334,8 +336,7 @@ const Page = () => {
                 </div>
               )}
 
-
-              <div className="flex flex-row justify-between mt-5">
+              {/* <div className="flex flex-row justify-between mt-5">
                 <div>
                 <input
                   type="radio"
@@ -391,8 +392,8 @@ const Page = () => {
                 </div>
                 <div className="flex">
                   <PaymentLogo imageUrl="/images/StripeLogo.jpg" bgColour="#6772e5"/>
-                </div>
-              </div>
+                </div> */}
+              {/* </div> */}
             </div>
           </div>
         </div>

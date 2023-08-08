@@ -3,6 +3,7 @@ import { HeartFill, Heart } from "react-bootstrap-icons";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Skeleton } from 'antd';
+import { Link } from 'react-router-dom';
 
 type BrowsingCardProps = {
   productId: number; // Add the product ID prop to identify the specific product
@@ -42,17 +43,24 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
     // Handle loading state while waiting for the data to be fetched
     return <Skeleton active />;
   }
+  const navigateToProductPage = () => {
+    sessionStorage.setItem("selectedProductId", productId.toString());
+
+    // Redirect to the product page
+    window.location.href = "/product"; 
+  }
 
   return (
     <div className="mb-10 "> {/* Always show the card */}
-      <div className="w-full bg-gray-200 group-hover:opacity-75">
-        {/* Use the first image from the imageUrls array */}
-        {product.image_url.length > 0 && (
-          <img src={product.image_url[0]} className=" w-full h-auto md:w-full h-[21rem] object-center" alt="" />
-        )}
-      </div>
+      <a href="/product">
+        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
+          {product.image_url.length > 0 && (
+            <img src={product.image_url[0]} className="w-full h-auto md:w-full h-[21rem]w-full object-cover object-center lg:h-full lg:w-full" alt="" onClick={navigateToProductPage} />
+          )}
+        </div>
+      </a>
       <div className="mt-4 flex justify-between">
-        <div>
+        <div className="h-[10rem]">
           <h3 className="mb-1 font-semibold uppercase">
             <a href="#">
               <span aria-hidden="true" className="" />

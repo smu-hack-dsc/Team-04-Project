@@ -181,8 +181,8 @@ const AddressPage = () => {
         </div>
       </div>
 
-      <div className="flex flex-cols justify-center">
-        <Link href="/signup/personal-particulars">
+      <div className="flex flex-cols justify-center ">
+        <Link href="/signup/personal-particulars" className="m-4">
           <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black bg-black text-white">
             <div className="uppercase flex items-center justify-center">
               Back

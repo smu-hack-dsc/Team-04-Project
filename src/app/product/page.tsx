@@ -35,7 +35,7 @@ const ProductPage: React.FC = () => {
   const notify = () => toast('Here is your toast.');
   // Convert Moment to Dayjs before setting the selectedDate state
   const handleDateChange = (date: Moment | null) => {
-    setSelectedDate(date ? moment(date) : null);
+    setSelectedDate(date);
   };
   const rentalPeriodOptions = [
     { label: '4 Days', days: 4 },
@@ -53,11 +53,12 @@ const ProductPage: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<number | null>(null);
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
-  const [selectedRentalPeriod, setSelectedRentalPeriod] = useState<number | null>(null);
+  const [selectedRentalPeriod, setSelectedRentalPeriod] = useState<number | null>(0);
   const [addToCartSelected, setAddToCartSelected] = useState<boolean>(false);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
+  const [recommendedSize, setRecommendedSize] = useState("")
 
 
 
@@ -66,10 +67,13 @@ const ProductPage: React.FC = () => {
     };
 
   useEffect(() => {
-    const productId = 5; // Replace 1 with the ID of the product you want to display
+      // Retrieve the selected product ID from sessionStorage
+      const productId = sessionStorage.getItem("selectedProductId");
+      const productIdInt = parseInt(productId, 10);
+      console.log("Product ID:", productId);
 
     // Fetch product details from the backend using the specific product ID
-    axios.get(`http://localhost:5000/api/product/${productId}/`)
+    axios.get(`http://localhost:5000/api/product/${productIdInt}/`)
       .then((response) => {
         setProduct(response.data); // Update the product state with the data from the backend
         setLoading(false); // Set loading to false once the data is fetched
@@ -79,25 +83,35 @@ const ProductPage: React.FC = () => {
         setLoading(false); // Set loading to false in case of an error
       });
 
-      // Fetch product availability data from the backend using the specific product ID
-    axios
-    .get(`http://localhost:5000/api/product_availability/${productId}/`)
-    .then((response) => {
-      const availabilityData: AvailabilityData[] = response.data.map((availability: any) => ({
-        ...availability,
-        date: new Date(availability.date), // Parse the date string into a Date object
-      }));
-      setAvailabilityData(availabilityData);
-      // Get the dates that are booked (is_booked: true)
-      const bookedDates = availabilityData.filter((availability) => availability.is_booked);
-      // Extract the Date objects of booked dates
-      const bookedDateObjects = bookedDates.map((availability) => availability.date);
-      setAvailabilityDates(bookedDateObjects);
-    })
-    .catch((error) => {
-      console.error('Error fetching product availability:', error);
-    });
-  }, []);
+      axios
+      .get(`http://localhost:5000/api/product_availability/${productIdInt}/`)
+      .then((response) => {
+        const availabilityData: AvailabilityData[] = response.data.map((availability: any) => ({
+          ...availability,
+          date: new Date(availability.date), // Parse the date string into a Date object
+        }));
+        setAvailabilityData(availabilityData);
+        // Get the dates that are booked (is_booked: true)
+        const bookedDates = availabilityData.filter((availability) => availability.is_booked);
+        // Extract the Date objects of booked dates
+        const bookedDateObjects = bookedDates.map((availability) => availability.date);
+        setAvailabilityDates(bookedDateObjects);
+  
+        // Calculate the initial return date if both selectedDate and selectedRentalPeriod are not null
+        if (selectedDate && selectedRentalPeriod !== null) {
+          const selectedRentalPeriodDays = rentalPeriodOptions[selectedRentalPeriod].days;
+          const newReturnDate = selectedDate.clone().add(selectedRentalPeriodDays, 'days');
+          console.log("Return date:", newReturnDate);
+          setReturnDate(newReturnDate);
+        } else {
+          // Handle the case where either selectedDate or selectedRentalPeriod is null
+          setReturnDate(null); // or set a default value if desired
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching product availability:', error);
+      });
+  }, [selectedDate, selectedRentalPeriod]);
 
   const isDateBooked = (date: Date): boolean => {
     const dateString = date.toISOString().split('T')[0]; // Convert date to string in the format 'YYYY-MM-DD'
@@ -115,12 +129,31 @@ const ProductPage: React.FC = () => {
       const images = Object.values(product.image_url);
       setSelectedImage(images[0]);
     }
+
+    //size recommender 
+    if(product){
+      const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+      const userId = sessionStorage.getItem("userId");
+      if (token == null){
+        setRecommendedSize("Log in to find out")
+      } else {
+        axios.get("http://localhost:5000/api/size_recommender/" + userId + "/" + product["brand"] + "/" + product["category"])
+        .then((response) => {
+          setRecommendedSize(response.data["size_recommendation"])
+        })
+        .catch((error) => {
+          console.error('Error fetching product:', error);
+          setLoading(false); // Set loading to false in case of an error
+        });
+      }
+    }
   }, [product]);
 
   useEffect(() => {
     if (selectedDate && selectedRentalPeriod !== null) {
       const selectedRentalPeriodDays = rentalPeriodOptions[selectedRentalPeriod].days;
       const newReturnDate = selectedDate.clone().add(selectedRentalPeriodDays, 'days');
+      console.log("Return date:",newReturnDate)
       setReturnDate(newReturnDate);
     }
   }, [selectedDate, selectedRentalPeriod]);
@@ -131,6 +164,10 @@ const ProductPage: React.FC = () => {
   if (loading) {
     return <Skeleton active />;
   }
+
+  
+
+  
   return (
 
 <section className="py-12 sm:py-16"> 
@@ -171,9 +208,9 @@ const ProductPage: React.FC = () => {
 
     <div className="lg:col-span-2 lg:row-span-2 lg:row-end-2">
       <h1 className="sm: text-2xl text-gray-900 sm:text-3xl uppercase">{product?.product_name}</h1>
-
+      <div className='text-lg text-darkgrey'>{product?.brand}</div>
       <div className="my-2 flex items-center">
-        <p className="text-xl font-medium text-gray-500">{product?.price} SGD</p>
+        <p className="text-lg font-medium text-gray-500">{product?.price} SGD</p>
       </div>
 
       <hr className="mt-3"></hr>
@@ -224,9 +261,17 @@ const ProductPage: React.FC = () => {
           )}
       </div>
 
-      <h2 className="mt-4 text-base text-gray-900">Size:</h2>
-      <span className="">Recommended Size:</span>
-
+      <div className='flex justify-between mt-4'>
+      <h2 className="text-base text-gray-900">Size:</h2>
+      <span>
+        <button
+          className="underline cursor-pointer"
+          onClick={toggleSizeChart}
+        >
+          Size Chart
+        </button>
+      </span>
+      </div>
       <div className="mt-3 flex select-none flex-wrap items-center gap-1 justify-between">
       {Array.isArray(sizes)
     ? sizes.map((sizeName, index) => (
@@ -255,15 +300,9 @@ const ProductPage: React.FC = () => {
       </button>
     )
   }
-  <span>
-  <button
-          className="underline cursor-pointer"
-          onClick={toggleSizeChart}
-        >
-          Size Chart
-        </button>
-  </span>
+
       </div>
+      <div className="my-3 text-sm">Your Recommended Size: <span className="italic">{recommendedSize} </span></div>
       <Dialog open={isSizeChartOpen} onClose={toggleSizeChart}>
         <div className="fixed inset-0 z-10 overflow-y-auto">
           <div className="flex items-center justify-center min-h-screen">
@@ -278,7 +317,7 @@ const ProductPage: React.FC = () => {
                 )}
               </div>
               <div className="mt-4 text-right">
-                <button className="text-blue-600 underline" onClick={toggleSizeChart}>
+                <button className="text-black underline" onClick={toggleSizeChart}>
                   Close
                 </button>
               </div>
@@ -305,19 +344,19 @@ const ProductPage: React.FC = () => {
       </div>
 
       <h2 className="mt-4 text-base text-gray-900">Delivery:</h2>
-      <div className="mt-3 flex flex-wrap items-center gap-1">
-      <DatePicker
-          className="border-black border-[1px]"
-          selected={selectedDate ? moment(selectedDate) : null}
-          onChange={handleDateChange}
-          disabledDate={(current) => {
-            // Disable dates where product is alr booked
-            return (
-              current &&
-              (current < moment() || isDateBooked(current.toDate())) // Convert Dayjs to Date
-            );
-          }}
-        />
+      <div className="mt-3 flex  items-center gap-1 border border-1 border-black w-[150px]">
+        <DatePicker
+            selected={selectedDate ? moment(selectedDate) : null}
+            bordered={false}
+            onChange={handleDateChange}
+            disabledDate={(current) => {
+              // Disable dates where product is alr booked
+              return (
+                current &&
+                (current < moment() || isDateBooked(current.toDate())) // Convert Dayjs to Date
+              );
+            }}
+          />
       </div>
 
       <h2 className="mt-4 text-base text-gray-900">Return Date:</h2>
@@ -351,30 +390,6 @@ const ProductPage: React.FC = () => {
   </div>
 </div>
 
-<hr></hr>
-<div className="flex justify-center mt-4">
-  <div className="text-center text-xl">Complete your look</div>
-</div>
-
-  <div className="mx-auto py-8 max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-      <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">
-        {/* Render the Skeleton when loading is true */}
-        {loading ? (
-          <>
-            <Skeleton active />
-            <Skeleton active />
-            <Skeleton active />
-          </>
-        ) : (
-          // Render the actual cards when loading is false
-          Array.from({ length: similarItemCount }).map((_, index) => (
-            <div key={index} className="">
-              {product && <BrowsingCard productId={product.product_id} />}
-            </div>
-          ))
-        )}
-      </div>
-    </div>
 </section>
   );
 };
