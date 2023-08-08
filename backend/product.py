@@ -50,13 +50,13 @@ def get_product(product_id):
 # case sensitive, look at db
 def get_filtered_products():
     try:
-        brands = request.args.getlist("brand[]")
-        sizes = request.args.getlist("size[]")
-        colours = request.args.getlist("colour[]")
-        types = request.args.getlist("type[]")
-        gender = request.args.getlist('gender[]')
+        brands = request.args.getlist("brand")
+        sizes = request.args.getlist("size")
+        colours = request.args.getlist("colour")
+        types = request.args.getlist("type")
+        gender = request.args.getlist('gender')
         price_min = float(request.args.get("price_min", 0))
-        price_max = float(request.args.get("price_max", 0))
+        price_max = float(request.args.get("price_max", 100000))
 
         print(brands)
         print(sizes)
@@ -72,7 +72,7 @@ def get_filtered_products():
         if colours:
             sql_query += " AND colour IN %s"
             params.append(tuple(colours))
-        if types:
+        if types and types[0] != "All Products":
             sql_query += " AND type IN %s"
             params.append(tuple(types))
         if gender:
@@ -84,6 +84,7 @@ def get_filtered_products():
         params.append(price_max)
 
         print(sql_query)
+        print(params)
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 cursor.execute(sql_query, params)

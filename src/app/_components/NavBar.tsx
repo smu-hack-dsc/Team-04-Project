@@ -141,26 +141,26 @@ const NavBar = () => {
   };
 
   const handleRentOptionClick = (gender, type) => {
-    // Save the selected gender and type in sessionStorage
-    sessionStorage.setItem("selectedGender", gender); //these r redeclared
-    sessionStorage.setItem("selectedType", type);
 
     // Fetch relevant product IDs based on gender and type
+    const url =
+      "http://localhost:5000/api/product/filter?type=" +
+      type +
+      "&gender=" +
+      gender;
     axios
-      .get("http://localhost:5000/api/product/filter", {
-        params: {
-          type: selectedType,
-          gender: selectedGender,
-        },
-      })
+      .get(url)
       .then((response) => {
         // Save the product IDs in sessionStorage
         console.log("handleclick response:", response.data);
-        const productIds = response.data.map((product) => product.id);
+        const productIds = response.data.products.map(
+          (product) => product.product_id
+        );
+        console.log(productIds);
         sessionStorage.setItem("productIds", JSON.stringify(productIds));
 
         // Navigate to the RentPage
-        window.location.href = "/rent";
+        // window.location.href = "/rent";
       })
       .catch((error) => {
         console.error("Error fetching products:", error);
@@ -498,11 +498,11 @@ const NavBar = () => {
                       <li
                         onClick={() => {
                           setMenuOpen(false);
-                          setSelectedGender("female"); // Set the selected gender (assuming this is for men)
+                          setSelectedGender("female"); // Set the selected gender
                           setSelectedType(item); // Set the selected type
                           sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
                           sessionStorage.setItem("selectedType", item); // Store selected type in session storage
-                          handleRentOptionClick("male", item);
+                          handleRentOptionClick("female", item);
                         }}
                         className="py-2 cursor-pointer"
                       >
@@ -826,6 +826,7 @@ const NavBar = () => {
                   setSelectedType(item); // Set the selected type
                   sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
                   sessionStorage.setItem("selectedType", item); // Store selected type in session storage
+                  handleRentOptionClick("female", item);
                 }}
                 className="py-1 cursor-pointer"
               >

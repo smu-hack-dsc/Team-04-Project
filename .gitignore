@@ -80,3 +80,4 @@ jspm_packages
 .node_repl_history
 .next
 node_modules
+*.pyc
