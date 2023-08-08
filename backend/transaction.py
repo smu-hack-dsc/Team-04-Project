@@ -8,13 +8,27 @@ def create_transaction():
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
                 
-                transaction_date = request.args.get("transaction_date")
-                user_id = request.args.get("user_id")
-                payment_method = request.args.get("payment_method")
-                payment_amount = request.args.get("payment_amount")
-                payment_id = request.args.get("payment_id")
+                data = request.json  # Parse JSON data from the request body
 
-                cursor.execute('INSERT INTO tothecloset."transaction" ' "(transaction_date, user_id, payment_method, payment_amount, payment_id) " "VALUES (%s, %s, %s, %s, %s) RETURNING transaction_id", (user_id, transaction_date, payment_id, payment_method, payment_amount))
+                transaction_date = data.get("transaction_date")
+                user_id = data.get("user_id")
+                payment_method = data.get("payment_method")
+                payment_amount = data.get("payment_amount")
+                payment_id = data.get("payment_id")
+
+                print("Values received:")
+                print("transaction_date:", transaction_date)
+                print("user_id:", user_id)
+                print("payment_method:", payment_method)
+                print("payment_amount:", payment_amount)
+                print("payment_id:", payment_id)
+
+                cursor.execute(
+                'INSERT INTO tothecloset."transaction" ' +
+                '(transaction_date, user_id, payment_method, payment_amount, payment_id) ' +
+                'VALUES (%s, %s, %s, %s, %s) RETURNING transaction_id',
+                [transaction_date, user_id, payment_method, payment_amount, payment_id]
+                )
 
                 new_transaction_id = cursor.fetchone()[0]
 

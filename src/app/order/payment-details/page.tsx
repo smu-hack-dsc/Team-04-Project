@@ -154,8 +154,9 @@ const Page = () => {
               transaction_date: new Date().toISOString(),
               payment_method: "Credit Card",
               payment_amount: total,
-              payment_id: responseData.payment_id, // Replace with the actual field name in the response
+              payment_id: parseInt(responseData['0'].payment_id), // Replace with the actual field name in the response
             };
+            console.log("transaction data:", transactionData)
 
             try {
               const transactionResponse = await axios.post(
@@ -164,16 +165,18 @@ const Page = () => {
               );
 
               if (transactionResponse.status === 201) {
-                const transactionId = transactionResponse['transactonId']
+                const transactionId = transactionResponse.data.transaction_id; // Use 'transaction_id' as the correct field name
                 console.log("Transaction created:", transactionResponse.data);
+                console.log("Transaction ID:", transactionId); // Log the transaction ID
 
-                const createDelivery = async (userId) => {
+                  const createDelivery = async (userId) => {
                   const deliveryData = {
                     address_id: 35, // Replace with the actual address ID
                     delivery_date: new Date().toISOString(),
                     delivery_status: 'pending', // Replace with the desired status
                     user_id: userId,
                   };
+              
                 
                   try {
                     const response = await axios.post('http://localhost:5000/api/delivery', deliveryData);
@@ -220,6 +223,7 @@ const Page = () => {
                       console.error('Error creating delivery:', error);
                     }
                   };
+                
               } else {
                 console.error("Failed to create transaction:", transactionResponse.data);
                 toast.error("Payment successful, but transaction creation failed.");
