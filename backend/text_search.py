@@ -1,3 +1,4 @@
+from flask import jsonify, request
 import openai
 import re
 import os

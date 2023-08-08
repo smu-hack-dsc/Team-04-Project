@@ -156,7 +156,6 @@ const RentPage: NextPage = () => {
       }
     };
   };
-
   const initialCheckboxState = filtersOptions.reduce((acc, option) => {
     acc[option.id] = {
       options: option.options.reduce((subAcc, subOption) => {
@@ -211,8 +210,16 @@ const RentPage: NextPage = () => {
   }
 
   const gridClass = `grid grid-cols-${cols} gap-3 md:grid-cols-${mdColumns}`;
-
-  const [filteredProducts, setFilteredProductsArr] = useState([]);
+  let storedSearchedProducts = JSON.parse(sessionStorage.getItem('searchedProducts'));
+  if (!storedSearchedProducts) {
+    storedSearchedProducts = [];
+  }
+  if (storedSearchedProducts.length > 0) {
+    sessionStorage.removeItem('searchedProducts');
+  }
+  // console.log("STORED RENT " + storedSearchedProducts)
+  const [filteredProducts, setFilteredProductsArr] = useState(storedSearchedProducts);
+  // console.log("FILTERED " + filteredProducts)
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(Number.MAX_SAFE_INTEGER);
   const [selectedSortOption, setSelectedSortOption] = useState(sortOptions[0]); // Initialize with the default sort option
@@ -224,73 +231,61 @@ const RentPage: NextPage = () => {
   }, [selectedSortOption]);
 
   const fetchFilteredProducts = (checkboxState) => {
-    const selectedColours = Object.keys(checkboxState.colour.options).filter(
-      (colour) => checkboxState.colour.options[colour]
-    );
-    const selectedBrands = Object.keys(checkboxState.brand.options).filter(
-      (brand) => checkboxState.brand.options[brand]
-    );
-    const selectedSizes = Object.keys(checkboxState.size.options).filter(
-      (size) => checkboxState.size.options[size]
-    );
-    const selectedTypes = Object.keys(checkboxState.type.options).filter(
-      (type) => checkboxState.type.options[type]
-    );
-    const selectedGender = Object.keys(checkboxState.gender.options).filter(
-      (gender) => checkboxState.gender.options[gender]
-    );
-    axios
-      .get("http://localhost:5000/api/product/filter", {
-        params: {
-          brand: selectedBrands,
-          size: selectedSizes,
-          colour: selectedColours,
-          type: selectedTypes,
-          gender: selectedGender,
-          price_min: priceMin,
-          price_max: priceMax,
-        },
-      })
-      .then((response) => {
-        if (response.data.products && response.data.products.length > 0) {
-          const filteredProductIds = response.data.products.map(
-            (item) => item.product_id
-          );
+    if (storedSearchedProducts.length > 0) {
+      setFilteredProductsArr(storedSearchedProducts)
+    }
+    else {
+      const selectedColours = Object.keys(checkboxState.colour.options).filter((colour) => checkboxState.colour.options[colour]);
+      const selectedBrands = Object.keys(checkboxState.brand.options).filter((brand) => checkboxState.brand.options[brand]);
+      const selectedSizes = Object.keys(checkboxState.size.options).filter((size) => checkboxState.size.options[size]);
+      const selectedTypes = Object.keys(checkboxState.type.options).filter((type) => checkboxState.type.options[type]);
+      const selectedGender = Object.keys(checkboxState.gender.options).filter((gender) => checkboxState.gender.options[gender]);
+      axios
+        .get('http://localhost:5000/api/product/filter', {
+          params: {
+            brand: selectedBrands,
+            size: selectedSizes,
+            colour: selectedColours,
+            type: selectedTypes,
+            gender: selectedGender,
+            price_min: priceMin,
+            price_max: priceMax,
+          },
+        })
+        .then((response) => {
+          if (response.data.products && response.data.products.length > 0) {
+            const filteredProductIds = response.data.products.map((item) => item.product_id);
 
-          // Sort the products based on the selected sort option
-          const sortedFilteredProductIds = filteredProductIds.slice();
-          if (selectedSortOption.name === "Price: Low to High") {
-            sortedFilteredProductIds.sort((a, b) => {
-              const productA = response.data.products.find(
-                (item) => item.product_id === a
-              );
-              const productB = response.data.products.find(
-                (item) => item.product_id === b
-              );
-              return productA.price - productB.price;
-            });
-          } else if (selectedSortOption.name === "Price: High to Low") {
-            sortedFilteredProductIds.sort((a, b) => {
-              const productA = response.data.products.find(
-                (item) => item.product_id === a
-              );
-              const productB = response.data.products.find(
-                (item) => item.product_id === b
-              );
-              return productB.price - productA.price;
-            });
+            // Sort the products based on the selected sort option
+            const sortedFilteredProductIds = filteredProductIds.slice();
+            if (selectedSortOption.name === 'Price: Low to High') {
+              sortedFilteredProductIds.sort((a, b) => {
+                const productA = response.data.products.find((item) => item.product_id === a);
+                const productB = response.data.products.find((item) => item.product_id === b);
+                return productA.price - productB.price;
+              });
+            } else if (selectedSortOption.name === 'Price: High to Low') {
+              sortedFilteredProductIds.sort((a, b) => {
+                const productA = response.data.products.find((item) => item.product_id === a);
+                const productB = response.data.products.find((item) => item.product_id === b);
+                return productB.price - productA.price;
+              });
+            }
+
+            setFilteredProductsArr(sortedFilteredProductIds);
+           
+          } else {
+            setFilteredProductsArr([]); // Empty array if there is no data
           }
 
-          setFilteredProductsArr(sortedFilteredProductIds);
-        } else {
-          setFilteredProductsArr([]); // Empty array if there is no data
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-        setFilteredProductsArr([]); // Empty array if there is an error
-      });
+        })
+        .catch((error) => {
+          console.error('Error fetching products:', error);
+          setFilteredProductsArr([]); // Empty array if there is an error
+        });
+    }
   };
+
 
   return (
     <section>
@@ -492,6 +487,7 @@ const RentPage: NextPage = () => {
                                                     );
                                                     debouncedPerformFilterRequest(); // Call the debounced function after setting the state
                                                   }}
+
                                                 />
                                               </label>
                                             </div>
@@ -523,9 +519,11 @@ const RentPage: NextPage = () => {
           </div>
         </div>
         <div className={gridClass}>
-          {filteredProducts.map((item, index) => (
-            <BrowsingCard key={index} productId={filteredProducts[index]} />
-          ))}
+          {filteredProducts.map((productId, index) => {
+            return (
+              <BrowsingCard key={index} productId={productId} />
+            );
+          })}
         </div>
       </div>
     </section>

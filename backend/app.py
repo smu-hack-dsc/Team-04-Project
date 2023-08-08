@@ -3,7 +3,8 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 import psycopg2
-
+import openai
+import re
 
 # Load environment variables from .env file
 load_dotenv()
@@ -36,7 +37,7 @@ from transaction import *
 from user import *
 from wishlist import *
 from size_recommender import *
-# from text_search import *
+from text_search import *
 # from image_search import *
 from db_config import *
 
