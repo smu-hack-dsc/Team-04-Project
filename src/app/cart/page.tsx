@@ -5,6 +5,7 @@ import Link from "next/link";
 import CartItemSmViewport from "../_components/CartItemSmViewport";
 import { CheckCircleFill } from "react-bootstrap-icons";
 import axios from "axios";
+import jwt from "jsonwebtoken"
 
 export default function Page() {
 
@@ -65,6 +66,14 @@ export default function Page() {
         //get product details
         for (const item of response.data) {
           const productId = item["product_id"];
+          const rental_start = item["rental_start"];
+          const rental_period = item["rental_period"];
+          const rental_end = item["rental_end"]
+          sessionStorage.setItem("productId", productId)
+          sessionStorage.setItem("rental_start", rental_start)
+          sessionStorage.setItem("rental_period", rental_period)
+          sessionStorage.setItem("rental_end", rental_end)
+          
           console.log(productId);
           try {
             const response = await axios.get(
