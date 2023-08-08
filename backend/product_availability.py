@@ -7,7 +7,7 @@ def get_product_availability_from_product_id(product_id):
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute('SELECT * FROM tothecloset."product_availability"' "WHERE product_id = %s", (product_id))
+                cursor.execute('SELECT * FROM tothecloset."product_availability" WHERE product_id = %s', (product_id,))
 
                 rows = cursor.fetchall()
 

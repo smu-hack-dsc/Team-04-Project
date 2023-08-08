@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import type { NextPage } from "next";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -41,7 +41,7 @@ const WishlistLoggedIn: NextPage = () => {
         if (!wishlistItems.product_id) {
           return; // If the product_id array is not available, do not make the API call
         }
-  
+
         // Loop through each product_id in the array and fetch product details
         const productPromises = wishlistItems.product_id.map((productId) =>
           axios.get<Product>(`http://localhost:5000/api/product/${productId}/`)
@@ -53,13 +53,15 @@ const WishlistLoggedIn: NextPage = () => {
         console.error("Error fetching product details:", error);
       }
     };
-  
+
     fetchProductDetails();
   }, [wishlistItems]);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-16 sm:py-24 lg:max-w-7xl">
-      <h1 className="text-2xl uppercase tracking-[2.4px] mb-10 mt-5">Wish List</h1>
+      <h1 className="text-2xl uppercase tracking-[2.4px] mb-10 mt-5">
+        Wish List
+      </h1>
       <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:gap-x-8">
         {products.map((product) => (
           <div key={product.id} className="">

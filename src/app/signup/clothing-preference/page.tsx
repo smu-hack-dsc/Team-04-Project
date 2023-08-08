@@ -117,11 +117,11 @@ const AddressPage = () => {
         "&password=" +
         sessionStorage.getItem("password");
 
-        const response = await axios.post(particularsurl);
-        const particulars = response.data;
-        console.log("Particulars", particulars);
-        const userid = particulars.user_id;
-        const token = particulars.token;
+      const response = await axios.post(particularsurl);
+      const particulars = response.data;
+      console.log("Particulars", particulars);
+      const userid = particulars.user_id;
+      const token = particulars.token;
 
       const addressurl =
         "http://localhost:5000/api/address?user_id=" +
@@ -163,18 +163,17 @@ const AddressPage = () => {
 
       const clothing = await axios.post(clothingurl);
       console.log("Clothing " + clothing);
-      
+
       // Store the token in sessionStorage
-      sessionStorage.setItem("userId", userid)
+      sessionStorage.setItem("userId", userid);
       sessionStorage.setItem("token", token.toString());
 
       toast.success("You have successfully registered!");
 
       window.location.href = "/";
-    } 
-      catch (error) {
-        console.error(error);
-        toast.error;
+    } catch (error) {
+      console.error(error);
+      toast.error;
     }
   };
 
