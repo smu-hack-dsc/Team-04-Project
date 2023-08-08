@@ -141,13 +141,15 @@ const NavBar = () => {
   };
 
   const handleRentOptionClick = (gender, type) => {
-
-    // Fetch relevant product IDs based on gender and type
+    // Save the selected gender and type in sessionStorage
+    sessionStorage.setItem("selectedGender", gender); //these r redeclared
+    sessionStorage.setItem("selectedType", type);
     const url =
       "http://localhost:5000/api/product/filter?type=" +
       type +
       "&gender=" +
       gender;
+    // Fetch relevant product IDs based on gender and type
     axios
       .get(url)
       .then((response) => {
@@ -160,7 +162,7 @@ const NavBar = () => {
         sessionStorage.setItem("productIds", JSON.stringify(productIds));
 
         // Navigate to the RentPage
-        // window.location.href = "/rent";
+        window.location.href = "/rent";
       })
       .catch((error) => {
         console.error("Error fetching products:", error);
@@ -223,53 +225,105 @@ const NavBar = () => {
     setRentDropdownOpen(!rentDropdownOpen);
   };
 
-  // search
-  const [searchOpen, setSearchOpen] = useState(false);
-  const handleSearch = () => {
-    setSearchOpen(!searchOpen);
-  };
-
   // account
   const [accOpen, setAccOpen] = useState(false);
   const handleAcc = () => {
     setAccOpen(!accOpen);
   };
 
-  const handleSubmitSearch = async (event) => {
-    if (event.key === "Enter") {
-      const searchText = document.getElementById(
-        "searchText"
-      ) as HTMLInputElement;
-      const searchFile = document.getElementById(
-        "searchFile"
-      ) as HTMLInputElement;
+  // search
+  const [searchOpen, setSearchOpen] = useState(false);
+  const handleSearch = () => {
+    setSearchOpen(!searchOpen);
+  };
 
-      console.log(searchText);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const handleSearchInputChange = (e) => {
+    setSearchQuery(e.target.value);
+    // console.log("INPUT" + e.target.value);
+  };
 
-      searchText
-        ? handleSearchText(searchText.value)
-        : handleSearchFile(searchFile.value);
+  const handleSubmitSearch = async () => {
+    // console.log("SEARCH QUERY  " + searchQuery);
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/text_search/" + searchQuery
+      );
+
+      // Check if the response data is not empty or null
+      if (response.data) {
+        const jsonData = response.data;
+        setSearchText(jsonData);
+        handleSearchText(jsonData); // Now you can pass jsonData to the function
+        // console.log("OPENAI " + jsonData);
+      } else {
+        console.error("Empty or invalid JSON response.");
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
 
   const handleSearchText = async (searchText) => {
-    const texturl =
-      'http://127.0.0.1:5000/api/text_search/"' + searchText + '"';
-    const categoryArr = await axios.get(texturl);
-    const colorArr = categoryArr.data[0];
-    const typeArr = categoryArr.data[1];
-    const brandArr = categoryArr.data[2];
+    try {
+      var colors = searchText[0];
+      var types = searchText[1];
+      var brands = searchText[2];
+      if (colors.length === 1 && colors[0] === "N/A") {
+        colors = [];
+      }
+      if (types.length === 1 && types[0] === "N/A") {
+        types = [];
+      }
+      if (brands.length === 1 && brands[0] === "N/A") {
+        brands = [];
+      }
 
-    const filterProductUrl =
-      "http://127.0.0.1:5000/api/product/filter?brand=" +
-      brandArr +
-      "&colour=" +
-      colorArr +
-      "&type=" +
-      typeArr +
-      "&size=M&price_min=0&price_max=999999";
+      fetchSearchedProducts(colors, types, brands);
 
-    const filteredProduct = await axios.get(filterProductUrl);
+      // console.log("Colors:", colors);
+      // console.log("Clothing Types:", types);
+      // console.log("Brands:", brands);
+    } catch (error) {
+      console.error("Error parsing data:", error);
+    }
+  };
+
+  const [searchProductsArr, setSearchedProducts] = useState();
+
+  const fetchSearchedProducts = (colors, types, brands) => {
+    axios
+      .get("http://localhost:5000/api/product/filter", {
+        params: {
+          brand: brands,
+          // size: selectedSizes,
+          colour: colors,
+          type: types,
+          // gender: selectedGender,
+          price_min: 0,
+          price_max: Number.MAX_SAFE_INTEGER,
+        },
+      })
+      .then((response) => {
+        if (response.data.products && response.data.products.length > 0) {
+          const productIds = response.data.products.map(
+            (item) => item.product_id
+          );
+          setSearchedProducts(productIds);
+          sessionStorage.setItem(
+            "searchedProducts",
+            JSON.stringify(productIds)
+          ); // Store in session storage
+          // console.log("SEARCHED " + productIds);
+          window.location.href = "/rent";
+        } else {
+          // console.log("No products found.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   };
 
   const handleSearchFile = async (searchFile) => {};
@@ -344,7 +398,10 @@ const NavBar = () => {
                   type="text"
                   name="search"
                   placeholder="Search ..."
-                  className="text-xs outline-0 border-0 ring-0 focus:border-0 focus:outline-0 focus:ring-0 w-[70px]"
+                  className="text-xs focus:border-grey focus:border focus:ring-0 border-none"
+                  value={searchQuery}
+                  onChange={handleSearchInputChange}
+                  onKeyDown={(e) => e.key === "Enter" && handleSubmitSearch()}
                 />
                 <label className="flex items-center">
                   <Upload size={15} className="mx-2 hidden sm:inline" />
@@ -498,7 +555,7 @@ const NavBar = () => {
                       <li
                         onClick={() => {
                           setMenuOpen(false);
-                          setSelectedGender("female"); // Set the selected gender
+                          setSelectedGender("female"); // Set the selected gender (assuming this is for men)
                           setSelectedType(item); // Set the selected type
                           sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
                           sessionStorage.setItem("selectedType", item); // Store selected type in session storage
@@ -557,18 +614,6 @@ const NavBar = () => {
                       </li>
                     </Link>
                   ))}
-                  {/* {womenOptionsArr.map((item, index) => (
-                                                    <Link href={"/rent"}>
-                                                    <li onClick={() => {
-                                                        setMenuOpen(false);
-                                                        setSelectedGender("female"); // Set the selected gender (assuming this is for men)
-                                                        setSelectedType(item); // Set the selected type
-                                                        sessionStorage.setItem("selectedGender", "female"); // Store selected gender in session storage
-                                                        sessionStorage.setItem("selectedType", item); // Store selected type in session storage
-                                                    }} className="py-2 cursor-pointer">
-                                                        {item}
-                                                    </li>
-                                                </Link> */}
                 </ul>
                 <div className="flex justify-between">
                   <Link href="">
@@ -745,15 +790,19 @@ const NavBar = () => {
                 type="text"
                 name="search"
                 placeholder="Search ..."
-                className="text-xs outline-none border-none"
+                className="text-xs focus:border-grey focus:border focus:ring-0 border-none"
+                value={searchQuery}
+                onChange={handleSearchInputChange}
+                onKeyDown={(e) => e.key === "Enter" && handleSubmitSearch()}
               />
               <label className="flex items-center">
-                <Upload size={15} className="mx-2" />
+                <Upload size={15} className="mx-2 hidden sm:inline" />
+                <Camera size={16} className="mx-2 inline sm:hidden" />
                 <input
                   type="file"
+                  accept=".jpg, .jpeg, .png, .webp"
                   name="search"
                   className="hidden"
-                  accept=".jpg, .jpeg, .png, .webp"
                   onChange={handleFileChange}
                 />
               </label>
@@ -775,7 +824,7 @@ const NavBar = () => {
             </Link>
             <Link
               href="/login"
-              className={userToken == null ? "ml-7 text-sm" : "hidden"}
+              className={userToken == null ? "ml-7" : "hidden"}
             >
               Log In
             </Link>
@@ -792,11 +841,6 @@ const NavBar = () => {
       >
         <div>
           <p className="text-darkgrey py-2">MEN</p>
-          {/* {menOptionsArr.map((item, index) => (
-                        <Link href="" key={index}>
-                            <p className="py-1">{item}</p>
-                        </Link>
-                    ))} */}
           {menOptionsArr.map((item, index) => (
             <Link href={"/rent"} key={index}>
               <p
@@ -835,35 +879,20 @@ const NavBar = () => {
             </Link>
           ))}
         </div>
+
         <div>
           <p className="text-darkgrey py-2">OCCASIONS</p>
           {occasionsOptionsArr.map((item, index) => (
-            <Link href="/rent" key={index}>
-              <p
-                onClick={() => {
-                  setMenuOpen(false);
-                  sessionStorage.setItem("selectedOccasion", item);
-                }}
-                className="py-1 cursor-pointer"
-              >
-                {item}
-              </p>
+            <Link href="" key={index}>
+              <p className="py-1">{item}</p>
             </Link>
           ))}
         </div>
         <div>
           <p className="text-darkgrey py-2">COLLECTIONS</p>
           {collectionsOptionsArr.map((item, index) => (
-            <Link href="/rent" key={index}>
-              <p
-                onClick={() => {
-                  setMenuOpen(false);
-                  sessionStorage.setItem("selectedCollection", item);
-                }}
-                className="py-1 cursor-pointer"
-              >
-                {item}
-              </p>
+            <Link href="" key={index}>
+              <p className="py-1">{item}</p>
             </Link>
           ))}
         </div>
