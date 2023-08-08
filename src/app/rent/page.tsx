@@ -108,14 +108,7 @@ function classNames(...classes: string[]) {
 
 const RentPage: NextPage = () => {
   useEffect(() => {
-    const productIdsString = sessionStorage.getItem("productList");
-    sessionStorage.removeItem("productList")
-    if (productIdsString) {
-      const productIds = JSON.parse(productIdsString);
-      console.log(productIds);
-      setFilteredProductsArr(productIds)
-      sessionStorage.setItem("productList", "")
-    }
+    
     
   }, []);
 
@@ -204,27 +197,52 @@ const RentPage: NextPage = () => {
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(Number.MAX_SAFE_INTEGER);
   const [selectedSortOption, setSelectedSortOption] = useState(sortOptions[0]); // Initialize with the default sort option
+  // const [searched, setSearched] = useState(false);
   
-  let storedSearchedProducts = JSON.parse(sessionStorage.getItem('searchedProducts'));
-  if (!storedSearchedProducts) {
-    storedSearchedProducts = [];
-  }
-  if (storedSearchedProducts.length > 0) {
-    sessionStorage.removeItem('searchedProducts');
-  }
+  
   // console.log("STORED RENT " + storedSearchedProducts)
-  const [filteredProducts, setFilteredProductsArr] = useState(storedSearchedProducts);
+  const [filteredProducts, setFilteredProductsArr] = useState([]);
   useEffect(() => {
     // const selectedGender = typeof gender === 'string' ? gender : '';
     // const selectedType = typeof type === 'string' ? type : '';
-    fetchFilteredProducts(checkboxState);
+
+    var searched = false;
+
+    // let productList = JSON.parse(sessionStorage.getItem('productList'));
+    // // const productIdsString = sessionStorage.getItem("productList");
+    // // if (productIdsString) {
+    // if (!productList) {
+    //   productList = [];
+    // } else {
+    //   searched = true
+    //   if (productList.length > 0) {
+    //     searched = true
+    //     sessionStorage.removeItem("productList")
+    //     console.log(productList);
+    //     setFilteredProductsArr(productList)
+    //     sessionStorage.removeItem("productList")
+    //   }
+    // }
+      
+    // }
+    let storedSearchedProducts = JSON.parse(sessionStorage.getItem('searchedProducts'));
+    if (!storedSearchedProducts) {
+      storedSearchedProducts = [];
+    } else {
+      searched = true
+      if (storedSearchedProducts.length > 0) {
+        setFilteredProductsArr(storedSearchedProducts)
+        sessionStorage.removeItem("searchedProducts")
+      }
+    }
+
+    if (searched == false){
+      fetchFilteredProducts(checkboxState);
+    }
   }, [selectedSortOption]);
 
   const fetchFilteredProducts = (checkboxState) => {
-    if (storedSearchedProducts.length > 0) {
-      setFilteredProductsArr(storedSearchedProducts)
-    }
-    else {
+      console.log(filteredProducts)
       const selectedColours = Object.keys(checkboxState.colour.options).filter((colour) => checkboxState.colour.options[colour]);
       const selectedBrands = Object.keys(checkboxState.brand.options).filter((brand) => checkboxState.brand.options[brand]);
       const selectedSizes = Object.keys(checkboxState.size.options).filter((size) => checkboxState.size.options[size]);
@@ -263,7 +281,7 @@ const RentPage: NextPage = () => {
             }
 
             setFilteredProductsArr(sortedFilteredProductIds);
-           
+          
           } else {
             setFilteredProductsArr([]); // Empty array if there is no data
           }
@@ -273,7 +291,6 @@ const RentPage: NextPage = () => {
           console.error('Error fetching products:', error);
           setFilteredProductsArr([]); // Empty array if there is an error
         });
-    }
   };
 
   return (
