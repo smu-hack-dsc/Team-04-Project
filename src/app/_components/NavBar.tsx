@@ -132,7 +132,7 @@ const NavBar = () => {
             });
             
             console.log('File upload response:', response.data);
-            sessionStorage.setItem("productList", response.data);
+            sessionStorage.setItem("productList", JSON.stringify(response.data));
         } catch (error) {
             console.error('Error uploading file:', error);
         }
@@ -350,7 +350,7 @@ const NavBar = () => {
                 </li>
               </Link>
               <div className="flex justify-between">
-                <Link href="/rent">
+                <Link href="">
                   <li className="py-2">
                     <span
                       onClick={() => setMenuOpen(false)}
@@ -618,7 +618,7 @@ const NavBar = () => {
                         <Link href="">
                             <li className="mr-10 uppercase hover:border-b-2 text-sm">About</li>
                         </Link>
-                        <Link href="/rent" >
+                        <Link href="" >
                             <li className="mr-10 uppercase hover:border-b-2 text-sm" onMouseOver={() => setRentDropdownOpen(true)}>Rent</li>
                         </Link>
                         <Link href="">

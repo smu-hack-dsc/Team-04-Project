@@ -228,21 +228,15 @@ def sort_products_by_price():
 def get_products_by_ids():
     try:
         product_id_list = request.args.getlist('product_id')
-        
         products = []
+
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                # Convert string product IDs to integers
-                product_ids = [int(pid) for pid in product_id_list]
-
-                # Construct the SQL query with a dynamic list of product IDs
-                placeholders = ','.join(['%s'] * len(product_ids))
-                query = f'SELECT * FROM tothecloset."product" WHERE product_id IN ({placeholders}) ORDER BY array_position(ARRAY{product_ids}, product_id)'
-
-                cursor.execute(query, product_ids)
+                placeholders = ','.join(['%s'] * len(product_id_list))
+                query = f'SELECT * FROM tothecloset."product" WHERE product_id IN ({placeholders})'
+                cursor.execute(query, product_id_list)
 
                 rows = cursor.fetchall()
-
                 for row in rows:
                     product = {
                         "product_id": row[0],
@@ -260,7 +254,8 @@ def get_products_by_ids():
                     products.append(product)
 
         return jsonify(products), 200
-
+    
     except (Exception, psycopg2.Error) as error:
         return jsonify({"error": str(error)}), 500
+
 

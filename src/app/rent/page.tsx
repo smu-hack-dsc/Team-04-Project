@@ -100,26 +100,22 @@ function classNames(...classes: string[]) {
 const RentPage: NextPage = () => {
 
   useEffect(() => {
-
-    const productIds = sessionStorage.getItem("productList");
-    const storedProductIdsArray = productIds.split(',').map(Number);
-    console.log(productIds);
-
-    const apiUrl = `http://localhost:5000/api/product/by_ids?product_id=${storedProductIdsArray.join('&product_id=')}`;
-
-    axios.get(apiUrl)
-      .then(response => {
-        console.log(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching products:', error);
-      });
+    const productIdsString = sessionStorage.getItem("productList");
+    sessionStorage.removeItem("productList")
+    if (productIdsString.length > 0) {
+      const productIds = JSON.parse(productIdsString);
+      console.log(productIds);
+      setFilteredProductsArr(productIds)
+      sessionStorage.setItem("productList", "")
+    }
+    
   }, []);
 
   const [filtersDropdownOpen, setFiltersDropdownOpen] = useState(false);
   const [filterOptions, setFilterOptions] = useState<FilterOption[]>(filtersOptions);
   const [colourOptions, setcolourOptions] = useState(filtersOptions.find(option => option.id === 'colour')?.options || []);
   const [gridColumns, setGridColumns] = useState(4);
+  const [products, setProducts] = useState([])
   const toggleGridColumns = () => {
     setGridColumns(prevColumns => (prevColumns === 4 ? 3 : 4));
 

@@ -48,10 +48,13 @@ def extract(file):
 def insert_pinecone(file, key):
     res = initialise_pinecone()
     vectorList = extract(file)
+    if (len(vectorList) == 0):
+        print("ERROR")
     index = pinecone.Index("clothes")
     index.upsert([
-        (key, vectorList)
+    (key, vectorList)
     ])
+    
 
 def insert_pinecone_with_filter(indexName, file, key, filter):
     initialise_pinecone()
@@ -186,7 +189,7 @@ def image_query():
             # get list of ids
             id_list = []
             for match in matches:
-                id_list.append(int(match["id"]))
+                id_list.append(match["id"])
 
             return jsonify(id_list), 200
         else:
