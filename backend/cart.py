@@ -8,7 +8,7 @@ def get_cart_from_user_id(user_id):
     try:
         with get_db_connection() as connection:
             with connection.cursor() as cursor:
-                cursor.execute('SELECT * FROM tothecloset."cart"' "WHERE user_id = %s", (user_id))
+                cursor.execute('SELECT * FROM tothecloset."cart" WHERE user_id = %s', (user_id,))
 
                 rows = cursor.fetchall()
 
