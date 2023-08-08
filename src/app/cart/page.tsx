@@ -4,45 +4,12 @@ import CartItem from "../_components/CartItem";
 import Link from "next/link";
 import CartItemSmViewport from "../_components/CartItemSmViewport";
 import { CheckCircleFill } from "react-bootstrap-icons";
-import axios from 'axios';
-import jwt from 'jsonwebtoken';
+import axios from "axios";
 
 export default function Page() {
   const [numOfItems, setNumOfItems] = useState(-1);
   const [cartArr, setCartArr] = useState([]);
   const [productArr, setProductArr] = useState([]);
-  const SECRET_KEY = "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
-  const [userToken, setUserToken] = useState("");
-
-  useEffect(() => {
-    // Check if the user token exists in session storage
-    const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
-
-    // Update the state with the user token
-    setUserToken(token);
-    console.log("user token:", userToken)
-  }, []);
-
-  const decodeToken = (token) => {
-    try {
-      if (!token) {
-        console.error("Token is undefined or null.");
-        return null;
-      }
-  
-      // Access the secret key from the environment variables or hardcoded value
-      const secretKey = SECRET_KEY || "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
-      console.log("secret_key", secretKey);
-  
-      // Decode the token using the provided secret key
-      const decodedToken = jwt.verify(token, secretKey);
-      console.log("userinfo:", decodedToken.user_id);
-      return decodedToken;
-    } catch (error) {
-      console.error("Error decoding token:", error);
-      return null;
-    }
-  };
 
   useEffect(() => {
     const fetchDataFromBackend = async () => {
@@ -220,13 +187,16 @@ export default function Page() {
                 <div>{total} SGD</div>
               </div>
             </div>
-            <Link href={userToken ? "/order/shipping-details" : "/login"} className="flex justify-center mt-4 text-base">
-            <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
-              <div className="uppercase flex items-center justify-center">
-                {userToken ? "Checkout" : "Login to Checkout"}
-              </div>
-            </button>
-          </Link>
+            <Link
+              href="/order/shipping-details"
+              className="flex justify-center mt-4 text-base"
+            >
+              <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
+                <div className="uppercase flex items-center justify-center">
+                  Checkout
+                </div>
+              </button>
+            </Link>
           </div>
         </div>
       </div>
