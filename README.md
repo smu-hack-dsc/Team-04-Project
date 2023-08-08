@@ -40,7 +40,40 @@ Make informed clothing sizing decisions using our size recommender feature:
 - **Images**: AWS S3 Cloud Storage
 - **AI**: TensorFlow, Pinecone Vector Database, OpenAI Chat API GPT 3.5
 
+## Links
+- **Vercel**: https://tothecloset.vercel.app/
+- **AWS Backend**: 
+
 ## Getting Started
+
+### 1. Build .env file
+
+#### .env file format
+
+```
+# Postgresql Database (hosted on AWS RDS)
+DB_HOST= _tothecloset.cwfspfe4ypwi.ap-southeast-1.rds.amazonaws.com
+DB_PORT=5432
+DB_NAME=tothecloset
+DB_USER=postgres
+DB_PASSWORD= **********
+
+# Pinecone Database
+PINECONE_API_KEY= ********************************
+PINECONE_ENV=us-west1-gcp-free
+
+# OpenAI
+OPENAI_API_KEY = *********************************
+```
+*Note: Access to Databases are restricted to certain users*
+
+#### Get OpenAI API Key
+
+ - **Log in to OpenAI** : Log in / Sign up using this [url] [https://openai.com/blog/openai-api]
+ - **Obtain API Key**: Under 'View API Keys', create a New Secret Key
+ - **Put in the .env file**: OPENAI_API_KEY = "<OpenAI API Key>"
+
+### 2. How to run
 
 #### Clone the project
 ```
@@ -66,7 +99,14 @@ npm run dev
 cd backend
 ```
 
-#### Run backend server using Docker
+#### Install dependencies
 ```
-docker compose up
+pip install -r requirements.txt
 ```
+
+#### Run Flask app
+```
+python app.py
+```
+
+
