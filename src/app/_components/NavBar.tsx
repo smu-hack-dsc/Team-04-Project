@@ -36,7 +36,7 @@ const NavBar = () => {
     useEffect(() => {
         // Check if the user token exists in session storage
         const token = typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
-        console.log(token);
+        console.log("TOKEN " + token);
 
         // Update the state with the user token
         setUserToken(token);
@@ -189,59 +189,108 @@ const NavBar = () => {
     const [searchText, setSearchText] = useState("");
     const handleSearchInputChange = (e) => {
         setSearchQuery(e.target.value);
-        console.log("INPUT" + e.target.value);
+        // console.log("INPUT" + e.target.value);
     };
 
-    // useEffect (()=>{
-    //   fetchSearchQueries(searchQuery);
-    // })
-
-    // const fetchSearchQueries = async (searchQuery) => {
-    //   try {
-    //     const response = await axios.get('http://localhost:5000/api/text_search/' + searchQuery)
-    //     console.log("OPENAI " + response.data)
-    //     setSearchText(response.data)
-    //   } catch (error) {
-    //     console.error('Error fetching data:', error);
-    //   }
-
-    // }
     const handleSubmitSearch = async () => {
-        console.log("SEARCH QUERY  " + searchQuery);
+        // console.log("SEARCH QUERY  " + searchQuery);
         try {
-          const response = await axios.get('http://localhost:5000/api/text_search/' + searchQuery);
-          
-          // Check if the response data is not empty or null
-          if (response.data) {
-            const jsonData = response.data;
-            setSearchText(jsonData);
-            handleSearchText(jsonData); // Now you can pass jsonData to the function
-            console.log("OPENAI " + jsonData);
-          } else {
-            console.error('Empty or invalid JSON response.');
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
-      
-      
+            const response = await axios.get('http://localhost:5000/api/text_search/' + searchQuery);
 
-      const handleSearchText = async (searchText) => {
-        try {
-          // Assuming response.data is already in the format "Red,Dress,Gucci"
-          const colors = searchText[0];
-          const types = searchText[1];
-          const brands = searchText[2];
-    
-      
-          console.log("Colors:", colors);
-          console.log("Clothing Types:", types);
-          console.log("Brands:", brands);
+            // Check if the response data is not empty or null
+            if (response.data) {
+                const jsonData = response.data;
+                setSearchText(jsonData);
+                handleSearchText(jsonData); // Now you can pass jsonData to the function
+                // console.log("OPENAI " + jsonData);
+            } else {
+                console.error('Empty or invalid JSON response.');
+            }
         } catch (error) {
-          console.error('Error parsing data:', error);
+            console.error('Error fetching data:', error);
         }
-      };
+    };
+
+    const handleSearchText = async (searchText) => {
+        try {
+            var colors = searchText[0];
+            var types = searchText[1];
+            var brands = searchText[2];
+            if (colors.length === 1 && colors[0] === 'N/A') {
+                colors = []
+            }
+            if (types.length === 1 && types[0] === 'N/A') {
+                types = []
+            }
+            if (brands.length === 1 && brands[0] === 'N/A') {
+                brands = []
+            }
+
+            fetchSearchedProducts(colors, types, brands)
+
+            // console.log("Colors:", colors);
+            // console.log("Clothing Types:", types);
+            // console.log("Brands:", brands);
+        } catch (error) {
+            console.error('Error parsing data:', error);
+        }
+    };
+
+    const [searchProductsArr, setSearchedProducts] = useState()
+
+    const fetchSearchedProducts = (colors, types, brands) => {
+        axios
+            .get('http://localhost:5000/api/product/filter', {
+                params: {
+                    brand: brands,
+                    // size: selectedSizes,
+                    colour: colors,
+                    type: types,
+                    // gender: selectedGender,
+                    price_min: 0,
+                    price_max: Number.MAX_SAFE_INTEGER,
+                },
+            })
+            .then(response => {
+                if (response.data.products && response.data.products.length > 0) {
+                    const productIds = response.data.products.map(item => item.product_id);
+                    setSearchedProducts(productIds);
+                    sessionStorage.setItem('searchedProducts', JSON.stringify(productIds)); // Store in session storage
+                    // console.log("SEARCHED " + productIds);
+                    window.location.href = "/rent"
+                } else {
+                    // console.log("No products found.");
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    };
+
+    const handleFileChange = async (event) => {
+        const selectedFile = event.target.files?.[0];
+        if (selectedFile) {
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+ 
+            try {
+                const response = await axios.post('http://localhost:5000/api/image_search/query', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                console.log('File upload response:', response.data);
+                sessionStorage.setItem("productList", response.data);
+            } catch (error) {
+                console.error('Error uploading file:', error);
+            }
+            finally {
+                window.location.href = "/rent";
+            }
+        }
+    };
 
     const handleSearchFile = async (searchFile) => { };
 
@@ -333,9 +382,10 @@ const NavBar = () => {
                                     <Camera size={16} className="mx-2 inline sm:hidden" />
                                     <input
                                         type="file"
-                                        accept="image/*"
+                                        accept=".jpg, .jpeg, .png, .webp"
                                         name="search"
                                         className="hidden"
+                                        onChange={handleFileChange}
                                     />
                                 </label>
                             </li>
@@ -644,7 +694,13 @@ const NavBar = () => {
                             />
                             <label className="flex items-center">
                                 <Upload size={15} className="mx-2" />
-                                <input type="file" name="search" className="hidden" />
+                                <input
+                                    type="file"
+                                    accept=".jpg, .jpeg, .png, .webp"
+                                    name="search"
+                                    className="hidden"
+                                    onChange={handleFileChange}
+                                />
                             </label>
                         </div>
                         <Link href="/wishlist">
