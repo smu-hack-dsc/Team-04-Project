@@ -29,7 +29,7 @@ export default function Page() {
     console.log("userId:",userId);
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/rental/ongoing/" + userId
+        "http://54.179.80.139:5000/api/rental/ongoing/" + userId
       );
       console.log(response.data);
       setOngoingRentalArr(response.data);
@@ -40,7 +40,7 @@ export default function Page() {
         const productId = item["product_id"];
         try {
           const response1 = await axios.get(
-            "http://localhost:5000/api/delivery/deliveryid/" + deliveryId
+            "http://54.179.80.139:5000/api/delivery/deliveryid/" + deliveryId
           );
           setOngoingDeliveryArr((prevDeliveryArr) => [
             ...prevDeliveryArr,
@@ -48,7 +48,7 @@ export default function Page() {
           ]);
 
           const response2 = await axios.get(
-            "http://localhost:5000/api/product/" + productId
+            "http://54.179.80.139:5000/api/product/" + productId
           );
           console.log(response1.data);
           setOngoingProductArr((prevProductArr) => [
@@ -70,7 +70,7 @@ export default function Page() {
     console.log(userId);
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/rental/past/" + userId
+        "http://54.179.80.139:5000/api/rental/past/" + userId
       );
       console.log(response.data);
       setPastRentalArr(response.data);
@@ -82,7 +82,7 @@ export default function Page() {
 
         try {
           const response1 = await axios.get(
-            "http://localhost:5000/api/delivery/deliveryid/" + deliveryId
+            "http://54.179.80.139:5000/api/delivery/deliveryid/" + deliveryId
           );
           setPastDeliveryArr((prevDeliveryArr) => [
             ...prevDeliveryArr,
@@ -90,7 +90,7 @@ export default function Page() {
           ]);
 
           const response2 = await axios.get(
-            "http://localhost:5000/api/product/" + productId
+            "http://54.179.80.139:5000/api/product/" + productId
           );
           console.log(response1.data);
           setPastProductArr((prevProductArr) => [

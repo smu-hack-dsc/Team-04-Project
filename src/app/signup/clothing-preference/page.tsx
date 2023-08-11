@@ -106,7 +106,7 @@ const AddressPage = () => {
   ) => {
     try {
       const particularsurl =
-        "http://localhost:5000/api/user?first_name=" +
+        "http://54.179.80.139:5000/api/user?first_name=" +
         sessionStorage.getItem("firstName") +
         "&last_name=" +
         sessionStorage.getItem("lastName") +
@@ -124,7 +124,7 @@ const AddressPage = () => {
       const token = particulars.token;
 
       const addressurl =
-        "http://localhost:5000/api/address?user_id=" +
+        "http://54.179.80.139:5000/api/address?user_id=" +
         userid +
         "&address_num=1" +
         "&address_1=" +
@@ -144,7 +144,7 @@ const AddressPage = () => {
       console.log("Address " + address);
 
       const clothingurl =
-        "http://localhost:5000/api/clothing_preference?user_id=" +
+        "http://54.179.80.139:5000/api/clothing_preference?user_id=" +
         userid +
         "&height=" +
         height +

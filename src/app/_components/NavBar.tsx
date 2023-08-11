@@ -27,7 +27,53 @@ const customFontStyle = Playfair_Display({
 });
 
 const NavBar = () => {
+  const SECRET_KEY =
+    "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
   const [userToken, setUserToken] = useState("");
+  const [userId, setUserId] = useState(""); // Add this state to store user ID
+
+  useEffect(() => {
+    // Check if the user token exists in session storage
+    const token =
+      typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+
+    // Update the state with the user token
+    setUserToken(token);
+    console.log("user token:", userToken); // This might still show the old value
+
+    // Decode the user token to get the user ID
+    const decodedToken = decodeToken(token);
+    if (decodedToken) {
+      setUserId(decodedToken.user_id); // Store the decoded user ID in state
+    }
+  }, [setUserId]);
+
+  const decodeToken = (token) => {
+    try {
+      if (!token) {
+        console.error("Token is undefined or null.");
+        return null;
+      }
+
+      // Access the secret key from the environment variables or hardcoded value
+      const secretKey =
+        SECRET_KEY ||
+        "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
+      console.log("secret_key", secretKey);
+
+      // Decode the token using the provided secret key
+      const decodedToken = jwt.verify(token, secretKey);
+      console.log("userinfo:", decodedToken.user_id);
+      setUserId(decodedToken.user_id);
+      sessionStorage.setItem("userId", decodedToken.user_id); // Store in session storage
+      return decodedToken;
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return null;
+    }
+  };
+
+  const user_id = sessionStorage.getItem("userId"); // Replace with the actual user ID or retrieve it from your authentication system
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -76,7 +122,7 @@ const NavBar = () => {
   const getCartItemNum = async (userId) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/cart/" + userId
+        "http://54.179.80.139:5000/api/cart/" + userId
       );
       const cartItemNum = response.data.length;
       sessionStorage.setItem("cartItemNum", cartItemNum.toString());
@@ -94,25 +140,6 @@ const NavBar = () => {
   const [setSelectedCollection] = useState(null);
   const [products, setProducts] = useState([]);
 
-  // Function to decode the JWT
-  const decodeToken = (token) => {
-    try {
-      // Access the secret key from the environment variables
-      const secretKey = process.env.SECRET_KEY;
-      if (!secretKey) {
-        console.error("Secret key not found in environment variables.");
-        return null;
-      }
-
-      // Decode the token using the secret key
-      const decodedToken = jwt.verify(token, secretKey);
-      return decodedToken;
-    } catch (error) {
-      console.error("Error decoding token:", error);
-      return null;
-    }
-  };
-
   const handleFileChange = async (event) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
@@ -121,7 +148,7 @@ const NavBar = () => {
 
       try {
         const response = await axios.post(
-          "http://localhost:5000/api/image_search/query",
+          "http://54.179.80.139:5000/api/image_search/query",
           formData,
           {
             headers: {
@@ -143,7 +170,7 @@ const NavBar = () => {
   const handleRentOptionClick = (gender, type) => {
     // Fetch relevant product IDs based on gender and type
     const url =
-      "http://localhost:5000/api/product/filter?type=" +
+      "http://54.179.80.139:5000/api/product/filter?type=" +
       type +
       "&gender=" +
       gender;
@@ -246,7 +273,7 @@ const NavBar = () => {
     // console.log("SEARCH QUERY  " + searchQuery);
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/text_search/" + searchQuery
+        "http://54.179.80.139:5000/api/text_search/" + searchQuery
       );
 
       // Check if the response data is not empty or null
@@ -292,7 +319,7 @@ const NavBar = () => {
 
   const fetchSearchedProducts = (colors, types, brands) => {
     axios
-      .get("http://localhost:5000/api/product/filter", {
+      .get("http://54.179.80.139:5000/api/product/filter", {
         params: {
           brand: brands,
           // size: selectedSizes,

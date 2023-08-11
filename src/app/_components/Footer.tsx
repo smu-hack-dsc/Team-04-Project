@@ -4,7 +4,7 @@ import { Facebook, Instagram, Pinterest, Youtube } from "react-bootstrap-icons";
 import { BsCCircle } from "react-icons/bs";
 
 const Footer = () => {
-  const dummyUrl = "http://localhost:3000/404"; // Replace with a valid 404 URL
+  const dummyUrl = "http://54.179.80.139:3000/404"; // Replace with a valid 404 URL
   return (
     <div className="bg-white p-8 z-50 border-t border-grey border-1">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">

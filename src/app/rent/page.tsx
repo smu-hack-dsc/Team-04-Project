@@ -258,7 +258,7 @@ const RentPage: NextPage = () => {
 
   const fetchNavProducts = async (gender:string, type:string)=> {
     try {
-      const response = await axios.get("http://localhost:5000/api/product/nav/" + gender + "/" + type);
+      const response = await axios.get("http://54.179.80.139:5000/api/product/nav/" + gender + "/" + type);
       console.log(response);
       var tempArr = []
       for (const arr of response.data) {
@@ -290,7 +290,7 @@ const RentPage: NextPage = () => {
       (gender) => checkboxState.gender.options[gender]
     );
     axios
-      .get("http://localhost:5000/api/product/filter", {
+      .get("http://54.179.80.139:5000/api/product/filter", {
         params: {
           brand: selectedBrands,
           size: selectedSizes,

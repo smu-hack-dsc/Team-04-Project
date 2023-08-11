@@ -68,7 +68,7 @@ const AddressPage = () => {
     if (validation()) {
       // Make API request to store the address data in the backend
       try {
-        const response = await axios.post("http://localhost:5000/api/address", {
+        const response = await axios.post("http://54.179.80.139:5000/api/address", {
           user_id: parseInt(sessionStorage.getItem("user_id")), // Assuming the user_id is stored as an integer
           address_num: 1, // Assuming it's the first address
           address_1: sessionStorage.getItem("add1"),

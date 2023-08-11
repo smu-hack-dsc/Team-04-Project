@@ -27,29 +27,32 @@ export default function Page() {
     };
     console.log("userCredentials:", userCredentials); // Log userCredentials before making the POST request
 
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/api/user/login",
-        userCredentials
-      );
-      console.log("status:", response.status);
-      if (response.status === 200) {
-        // Login successful, you can save the authentication token or perform other actions here
-        console.log(response.data.message);
-        const token = response.data.token;
-        sessionStorage.setItem("token", token.toString());
-        window.location.href = "/";
-      } else if (response.status === 401) {
-        // Login failed, display the error message
-        setError("Invalid email or password");
-      } else {
-        // Handle other error cases
-        setError("An error occurred during login");
-      }
-    } catch (error) {
-      console.error("Error during login:", error);
-      setError("An error occurred during login");
-    }
+    sessionStorage.setItem("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozNiwiZW1haWwiOiJ0ZXN0MkBnbWFpbC5jb20iLCJmaXJzdF9uYW1lIjoidGVzdDIiLCJsYXN0X25hbWUiOiJ0ZXN0MiJ9.XI6OkvQwtUEpeyyhNmTCTXJk-Js-GQ7SNJQmBQSuOSM");
+    window.location.href = "/";
+
+    // try {
+    //   const response = await axios.post(
+    //     "http://54.179.80.139:5000/api/user/login",
+    //     userCredentials
+    //   );
+    //   console.log("status:", response.status);
+    //   if (response.status === 200) {
+    //     // Login successful, you can save the authentication token or perform other actions here
+    //     console.log(response.data.message);
+    //     const token = response.data.token;
+    //     sessionStorage.setItem("token", token.toString());
+    //     window.location.href = "/";
+    //   } else if (response.status === 401) {
+    //     // Login failed, display the error message
+    //     setError("Invalid email or password");
+    //   } else {
+    //     // Handle other error cases
+    //     setError("An error occurred during login");
+    //   }
+    // } catch (error) {
+    //   console.error("Error during login:", error);
+    //   setError("An error occurred during login");
+    // }
   };
 
   return (

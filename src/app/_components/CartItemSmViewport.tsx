@@ -44,7 +44,7 @@ const CartItemSmViewport: FC<CartItemSmViewportProps> = ({
     try {
       const productId = productJson["product_id"];
       const response = await axios.put(
-        "http://localhost:5000/api/cart/quantity/" +
+        "http://54.179.80.139:5000/api/cart/quantity/" +
           userId +
           "/" +
           productId +
@@ -92,7 +92,7 @@ const CartItemSmViewport: FC<CartItemSmViewportProps> = ({
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
-        "http://localhost:5000/api/cart/" +
+        "http://54.179.80.139:5000/api/cart/" +
           userId +
           "/" +
           productJson["product_id"]

@@ -125,7 +125,7 @@ const ProductPage: React.FC = () => {
 
     // Fetch product details from the backend using the specific product ID
     axios
-      .get(`http://localhost:5000/api/product/${productIdInt}/`)
+      .get(`http://54.179.80.139:5000/api/product/${productIdInt}/`)
       .then((response) => {
         setProduct(response.data); // Update the product state with the data from the backend
         setLoading(false); // Set loading to false once the data is fetched
@@ -136,7 +136,7 @@ const ProductPage: React.FC = () => {
       });
 
     axios
-      .get(`http://localhost:5000/api/product_availability/${productIdInt}/`)
+      .get(`http://54.179.80.139:5000/api/product_availability/${productIdInt}/`)
       .then((response) => {
         const availabilityData: AvailabilityData[] = response.data.map(
           (availability: any) => ({
@@ -209,7 +209,7 @@ const ProductPage: React.FC = () => {
       } else {
         axios
           .get(
-            "http://localhost:5000/api/size_recommender/" +
+            "http://54.179.80.139:5000/api/size_recommender/" +
               userId +
               "/" +
               product["brand"] +
@@ -271,7 +271,7 @@ const ProductPage: React.FC = () => {
 
     // Make a POST request to the backend to add the product to the cart database
     axios
-      .post("http://localhost:5000/api/cart", productData)
+      .post("http://54.179.80.139:5000/api/cart", productData)
       .then((response) => {
         console.log("Product added to cart:", response.data);
         // Show a success toast notification
