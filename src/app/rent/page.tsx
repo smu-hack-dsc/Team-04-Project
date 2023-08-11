@@ -12,6 +12,7 @@ import type { NextPage } from "next";
 import axios from "axios";
 import { genPreviewOperationsStyle } from "antd/es/image/style";
 import debounce from "lodash/debounce";
+import toast, { Toaster } from "react-hot-toast";
 
 const sortOptions = [
   { name: "Popularity", href: "#", current: true },
@@ -107,10 +108,6 @@ function classNames(...classes: string[]) {
 }
 
 const RentPage: NextPage = () => {
-  useEffect(() => {
-    
-    
-  }, []);
 
   const [filtersDropdownOpen, setFiltersDropdownOpen] = useState(false);
   const [filterOptions, setFilterOptions] =
@@ -119,7 +116,7 @@ const RentPage: NextPage = () => {
     filtersOptions.find((option) => option.id === "colour")?.options || []
   );
   const [gridColumns, setGridColumns] = useState(4);
-  const [products, setProducts] = useState([])
+
   const toggleGridColumns = () => {
     setGridColumns((prevColumns) => (prevColumns === 4 ? 3 : 4));
 
@@ -196,17 +193,10 @@ const RentPage: NextPage = () => {
 
   const [priceMin, setPriceMin] = useState(0);
   const [priceMax, setPriceMax] = useState(Number.MAX_SAFE_INTEGER);
-  const [selectedSortOption, setSelectedSortOption] = useState(sortOptions[0]); // Initialize with the default sort option
-  // const [searched, setSearched] = useState(false);
-  
-  
-  // console.log("STORED RENT " + storedSearchedProducts)
+  const [selectedSortOption, setSelectedSortOption] = useState(sortOptions[0]); // Initialize with the 
   const [filteredProducts, setFilteredProductsArr] = useState([]);
-  useEffect(() => {
-    // const selectedGender = typeof gender === 'string' ? gender : '';
-    // const selectedType = typeof type === 'string' ? type : '';
 
-    var searched = false;
+  useEffect(() => {
 
     // let productList = JSON.parse(sessionStorage.getItem('productList'));
     // // const productIdsString = sessionStorage.getItem("productList");
@@ -223,74 +213,133 @@ const RentPage: NextPage = () => {
     //     sessionStorage.removeItem("productList")
     //   }
     // }
-      
+
     // }
-    let storedSearchedProducts = JSON.parse(sessionStorage.getItem('searchedProducts'));
-    if (!storedSearchedProducts) {
-      storedSearchedProducts = [];
-    } else {
-      searched = true
+
+    var searched = false;
+
+    //text search
+    let storedSearchedProducts = JSON.parse(
+      sessionStorage.getItem("searchedProducts")
+    );
+    if (storedSearchedProducts) { // exist
+      searched = true;
       if (storedSearchedProducts.length > 0) {
-        setFilteredProductsArr(storedSearchedProducts)
-        sessionStorage.removeItem("searchedProducts")
+        setFilteredProductsArr(storedSearchedProducts);
+        sessionStorage.removeItem("searchedProducts");
       }
     }
 
-    if (searched == false){
+    // rent nav links
+    const selectedGender = sessionStorage.getItem("selectedGender");
+    const selectedType = sessionStorage.getItem("selectedType");
+
+    if (selectedGender && selectedType) { // exist
+      searched = true;
+      fetchNavProducts(selectedGender, selectedType)
+      sessionStorage.removeItem("selectedGender")
+      sessionStorage.removeItem("selectedType")
+    }
+
+    // image search
+    const imageSearchList = sessionStorage.getItem("productList");
+
+    if (imageSearchList) { //exist
+      searched = true;
+      const formattedSearchList = imageSearchList.split(",");
+      setFilteredProductsArr(formattedSearchList);
+      sessionStorage.removeItem("productList")
+    }
+
+    if (searched == false) {
       fetchFilteredProducts(checkboxState);
     }
   }, [selectedSortOption]);
 
+  const fetchNavProducts = async (gender:string, type:string)=> {
+    try {
+      const response = await axios.get("http://localhost:5000/api/product/nav/" + gender + "/" + type);
+      console.log(response);
+      var tempArr = []
+      for (const arr of response.data) {
+        tempArr.push(arr["product_id"].toString());
+      }
+      console.log(tempArr);
+      setFilteredProductsArr(tempArr);
+    } catch(error){
+      console.log(error);
+      setFilteredProductsArr([])
+    }
+  }
+
   const fetchFilteredProducts = (checkboxState) => {
-      console.log(filteredProducts)
-      const selectedColours = Object.keys(checkboxState.colour.options).filter((colour) => checkboxState.colour.options[colour]);
-      const selectedBrands = Object.keys(checkboxState.brand.options).filter((brand) => checkboxState.brand.options[brand]);
-      const selectedSizes = Object.keys(checkboxState.size.options).filter((size) => checkboxState.size.options[size]);
-      const selectedTypes = Object.keys(checkboxState.type.options).filter((type) => checkboxState.type.options[type]);
-      const selectedGender = Object.keys(checkboxState.gender.options).filter((gender) => checkboxState.gender.options[gender]);
-      axios
-        .get('http://localhost:5000/api/product/filter', {
-          params: {
-            brand: selectedBrands,
-            size: selectedSizes,
-            colour: selectedColours,
-            type: selectedTypes,
-            gender: selectedGender,
-            price_min: priceMin,
-            price_max: priceMax,
-          },
-        })
-        .then((response) => {
-          if (response.data.products && response.data.products.length > 0) {
-            const filteredProductIds = response.data.products.map((item) => item.product_id);
+    console.log(filteredProducts);
+    const selectedColours = Object.keys(checkboxState.colour.options).filter(
+      (colour) => checkboxState.colour.options[colour]
+    );
+    const selectedBrands = Object.keys(checkboxState.brand.options).filter(
+      (brand) => checkboxState.brand.options[brand]
+    );
+    const selectedSizes = Object.keys(checkboxState.size.options).filter(
+      (size) => checkboxState.size.options[size]
+    );
+    const selectedTypes = Object.keys(checkboxState.type.options).filter(
+      (type) => checkboxState.type.options[type]
+    );
+    const selectedGender = Object.keys(checkboxState.gender.options).filter(
+      (gender) => checkboxState.gender.options[gender]
+    );
+    axios
+      .get("http://localhost:5000/api/product/filter", {
+        params: {
+          brand: selectedBrands,
+          size: selectedSizes,
+          colour: selectedColours,
+          type: selectedTypes,
+          gender: selectedGender,
+          price_min: priceMin,
+          price_max: priceMax,
+        },
+      })
+      .then((response) => {
+        if (response.data.products && response.data.products.length > 0) {
+          const filteredProductIds = response.data.products.map(
+            (item) => item.product_id
+          );
 
-            // Sort the products based on the selected sort option
-            const sortedFilteredProductIds = filteredProductIds.slice();
-            if (selectedSortOption.name === 'Price: Low to High') {
-              sortedFilteredProductIds.sort((a, b) => {
-                const productA = response.data.products.find((item) => item.product_id === a);
-                const productB = response.data.products.find((item) => item.product_id === b);
-                return productA.price - productB.price;
-              });
-            } else if (selectedSortOption.name === 'Price: High to Low') {
-              sortedFilteredProductIds.sort((a, b) => {
-                const productA = response.data.products.find((item) => item.product_id === a);
-                const productB = response.data.products.find((item) => item.product_id === b);
-                return productB.price - productA.price;
-              });
-            }
-
-            setFilteredProductsArr(sortedFilteredProductIds);
-          
-          } else {
-            setFilteredProductsArr([]); // Empty array if there is no data
+          // Sort the products based on the selected sort option
+          const sortedFilteredProductIds = filteredProductIds.slice();
+          if (selectedSortOption.name === "Price: Low to High") {
+            sortedFilteredProductIds.sort((a, b) => {
+              const productA = response.data.products.find(
+                (item) => item.product_id === a
+              );
+              const productB = response.data.products.find(
+                (item) => item.product_id === b
+              );
+              return productA.price - productB.price;
+            });
+          } else if (selectedSortOption.name === "Price: High to Low") {
+            sortedFilteredProductIds.sort((a, b) => {
+              const productA = response.data.products.find(
+                (item) => item.product_id === a
+              );
+              const productB = response.data.products.find(
+                (item) => item.product_id === b
+              );
+              return productB.price - productA.price;
+            });
           }
 
-        })
-        .catch((error) => {
-          console.error('Error fetching products:', error);
-          setFilteredProductsArr([]); // Empty array if there is an error
-        });
+          setFilteredProductsArr(sortedFilteredProductIds);
+        } else {
+          setFilteredProductsArr([]); // Empty array if there is no data
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching products:", error);
+        setFilteredProductsArr([]); // Empty array if there is an error
+      });
   };
 
   return (
