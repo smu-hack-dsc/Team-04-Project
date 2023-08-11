@@ -73,7 +73,6 @@ const NavBar = () => {
     }
   };
 
-  const user_id = sessionStorage.getItem("userId"); // Replace with the actual user ID or retrieve it from your authentication system
   const [count, setCount] = useState(0);
 
   useEffect(() => {
