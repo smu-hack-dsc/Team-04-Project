@@ -47,6 +47,7 @@ const Page = () => {
       // Decode the token using the provided secret key
       const decodedToken = jwt.verify(token, secretKey);
       console.log("userinfo:", decodedToken.user_id);
+      const user_id = decodedToken.user_id
       return decodedToken;
     } catch (error) {
       console.error("Error decoding token:", error);
@@ -73,31 +74,106 @@ const Page = () => {
     setTotal(parseFloat(sessionStorage.getItem("totalAmount")));
   }, []);
 
+  const clearCartItems = async (userId, productIds) => {
+    try {
+      for (const productId of productIds) {
+        await axios.delete(`http://localhost:5000/api/cart/${userId}/${productId}`);
+      }
+      console.log('Cart items deleted successfully');
+    } catch (error) {
+      console.error('Error deleting cart items:', error);
+      // Handle error if needed
+    }
+  };
+
+  const createDelivery = async (userId, transactionId, cartData) => {
+    const { product_id, rental_start, rental_period } = cartData[0]
+    const deliveryData = {
+      address_id: 35, // Replace with the actual address ID
+      delivery_date: rental_start,
+      delivery_status: 'on the way', 
+      user_id: userId,
+    };
+  
+    try {
+      const deliveryResponse = await axios.post('http://localhost:5000/api/delivery', deliveryData);
+  
+      if (deliveryResponse.status === 201) {
+        const { message, delivery_id } = deliveryResponse.data;
+        console.log(message);
+        console.log('New delivery ID:', delivery_id);
+
+        const rentalData = {
+          user_id: userId,
+          product_id: product_id,
+          rental_start: rental_start,
+          rental_period: rental_period,
+          delivery_id: delivery_id,
+          transaction_id: transactionId,
+          return_id: null,
+          is_ongoing: true,
+        };
+        console.log("rentalData:",rentalData);
+        try {
+          const rentalResponse = await axios.post(
+            "http://localhost:5000/api/rental",
+            rentalData
+          );
+  
+          if (rentalResponse.status === 201) {
+            console.log("Rental created:", rentalResponse.data);
+            await clearCartItems(userId, [product_id]);
+            // Redirect to the confirmation page
+            if (typeof window !== "undefined") {
+              toast.success("Payment, Transaction, and Rental successful!");
+              window.location.href = "/order/confirmation";
+            }
+          } else {
+            console.error("Failed to create rental:", rentalResponse.data);
+            toast.error("Payment and Transaction successful, but rental creation failed.");
+          }
+        } catch (error) {
+          console.error("Error creating rental:", error);
+          toast.error("Payment and Transaction successful, but rental creation failed.");
+        }
+      } else {
+        console.error('Failed to create delivery:', deliveryResponse.data);
+      }
+    } catch (error) {
+      console.error('Error creating delivery:', error);
+    }
+  };
+
+  const getCartDetails = async (userId) => {
+    try {
+      const cartResponse = await axios.get(`http://localhost:5000/api/cart/${userId}`);
+      return cartResponse.data;
+    } catch (error) {
+      console.error("Error fetching cart data:", error);
+      throw new Error("An error occurred while fetching cart data.");
+    }
+  };
+  
   const handlePayment = async (e) => {
     e.preventDefault(); // Prevent form submission
-    const cardNumberElement = document.getElementsByName(
-      "cardNumber"
-    )[0] as HTMLInputElement;
-    const expiryElement = document.getElementsByName(
-      "expiry"
-    )[0] as HTMLInputElement;
+    
+    const cardNumberElement = document.getElementsByName("cardNumber")[0] as HTMLInputElement;
+    const expiryElement = document.getElementsByName("expiry")[0] as HTMLInputElement;
     const cvcElement = document.getElementsByName("cvc")[0] as HTMLInputElement;
-    const cardholderNameElement = document.getElementsByName(
-      "cardholderName"
-    )[0] as HTMLInputElement;
-
+    const cardholderNameElement = document.getElementsByName("cardholderName")[0] as HTMLInputElement;
+    
     var errors = 0;
     // Decode the user token to get the user ID
     const decodedToken = decodeToken(userToken);
     const userId = decodedToken ? decodedToken.user_id : null;
-
+  
     if (cardholderNameElement.value.trim() === "") {
       setcardholderNameValidation("ⓘ Cardholdername  cannot be empty.");
       errors += 1;
     } else {
       setcardholderNameValidation("");
     }
-
+  
     if (paymentType === "creditCard") {
       if (cardNumberElement.value.trim() === "") {
         setCreditCardValidation("ⓘ Credit Card Number cannot be empty.");
@@ -105,14 +181,14 @@ const Page = () => {
       } else {
         setCreditCardValidation("");
       }
-
+  
       if (expiryElement.value.trim() === "") {
         setExpiryValidation("ⓘ Expiry cannot be empty.");
         errors += 1;
       } else {
         setExpiryValidation("");
       }
-
+  
       if (cvcElement.value.trim() === "") {
         setCvcValidation("ⓘ CVC cannot be empty.");
         errors += 1;
@@ -123,129 +199,79 @@ const Page = () => {
         setCvcValidation("");
       }
     }
-
-    // If there are no errors, proceed to the next step
-    if (errors === 0) {
-      if (paymentType === "creditCard") {
-        const paymentData = {
-          user_id: decodedToken.user_id,
-          cardholder_name: cardholderName,
-          card_number: cardNumberElement.value.trim(),
-          cvc: cvcElement.value.trim(),
-          expiry_year: expiryElement.value.trim().split("/")[1], // Extract the year from the expiry date
-          expiry_month: expiryElement.value.trim().split("/")[0], // Extract the month from the expiry date
-          is_default: true, // Replace with the actual value for is_default
-        };
-        console.log("paymentdata:", paymentData);
-
-        try {
-          const response = await fetch("http://localhost:5000/api/payment", {
-            // ... (your existing fetch configuration)
-          });
-    
-          if (response.ok) {
-            // Payment was successful
-            const responseData = await response.json();
-            console.log("payment response:", responseData);
-
-            // Create transaction data
-            const transactionData = {
-              user_id: decodedToken.user_id,
-              transaction_date: new Date().toISOString(),
-              payment_method: "Credit Card",
-              payment_amount: total,
-              payment_id: parseInt(responseData['0'].payment_id), // Replace with the actual field name in the response
-            };
-            console.log("transaction data:", transactionData)
-
-            try {
-              const transactionResponse = await axios.post(
-                "http://localhost:5000/api/transaction",
-                transactionData
-              );
-
-              if (transactionResponse.status === 201) {
-                const transactionId = transactionResponse.data.transaction_id; // Use 'transaction_id' as the correct field name
-                console.log("Transaction created:", transactionResponse.data);
-                console.log("Transaction ID:", transactionId); // Log the transaction ID
-
-                  const createDelivery = async (userId) => {
-                  const deliveryData = {
-                    address_id: 35, // Replace with the actual address ID
-                    delivery_date: new Date().toISOString(),
-                    delivery_status: 'pending', // Replace with the desired status
-                    user_id: userId,
-                  };
-              
-                
-                  try {
-                    const response = await axios.post('http://localhost:5000/api/delivery', deliveryData);
-                    if (response.status === 201) {
-                      const { message, delivery_id } = response.data;
-                      console.log(message);
-                      console.log('New delivery ID:', delivery_id);
-                      // Create rental data
-                  const rentalData = {
-                    user_id: decodedToken.user_id,
-                    product_id: sessionStorage.getItem("productId"),
-                    rental_start: sessionStorage.getItem("rental_start"),
-                    rental_period: sessionStorage.getItem("rental_period"),
-                    rental_end: sessionStorage.getItem("rental_end"),
-                    delivery_id: delivery_id,
-                    transaction_id: transactionId,
-                  };
-
-                  try {
-                    const rentalResponse = await axios.post(
-                      "http://localhost:5000/api/rental",
-                      rentalData
-                    );
-
-                    if (rentalResponse.status === 201) {
-                      console.log("Rental created:", rentalResponse.data);
-                      // Redirect to the confirmation page
-                      if (typeof window !== "undefined") {
-                        toast.success("Payment, Transaction, and Rental successful!");
-                        window.location.href = "/order/confirmation";
-                      }
-                    } else {
-                      console.error("Failed to create rental:", rentalResponse.data);
-                      toast.error("Payment and Transaction successful, but rental creation failed.");
-                    }
-                  } catch (error) {
-                    console.error("Error creating rental:", error);
-                    toast.error("Payment and Transaction successful, but rental creation failed.");
-                  }
-                      } else {
-                        console.error('Failed to create delivery:', response.data);
-                      }
-                    } catch (error) {
-                      console.error('Error creating delivery:', error);
-                    }
-                  };
-                
-              } else {
-                console.error("Failed to create transaction:", transactionResponse.data);
+  
+    try {
+      const cartData = await getCartDetails(userId);
+      console.log("Cartdata:", cartData);
+  
+      // Extract rental information from the cart data
+      const { rental_start, rental_end, rental_period, quantity } = cartData[0];
+  
+      // If there are no errors, proceed to the next step
+      if (errors === 0) {
+        if (paymentType === "creditCard") {
+          const paymentData = {
+            user_id: decodedToken.user_id,
+            cardholder_name: cardholderName,
+            card_number: cardNumberElement.value.trim(),
+            cvc: cvcElement.value.trim(),
+            expiry_year: expiryElement.value.trim().split("/")[1],
+            expiry_month: expiryElement.value.trim().split("/")[0],
+            is_default: true,
+          };
+  
+          try {
+            const response = await fetch("http://localhost:5000/api/payment", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                // Add any other headers as needed
+              },
+              body: JSON.stringify(paymentData),
+            });
+  
+            if (response.ok) {
+              const responseData = await response.json();
+              console.log('Payment response data:', responseData); // Add this line
+              const paymentId = responseData.payment_data.payment_id;
+              console.log("paymentId:", paymentId);
+              const transactionData = {
+                user_id: decodedToken.user_id,
+                transaction_date: new Date().toISOString(),
+                payment_method: "Credit Card",
+                payment_amount: total,
+                payment_id: paymentId,
+              };
+              console.log("Transaction Data:", transactionData);
+  
+              try {
+                const transactionResponse = await axios.post(
+                  "http://localhost:5000/api/transaction",
+                  transactionData
+                );
+  
+                if (transactionResponse.status === 201) {
+                  const transactionId = transactionResponse.data.transaction_id;
+                  createDelivery(decodedToken.user_id, transactionId, cartData);
+                } else {
+                  console.error("Failed to create transaction:", transactionResponse.data);
+                  toast.error("Payment successful, but transaction creation failed.");
+                }
+              } catch (error) {
+                console.error("Error creating transaction:", error);
                 toast.error("Payment successful, but transaction creation failed.");
               }
-            } catch (error) {
-              console.error("Error creating transaction:", error);
-              toast.error("Payment successful, but transaction creation failed.");
             }
-          } else {
-            // Handle error response from the server
-            const errorData = await response.json();
-            console.error("Error:", errorData);
-            toast.error("Payment unsuccessful!");
+          } catch (error) {
+            toast.error(error.message);
           }
-        } catch (error) {
-          console.error("Error:", error);
-          toast.error("An error occurred while processing your payment.");
         }
       }
-    };
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
-
+  
 
   return (
     <div className="py-16 px-8">

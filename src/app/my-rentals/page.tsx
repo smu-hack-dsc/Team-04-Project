@@ -25,8 +25,8 @@ export default function Page() {
 
   const fetchOngoingDataFromBackend = async () => {
     // const userId = sessionStorage.getItem("userId");
-    const userId = 2;
-    console.log(userId);
+    const userId = sessionStorage.getItem("userId");
+    console.log("userId:",userId);
     try {
       const response = await axios.get(
         "http://localhost:5000/api/rental/ongoing/" + userId

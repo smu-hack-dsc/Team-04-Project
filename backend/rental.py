@@ -29,7 +29,6 @@ def create_rental():
                 user_id = request.json.get("user_id")
                 product_id = request.json.get("product_id")
                 rental_start = request.json.get("rental_start")
-                rental_end = request.json.get("rental_end")
                 rental_period = request.json.get("rental_period")
                 transaction_id = request.json.get("transaction_id")
                 delivery_id = request.json.get("delivery_id")
@@ -38,11 +37,11 @@ def create_rental():
 
                 cursor.execute(
                     'INSERT INTO tothecloset."rental" '
-                    "(user_id, product_id, rental_start, rental_end, "
+                    "(user_id, product_id, rental_start, "
                     "rental_period, transaction_id, delivery_id, return_id, is_ongoing) "
-                    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING rental_id",
-                    (user_id, product_id, rental_start, rental_end, rental_period,
-                     transaction_id, delivery_id, return_id, is_ongoing)
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING rental_id",
+                    (user_id, product_id, rental_start, rental_period,
+                    transaction_id, delivery_id, return_id, is_ongoing)
                 )
 
                 new_rental_id = cursor.fetchone()[0]
