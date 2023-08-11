@@ -3,14 +3,15 @@ import { HeartFill, Heart } from "react-bootstrap-icons";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Skeleton } from "antd";
-import { Link } from "react-router-dom";
+import toast from"react-hot-toast"
+// import { Link } from "react-router-dom";
 
 type BrowsingCardProps = {
   productId: number; // Add the product ID prop to identify the specific product
 };
 
 const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
-  const [unliked, setUnlike] = useState(true); // Set unliked to true by default
+  const [like, setLike] = useState(false);
   const [product, setProduct] = useState<Product | null>(null);
 
   // Define the Product interface based on your database schema
@@ -22,9 +23,40 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
     // Add other properties as needed
   }
 
-  const handleLike = () => {
-    setUnlike((prevState) => !prevState); // Toggle the unliked state
-    // Add code to perform like/unlike action in the backend if needed
+  const handleLike = async () => {
+    if (sessionStorage.getItem("token")) {
+      setLike(true);
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/wishlist" +
+            "?user_id=" +
+            sessionStorage.getItem("userId") +
+            "&product_id=" +
+            productId
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      toast("Log in to add to Wishlist");
+    }
+  };
+
+  const handleUnlike = async () => {
+    if (sessionStorage.getItem("token")) {
+      setLike(false);
+      try {
+        const response = await axios.delete(
+          "http://localhost:5000/api/wishlist/" +
+            sessionStorage.getItem("userId") +
+            "/" +
+            productId
+        );
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   useEffect(() => {
@@ -37,12 +69,31 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
       .catch((error) => {
         console.error("Error fetching product details:", error);
       });
+
+    if (sessionStorage.getItem("token")) {
+      axios
+        .get(
+          "http://localhost:5000/api/wishlist/check/" + sessionStorage.getItem("userId") + "/" + productId
+        )
+        .then((response) => {
+          console.log(response);
+          if (response.status == 200) {
+            setLike(true);
+          } else {
+            setLike(false);
+          }
+        })
+        .catch((error) => {
+          setLike(false);
+        });
+    }
   }, [productId]);
 
   if (!product) {
     // Handle loading state while waiting for the data to be fetched
     return <Skeleton active />;
   }
+
   const navigateToProductPage = () => {
     sessionStorage.setItem("selectedProductId", productId.toString());
 
@@ -50,8 +101,16 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
     window.location.href = "/product";
   };
 
+  const navigateToProductPage2 = () => {
+    sessionStorage.setItem("selectedProductId", productId.toString());
+    sessionStorage.setItem("addToCart", "true")
+
+    // Redirect to the product page
+    window.location.href = "/product";
+  };
+
   return (
-    <div className="mb-10 ">
+    <div className="mb-4 ">
       {" "}
       {/* Always show the card */}
       <a href="/product">
@@ -67,31 +126,33 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
         </div>
       </a>
       <div className="mt-4 flex justify-between">
-        <div className="h-[10rem]">
-          <h3 className="mb-1 font-semibold uppercase">
-            <a href="#">
-              <span aria-hidden="true" className="" />
-              {product.brand}
+        <div className="h-[12rem]">
+          <div className="h-[6rem] md:h-[8rem] lg:h-[6rem]">
+            <h3 className="mb-1 font-semibold uppercase">
+              <a href="#">
+                <span aria-hidden="true" className="" />
+                {product.brand}
+              </a>
+            </h3>
+            <a href="/product">
+              <span className="mt-1 text-slate-500 uppercase">
+                {product.product_name}
+              </span>
             </a>
-          </h3>
-          <a href="/product">
-            <span className="mt-1 text-slate-500 uppercase">
-              {product.product_name}
-            </span>
-          </a>
-          <p className="text-slate-500 font-lato">{product.price} SGD</p>
-          <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black">
+            <p className="text-slate-500 font-lato">{product.price} SGD</p>
+          </div>
+          <button className="my-2 box-border text-sm py-2 px-6 border-[1px] tracking-[1px] flex border-solid border-black flex self-end" onClick={navigateToProductPage2}>
             <div className="uppercase flex items-center justify-center">
               Add to cart
             </div>
           </button>
         </div>
-        {unliked ? (
+        {!like ? (
           <Heart size={24} onClick={handleLike} className="cursor-pointer" />
         ) : (
           <HeartFill
             size={24}
-            onClick={handleLike}
+            onClick={handleUnlike}
             className="cursor-pointer"
           />
         )}

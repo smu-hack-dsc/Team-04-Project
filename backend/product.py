@@ -260,3 +260,17 @@ def get_products_by_ids():
         return jsonify({"error": str(error)}), 500
 
 
+def get_product_by_type_and_gender(gender, type):
+    try:
+        with get_db_connection() as connection:
+            with connection.cursor() as cursor:
+                cursor.execute('SELECT * FROM tothecloset."product" WHERE gender = %s and type = %s', (gender, type))
+                rows = cursor.fetchall()
+                if len(rows) == 0:
+                    return jsonify("No product found under specified gender and type: " + type), 404
+
+                products = [{"product_id": row[0], "brand": row[1], "size": row[2], "colour": row[3], "price": row[4], "type": row[5], "image_url": row[6], "date_added": row[7], "product_name": row[8], "category": row[9], "gender": row[10]} for row in rows]
+        return jsonify(products), 200
+
+    except (Exception, psycopg2.Error) as error:
+        return jsonify({"error": str(error)}), 500

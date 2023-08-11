@@ -108,6 +108,8 @@ def update_cart_api(user_id, product_id):
 def delete_product_in_cart_api(user_id, product_id):
     return delete_product_in_cart(user_id, product_id)
 
+
+# update quantity of one product in the user's cart
 @app.route("/api/cart/quantity/<user_id>/<product_id>/<quantity>", methods=["PUT"])
 def update_quantity_api(user_id, product_id, quantity):
     return update_quantity(user_id, product_id, quantity)
@@ -283,10 +285,18 @@ def get_product_by_type_api(type):
 def sort_products_by_price_api():
     return sort_products_by_price()
 
+
 # get products from list of ids
 @app.route("/api/product/by_ids", methods=["GET"])
 def get_products_by_ids_api():
     get_products_by_ids()
+
+    
+# get products by type
+@app.route("/api/product/nav/<gender>/<type>", methods=["GET"])
+def get_product_by_type_and_gender_api(gender, type):
+    return get_product_by_type_and_gender(gender, type)
+
 
 ########## DB: product_availability
 
@@ -399,6 +409,12 @@ def create_wishlist_api():
 @app.route("/api/wishlist/<user_id>/<product_id>", methods=["DELETE"])
 def delete_product_from_wishlist_api(user_id, product_id):
     return delete_product_from_wishlist(user_id, product_id)
+
+
+# check if product exists in user's wishlist
+@app.route("/api/wishlist/check/<user_id>/<product_id>", methods=["GET"])
+def check_wishlist_entry_api(user_id, product_id):
+    return check_wishlist_entry(user_id, product_id)
 
 
 ########## size recommender

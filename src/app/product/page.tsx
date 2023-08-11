@@ -7,9 +7,9 @@ import moment, { Moment } from "moment";
 import "antd/dist/antd";
 import { Dialog } from "@headlessui/react";
 import SizeChart from "../_components/SizeChart";
-import toast, { Toaster } from "react-hot-toast";
 import { Skeleton } from "antd";
 import jwt from "jsonwebtoken";
+import toast from "react-hot-toast";
 
 interface Product {
   brand: string;
@@ -32,53 +32,58 @@ interface AvailabilityData {
 }
 
 const ProductPage: React.FC = () => {
-
   const SECRET_KEY =
-  "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
-const [userToken, setUserToken] = useState("");
-const [userId, setUserId] = useState(""); // Add this state to store user ID
+    "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
+  const [userToken, setUserToken] = useState("");
+  const [userId, setUserId] = useState(""); // Add this state to store user ID
 
-useEffect(() => {
-  // Check if the user token exists in session storage
-  const token =
-    typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
+  useEffect(() => {
+    // Check if the user token exists in session storage
+    const token =
+      typeof window !== "undefined" ? sessionStorage.getItem("token") : null;
 
-  // Update the state with the user token
-  setUserToken(token);
-  console.log("user token:", userToken); // This might still show the old value
+    // Update the state with the user token
+    setUserToken(token);
+    console.log("user token:", userToken); // This might still show the old value
 
-  // Decode the user token to get the user ID
-  const decodedToken = decodeToken(token);
-  if (decodedToken) {
-    setUserId(decodedToken.user_id); // Store the decoded user ID in state
-  }
-}, [setUserId]);
+    // Decode the user token to get the user ID
+    const decodedToken = decodeToken(token);
+    if (decodedToken) {
+      setUserId(decodedToken.user_id); // Store the decoded user ID in state
+    }
+  }, [setUserId]);
 
-const decodeToken = (token) => {
-  try {
-    if (!token) {
-      console.error("Token is undefined or null.");
+  const decodeToken = (token) => {
+    try {
+      if (!token) {
+        console.error("Token is undefined or null.");
+        return null;
+      }
+
+      // Access the secret key from the environment variables or hardcoded value
+      const secretKey =
+        SECRET_KEY ||
+        "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
+      console.log("secret_key", secretKey);
+
+      // Decode the token using the provided secret key
+      const decodedToken = jwt.verify(token, secretKey);
+      console.log("userinfo:", decodedToken.user_id);
+      setUserId(decodedToken.user_id);
+      sessionStorage.setItem("userId", decodedToken.user_id); // Store in session storage
+      return decodedToken;
+    } catch (error) {
+      console.error("Error decoding token:", error);
       return null;
     }
+  };
+  useEffect(() => {
+    if (sessionStorage.getItem("addToCart")) {
+      toast("Please input details to add product to cart");
+      sessionStorage.removeItem("addToCart");
+    }
+  }, []);
 
-    // Access the secret key from the environment variables or hardcoded value
-    const secretKey =
-      SECRET_KEY ||
-      "q9grv7k_5P07NZ7pz2k2r3wonSbNF2tJgTNf5zVaj9mHvrD_3H4aKGeOZq0yKpgv";
-    console.log("secret_key", secretKey);
-
-    // Decode the token using the provided secret key
-    const decodedToken = jwt.verify(token, secretKey);
-    console.log("userinfo:", decodedToken.user_id);
-    setUserId(decodedToken.user_id);
-    sessionStorage.setItem("userId", decodedToken.user_id); // Store in session storage
-    return decodedToken;
-  } catch (error) {
-    console.error("Error decoding token:", error);
-    return null;
-  }
-};
-  const notify = () => toast("Here is your toast.");
   // Convert Moment to Dayjs before setting the selectedDate state
   const handleDateChange = (date: Moment | null) => {
     setSelectedDate(date);
@@ -90,8 +95,6 @@ const decodeToken = (token) => {
     { label: "16 Days", days: 16 },
   ];
 
-  // State to hold the product availability
-  // State to hold the product availability data
   const [availabilityData, setAvailabilityData] = useState<AvailabilityData[]>(
     []
   );
@@ -242,6 +245,80 @@ const decodeToken = (token) => {
   if (loading) {
     return <Skeleton active />;
   }
+
+  const addToCart = (
+    product_id: number | null,
+    rental_start: string | null,
+    rental_period: number | null,
+    quantity: number
+  ) => {
+    if (!product_id || !rental_start || rental_period === null) {
+      // Handle missing product data (optional)
+      console.error("Product data is missing.");
+      return;
+    }
+
+    const userId = sessionStorage.getItem("userId"); // Retrieve from session storage
+
+    const productData = {
+      product_id,
+      user_id: userId,
+      rental_start,
+      rental_period,
+      quantity,
+    };
+    console.log("productData:", productData);
+
+    // Make a POST request to the backend to add the product to the cart database
+    axios
+      .post("http://localhost:5000/api/cart", productData)
+      .then((response) => {
+        console.log("Product added to cart:", response.data);
+        // Show a success toast notification
+        toast.success("Added to cart!");
+      })
+      .catch((error) => {
+        console.error("Error adding product to cart:", error);
+
+        if (error.response) {
+          // Error from the backend with specific error code
+          const errorCode = error.response.status;
+          const errorMessage = error.response.data.error_message;
+
+          if (errorCode === 400) {
+            if (
+              errorMessage === "Product is already booked on the selected days"
+            ) {
+              toast.error(
+                "This product is already booked on the selected days."
+              );
+            } else if (
+              errorMessage ===
+              "Product is already booked for some days within the selected period"
+            ) {
+              toast.error(
+                "This product is already booked for some days within the selected period."
+              );
+            } else {
+              toast.error(
+                "Unknown error occurred while adding the product to the cart."
+              );
+            }
+          } else if (errorCode === 4091) {
+            toast.error("This product is already booked on the selected days.");
+          } else if (errorCode === 4092) {
+            toast.error(
+              "This product is already booked for some days within the selected period."
+            );
+          } else {
+            toast.error("Failed to add the product to the cart.");
+          }
+        } else {
+          // Network error or other general error
+          toast.error("Failed to add the product to the cart.");
+        }
+      });
+  };
 
   return (
     <section className="py-12 sm:py-16">
@@ -479,92 +556,18 @@ const decodeToken = (token) => {
                     rentalPeriodOptions[selectedRentalPeriod]?.days || 0,
                     1 // Assuming quantity is 1
                   );
-                  notify;
                 }}
               >
                 <div className="uppercase flex items-center justify-center">
                   Add to cart
                 </div>
               </button>
-              <Toaster />
             </div>
           </div>
         </div>
       </div>
     </section>
   );
-};
-
-const addToCart = (
-  product_id: number | null,
-  rental_start: string | null,
-  rental_period: number | null,
-  quantity: number
-) => {
-  if (!product_id || !rental_start || rental_period === null) {
-    // Handle missing product data (optional)
-    console.error("Product data is missing.");
-    return;
-  }
-
-  const userId = sessionStorage.getItem("userId"); // Retrieve from session storage
-
-  const productData = {
-    product_id,
-    user_id: userId, 
-    rental_start,
-    rental_period,
-    quantity,
-  };
-  console.log("productData:", productData);
-
-  // Make a POST request to the backend to add the product to the cart database
-  axios
-    .post("http://localhost:5000/api/cart", productData)
-    .then((response) => {
-      console.log("Product added to cart:", response.data);
-      // Show a success toast notification
-      toast.success("Added to cart!");
-    })
-    .catch((error) => {
-      console.error("Error adding product to cart:", error);
-
-      if (error.response) {
-        // Error from the backend with specific error code
-        const errorCode = error.response.status;
-        const errorMessage = error.response.data.error_message;
-
-        if (errorCode === 400) {
-          if (
-            errorMessage === "Product is already booked on the selected days"
-          ) {
-            toast.error("This product is already booked on the selected days.");
-          } else if (
-            errorMessage ===
-            "Product is already booked for some days within the selected period"
-          ) {
-            toast.error(
-              "This product is already booked for some days within the selected period."
-            );
-          } else {
-            toast.error(
-              "Unknown error occurred while adding the product to the cart."
-            );
-          }
-        } else if (errorCode === 4091) {
-          toast.error("This product is already booked on the selected days.");
-        } else if (errorCode === 4092) {
-          toast.error(
-            "This product is already booked for some days within the selected period."
-          );
-        } else {
-          toast.error("Failed to add the product to the cart.");
-        }
-      } else {
-        // Network error or other general error
-        toast.error("Failed to add the product to the cart.");
-      }
-    });
 };
 
 export default ProductPage;
