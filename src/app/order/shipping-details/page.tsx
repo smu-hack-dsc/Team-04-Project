@@ -52,7 +52,7 @@ const ShippingDetailsPage = () => {
       const userId =
         typeof window !== "undefined" ? sessionStorage.getItem("userId") : null;
       const response = await axios.get(
-        "http://54.179.80.139:5000/api/user/" + userId
+        "http://13.212.68.5:5000/api/user/" + userId
       );
       // console.log(response.data);
       setUser(response.data);
@@ -65,7 +65,7 @@ const ShippingDetailsPage = () => {
       const userId =
         typeof window !== "undefined" ? sessionStorage.getItem("userId") : null;
       const response = await axios.get(
-        "http://54.179.80.139:5000/api/address/" + userId
+        "http://13.212.68.5:5000/api/address/" + userId
       );
       // console.log(response.data[0]);
       setAddress(response.data[0]);

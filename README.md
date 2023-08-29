@@ -42,7 +42,7 @@ Make informed clothing sizing decisions using our size recommender feature:
 
 ## Links
 - **Vercel**: https://tothecloset.vercel.app/
-- **AWS Backend**: 
+- **AWS Backend**: http://13.212.68.5:5000/
 
 ## Getting Started
 

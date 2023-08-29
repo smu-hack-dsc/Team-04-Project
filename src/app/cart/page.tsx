@@ -58,7 +58,7 @@ export default function Page() {
 
       try {
         const response = await axios.get(
-          "http://54.179.80.139:5000/api/cart/" + userId
+          "http://13.212.68.5:5000/api/cart/" + userId
         );
         setNumOfItems(response.data.length);
         setCartArr(response.data);
@@ -77,7 +77,7 @@ export default function Page() {
           console.log(productId);
           try {
             const response = await axios.get(
-              "http://54.179.80.139:5000/api/product/" + productId
+              "http://13.212.68.5:5000/api/product/" + productId
             );
             setProductArr((prevProductArr) => [
               ...prevProductArr,

@@ -28,7 +28,7 @@ const WishlistLoggedIn: NextPage = () => {
   useEffect(() => {
     const userId = sessionStorage.getItem("userId");
     axios
-      .get(`http://localhost:5000/api/wishlist/${userId}/`)
+      .get(`http://13.212.68.5:5000/api/wishlist/${userId}/`)
       .then((response) => {
         console.log("response:", response.data);
         setWishlistItems(response.data); // Update the wishlist items state with the data from the API
@@ -48,7 +48,7 @@ const WishlistLoggedIn: NextPage = () => {
 
         // Loop through each product_id in the array and fetch product details
         const productPromises = wishlistItems.product_id.map((productId) =>
-          axios.get<Product>(`http://localhost:5000/api/product/${productId}/`)
+          axios.get<Product>(`http://13.212.68.5:5000/api/product/${productId}/`)
         );
         const productResponses = await Promise.all(productPromises);
         const productsData = productResponses.map((response) => response.data);

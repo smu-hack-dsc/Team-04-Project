@@ -77,7 +77,7 @@ const Page = () => {
   const clearCartItems = async (userId, productIds) => {
     try {
       for (const productId of productIds) {
-        await axios.delete(`http://54.179.80.139:5000/api/cart/${userId}/${productId}`);
+        await axios.delete(`http://13.212.68.5:5000/api/cart/${userId}/${productId}`);
       }
       console.log('Cart items deleted successfully');
     } catch (error) {
@@ -96,7 +96,7 @@ const Page = () => {
     };
   
     try {
-      const deliveryResponse = await axios.post('http://54.179.80.139:5000/api/delivery', deliveryData);
+      const deliveryResponse = await axios.post('http://13.212.68.5:5000/api/delivery', deliveryData);
   
       if (deliveryResponse.status === 201) {
         const { message, delivery_id } = deliveryResponse.data;
@@ -116,7 +116,7 @@ const Page = () => {
         console.log("rentalData:",rentalData);
         try {
           const rentalResponse = await axios.post(
-            "http://54.179.80.139:5000/api/rental",
+            "http://13.212.68.5:5000/api/rental",
             rentalData
           );
   
@@ -146,7 +146,7 @@ const Page = () => {
 
   const getCartDetails = async (userId) => {
     try {
-      const cartResponse = await axios.get(`http://54.179.80.139:5000/api/cart/${userId}`);
+      const cartResponse = await axios.get(`http://13.212.68.5:5000/api/cart/${userId}`);
       return cartResponse.data;
     } catch (error) {
       console.error("Error fetching cart data:", error);
@@ -221,7 +221,7 @@ const Page = () => {
           };
   
           try {
-            const response = await fetch("http://54.179.80.139:5000/api/payment", {
+            const response = await fetch("http://13.212.68.5:5000/api/payment", {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -246,7 +246,7 @@ const Page = () => {
   
               try {
                 const transactionResponse = await axios.post(
-                  "http://54.179.80.139:5000/api/transaction",
+                  "http://13.212.68.5:5000/api/transaction",
                   transactionData
                 );
   

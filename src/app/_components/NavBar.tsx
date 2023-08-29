@@ -121,7 +121,7 @@ const NavBar = () => {
   const getCartItemNum = async (userId) => {
     try {
       const response = await axios.get(
-        "http://54.179.80.139:5000/api/cart/" + userId
+        "http://13.212.68.5:5000/api/cart/" + userId
       );
       const cartItemNum = response.data.length;
       sessionStorage.setItem("cartItemNum", cartItemNum.toString());
@@ -147,7 +147,7 @@ const NavBar = () => {
 
       try {
         const response = await axios.post(
-          "http://54.179.80.139:5000/api/image_search/query",
+          "http://13.212.68.5:5000/api/image_search/query",
           formData,
           {
             headers: {
@@ -169,7 +169,7 @@ const NavBar = () => {
   const handleRentOptionClick = (gender, type) => {
     // Fetch relevant product IDs based on gender and type
     const url =
-      "http://54.179.80.139:5000/api/product/filter?type=" +
+      "http://13.212.68.5:5000/api/product/filter?type=" +
       type +
       "&gender=" +
       gender;
@@ -272,7 +272,7 @@ const NavBar = () => {
     // console.log("SEARCH QUERY  " + searchQuery);
     try {
       const response = await axios.get(
-        "http://54.179.80.139:5000/api/text_search/" + searchQuery
+        "http://13.212.68.5:5000/api/text_search/" + searchQuery
       );
 
       // Check if the response data is not empty or null
@@ -318,7 +318,7 @@ const NavBar = () => {
 
   const fetchSearchedProducts = (colors, types, brands) => {
     axios
-      .get("http://54.179.80.139:5000/api/product/filter", {
+      .get("http://13.212.68.5:5000/api/product/filter", {
         params: {
           brand: brands,
           // size: selectedSizes,

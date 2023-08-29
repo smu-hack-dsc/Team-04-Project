@@ -48,7 +48,7 @@ const CartItem: FC<CartItemProps> = ({
     try {
       const productId = productJson["product_id"];
       const response = await axios.put(
-        "http://54.179.80.139:5000/api/cart/quantity/" +
+        "http://13.212.68.5:5000/api/cart/quantity/" +
           userId +
           "/" +
           productId +
@@ -96,7 +96,7 @@ const CartItem: FC<CartItemProps> = ({
   const handleDelete = async () => {
     try {
       const response = await axios.delete(
-        "http://54.179.80.139:5000/api/cart/" +
+        "http://13.212.68.5:5000/api/cart/" +
           userId +
           "/" +
           productJson["product_id"]

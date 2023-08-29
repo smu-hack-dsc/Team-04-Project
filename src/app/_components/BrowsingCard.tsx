@@ -28,7 +28,7 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
       setLike(true);
       try {
         const response = await axios.post(
-          "http://54.179.80.139:5000/api/wishlist" +
+          "http://13.212.68.5:5000/api/wishlist" +
             "?user_id=" +
             sessionStorage.getItem("userId") +
             "&product_id=" +
@@ -47,7 +47,7 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
       setLike(false);
       try {
         const response = await axios.delete(
-          "http://54.179.80.139:5000/api/wishlist/" +
+          "http://13.212.68.5:5000/api/wishlist/" +
             sessionStorage.getItem("userId") +
             "/" +
             productId
@@ -62,7 +62,7 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
   useEffect(() => {
     // Fetch product details from the backend using the specific product ID
     axios
-      .get(`http://54.179.80.139:5000/api/product/${productId}/`)
+      .get(`http://13.212.68.5:5000/api/product/${productId}/`)
       .then((response) => {
         setProduct(response.data);
       })
@@ -73,7 +73,7 @@ const BrowsingCard: React.FC<BrowsingCardProps> = ({ productId }) => {
     if (sessionStorage.getItem("token")) {
       axios
         .get(
-          "http://54.179.80.139:5000/api/wishlist/check/" + sessionStorage.getItem("userId") + "/" + productId
+          "http://13.212.68.5:5000/api/wishlist/check/" + sessionStorage.getItem("userId") + "/" + productId
         )
         .then((response) => {
           console.log(response);

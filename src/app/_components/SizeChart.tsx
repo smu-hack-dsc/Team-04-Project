@@ -37,7 +37,7 @@ const SizeChart: React.FC<SizeChartProps> = ({ brand, category }) => {
   useEffect(() => {
     // Fetch the size chart data using axios when the component mounts
     axios
-      .get(`http://54.179.80.139:5000/api/size_chart/${brand}/${category}`)
+      .get(`http://13.212.68.5:5000/api/size_chart/${brand}/${category}`)
       .then((response) => {
         console.log(response.data);
         setSizeData(response.data.size_chart);
